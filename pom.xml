@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.alibaba.naocs</groupId>
+    <artifactId>nacos-plugin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    
+    <developers>
+        <developer>
+            <name>li-xiao-shuang</name>
+            <email>644968328@qq.com</email>
+        </developer>
+    </developers>
+    
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    
+    <organization>
+        <name>nacos-group</name>
+        <url>https://github.com/nacos-group</url>
+    </organization>
+
+    
+</project>
