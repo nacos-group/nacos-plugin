@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    
     <groupId>com.alibaba.naocs</groupId>
     <artifactId>nacos-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <version>${revision}</version>
     
     <developers>
         <developer>
@@ -27,6 +28,32 @@
         <name>nacos-group</name>
         <url>https://github.com/nacos-group</url>
     </organization>
-
     
+    <modules>
+        <module>nacos-plugin-encryption</module>
+        <module>nacos-plugin-spi</module>
+    </modules>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Compiler settings properties -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <revision>1.0.0-SNAPSHOT</revision>
+        <alibaba-nacos.version>2.1.0-SNAPSHOT</alibaba-nacos.version>
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-common</artifactId>
+                <version>${alibaba-nacos.version}</version>
+                <optional>true</optional>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
 </project>
