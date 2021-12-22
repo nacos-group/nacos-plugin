@@ -7,7 +7,7 @@
     <groupId>com.alibaba.naocs</groupId>
     <artifactId>nacos-plugin</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
     
     <developers>
         <developer>
@@ -40,6 +40,7 @@
         <!-- Compiler settings properties -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <revision>1.0.0-SNAPSHOT</revision>
         <alibaba-nacos.version>2.1.0-SNAPSHOT</alibaba-nacos.version>
     </properties>
     
