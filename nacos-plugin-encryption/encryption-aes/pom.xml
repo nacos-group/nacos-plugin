@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>nacos-plugin-encryption</artifactId>
-        <groupId>com.alibaba.naocs</groupId>
+        <groupId>com.alibaba.nacos</groupId>
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,7 @@
     
     <dependencies>
         <dependency>
-            <groupId>com.alibaba.naocs</groupId>
+            <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-plugin-spi</artifactId>
         </dependency>
         <dependency>
