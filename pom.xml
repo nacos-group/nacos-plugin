@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <groupId>com.alibaba.nacos</groupId>
-    <artifactId>nacos-plugin</artifactId>
+    <artifactId>nacos-plugin-ext</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
     
@@ -28,30 +28,48 @@
         <name>nacos-group</name>
         <url>https://github.com/nacos-group</url>
     </organization>
-    
+
     <modules>
-        <module>nacos-plugin-encryption</module>
-        <module>nacos-plugin-spi</module>
+        <module>nacos-encryption-plugin</module>
     </modules>
-    
+
     <properties>
         <revision>1.0.0-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <alibaba-nacos.version>2.1.0-SNAPSHOT</alibaba-nacos.version>
+        <alibaba-nacos.version>2.0.4</alibaba-nacos.version>
         <maven-flatten-version>1.1.0</maven-flatten-version>
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
+        <junit.version>4.12</junit.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-encryption-plugin</artifactId>
+                <version>${alibaba-nacos.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-common</artifactId>
                 <version>${alibaba-nacos.version}</version>
-                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
