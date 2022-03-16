@@ -30,7 +30,7 @@
     </organization>
 
     <modules>
-        <module>nacos-encryption-plugin</module>
+        <module>nacos-encryption-plugin-ext</module>
     </modules>
 
     <properties>
