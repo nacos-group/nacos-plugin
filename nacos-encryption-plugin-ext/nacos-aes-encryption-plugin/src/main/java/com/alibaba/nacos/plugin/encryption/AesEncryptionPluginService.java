@@ -121,4 +121,14 @@ public class AesEncryptionPluginService implements EncryptionPluginService {
     public String algorithmName() {
         return AES_NAME;
     }
+    
+    @Override
+    public String encryptSecretKey(String secretKey) {
+        return secretKey;
+    }
+    
+    @Override
+    public String decryptSecretKey(String secretKey) {
+        return secretKey;
+    }
 }
