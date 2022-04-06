@@ -19,6 +19,7 @@ package com.alibaba.nacos.plugin.encryption;
 import com.alibaba.nacos.api.utils.StringUtils;
 import com.alibaba.nacos.common.codec.Base64;
 import com.alibaba.nacos.plugin.encryption.spi.EncryptionPluginService;
+import com.sun.xml.internal.bind.v2.TODO;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,19 +40,19 @@ import java.security.SecureRandom;
  */
 @SuppressWarnings("PMD.ServiceOrDaoClassShouldEndWithImplRule")
 public class AesEncryptionPluginService implements EncryptionPluginService {
-
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(AesEncryptionPluginService.class);
-
+    
     public static final String AES_NAME = "aes";
-
+    
     private static final String AES_MODE = "AES/CBC/PKCS5Padding";
-
+    
     private static final String IV_PARAMETER = "fa6fa5207b3286b2";
-
+    
     private static final String DEFAULT_SECRET_KEY = "nacos6b31e19f931a7603ae5473250b4";
-
+    
     private static final int IV_LENGTH = 16;
-
+    
     @Override
     public String encrypt(String secretKey, String content) {
         if (StringUtils.isBlank(secretKey)) {
@@ -69,7 +70,7 @@ public class AesEncryptionPluginService implements EncryptionPluginService {
         }
         return content;
     }
-
+    
     @Override
     public String decrypt(String secretKey, String content) {
         if (StringUtils.isBlank(secretKey) || StringUtils.isBlank(content)) {
@@ -87,7 +88,7 @@ public class AesEncryptionPluginService implements EncryptionPluginService {
         }
         return content;
     }
-
+    
     @Override
     public String generateSecretKey() {
         try {
@@ -102,7 +103,7 @@ public class AesEncryptionPluginService implements EncryptionPluginService {
         }
         return DEFAULT_SECRET_KEY;
     }
-
+    
     /**
      * IV initial vector size is 16 bytes, take the first 16 bytes of secret Key.
      *
@@ -116,9 +117,21 @@ public class AesEncryptionPluginService implements EncryptionPluginService {
         String iv = secretKey.substring(0, IV_LENGTH);
         return new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8));
     }
-
+    
     @Override
     public String algorithmName() {
         return AES_NAME;
+    }
+    
+    @Override
+    public String encryptSecretKey(String secretKey) {
+        // todo
+        return secretKey;
+    }
+    
+    @Override
+    public String decryptSecretKey(String secretKey) {
+        // todo
+        return secretKey;
     }
 }
