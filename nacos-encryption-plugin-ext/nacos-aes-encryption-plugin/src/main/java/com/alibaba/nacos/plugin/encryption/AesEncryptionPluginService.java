@@ -19,7 +19,6 @@ package com.alibaba.nacos.plugin.encryption;
 import com.alibaba.nacos.api.utils.StringUtils;
 import com.alibaba.nacos.common.codec.Base64;
 import com.alibaba.nacos.plugin.encryption.spi.EncryptionPluginService;
-import com.sun.xml.internal.bind.v2.TODO;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
