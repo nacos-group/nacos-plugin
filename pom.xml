@@ -31,6 +31,7 @@
 
     <modules>
         <module>nacos-encryption-plugin-ext</module>
+        <module>nacos-trace-plugin-ext</module>
     </modules>
 
     <properties>
@@ -39,7 +40,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <alibaba-nacos.version>2.1.0-BETA</alibaba-nacos.version>
+        <alibaba-nacos.version>2.2.0-SNAPSHOT</alibaba-nacos.version>
         <maven-flatten-version>1.1.0</maven-flatten-version>
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
         <junit.version>4.12</junit.version>
@@ -62,8 +63,16 @@
             </dependency>
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-trace-plugin</artifactId>
+                <version>${alibaba-nacos.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-common</artifactId>
                 <version>${alibaba-nacos.version}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
