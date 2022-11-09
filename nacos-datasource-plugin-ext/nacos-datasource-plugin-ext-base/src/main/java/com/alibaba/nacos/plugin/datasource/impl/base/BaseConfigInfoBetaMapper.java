@@ -40,13 +40,13 @@ public class BaseConfigInfoBetaMapper extends ConfigInfoBetaMapperByMySql {
         return TableConstant.CONFIG_INFO_BETA;
     }
     
-    public String getLimitPageSqlWithMark(String sql) {
-        return databaseDialect.getLimitPageSqlWithMark(sql);
+    public String getLimitPageSqlWithOffset(String sql,int startRow, int pageSize) {
+        return databaseDialect.getLimitPageSqlWithOffset(sql, startRow, pageSize);
     }
     
     @Override
     public String findAllConfigInfoBetaForDumpAllFetchRows(int startRow, int pageSize) {
-        String sqlInner = getLimitPageSqlWithMark("SELECT id FROM config_info_beta  ORDER BY id ");
+        String sqlInner = getLimitPageSqlWithOffset("SELECT id FROM config_info_beta  ORDER BY id ",startRow, pageSize);
         return  " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified,beta_ips,encrypted_data_key "
                 + " FROM ( " + sqlInner + "  )"
                 + "  g, config_info_beta t WHERE g.id = t.id ";

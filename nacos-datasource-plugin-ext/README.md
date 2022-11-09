@@ -4,7 +4,7 @@
 
 ### 1.1、简介
 
-从Nacos2.2版本开始，Nacos提供了数据源扩展插件，以便让需要进行其他数据库适配的用户自己编写插件来保存数据。当前项目目前已简单适配Postgresql。
+从Nacos2.2版本开始，Nacos提供了数据源扩展插件，以便让需要进行其他数据库适配的用户自己编写插件来保存数据。当前项目插件目前已简单适配Postgresql。
 
 如需Nacos2.1支持，请移步个人的如下这个仓库：
 
@@ -28,7 +28,6 @@ nacos-postgresql-datasource-plugin-ext工程可打包适配Postgresql的数据�
 
 2、修改Nacos主代码分支的(后续想办法合并到主分支上)：
 
-- GroupCapacityPersistService类的getCapacityList4CorrectUsage类的方法，需要修改为动态取分页
 - TenantCapacityPersistService类的insertTenantCapacity方法
 
 ```java
@@ -55,7 +54,7 @@ PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERAT
 
 ### 2.2、插件引入
 
-方式一：作为依赖引入到Nacos主分支源码中，例如：
+方式一：使用postgresql作为依赖引入到Nacos主分支源码中，例如：
 
 ```xml
 <dependency>
