@@ -22,37 +22,7 @@ nacos-postgresql-datasource-plugin-ext工程可打包适配Postgresql的数据�
 
 ## 二、下载和使用
 
-### 2.1、Nacos主分支代码修改
-
-1、截止目前Nacos2.2主分支还有一些未改造代码片段，影响插件使用。如需使用此插件请进行手动更改相关nacos主分支核心源码。
-
-2、修改Nacos主代码分支的(后续想办法合并到主分支上)：
-
-- TenantCapacityPersistService类的insertTenantCapacity方法
-
-```java
-PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-```
-
-当前方法Statement.RETURN_GENERATED_KEYS方式仅支持mysql数据库，对于其他数据库应该提供手动new String[]{"id"}的方式，才可以。
-
-- GroupCapacityPersistService类的insertGroupCapacity方法
-
-```java
-PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-```
-
-当前方法Statement.RETURN_GENERATED_KEYS方式仅支持mysql数据库，对于其他数据库应该提供手动new String[]{"id"}的方式，才可以。
-
-- 核心发布配置的ExternalStoragePersistServiceImpl类的addConfigInfoAtomic方法：
-
-```
-PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-```
-
-当前方法Statement.RETURN_GENERATED_KEYS方式仅支持mysql数据库，对于其他数据库应该提供手动new String[]{"id"}的方式，才可以。
-
-### 2.2、插件引入
+### 2.1、插件引入
 
 方式一：使用postgresql作为依赖引入到Nacos主分支源码中，例如：
 
@@ -66,7 +36,7 @@ PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERAT
 
 方式二：下载当前插件项目源码，打包为jar包，将该文件的路径配置到startup.sh文件中，使用Nacos的loader.path机制指定该插件的路径，可修改startup.sh中的loader.path参数的位置进行指定。
 
-### 2.3、修改数据库配置文件
+### 2.2、修改数据库配置文件
 
 在application.properties文件中声明postgresql的配置信息：
 
@@ -78,7 +48,7 @@ db.password=nacos
 db.pool.config.driverClassName=org.postgresql.Driver
 ```
 
-### 2.4、导入Postgresql的数据库脚本文件
+### 2.3、导入Postgresql的数据库脚本文件
 
 导入nacos-postgresql的脚本文件，脚本文件在nacos-postgresql-datasource-plugin-ext/src/main/resources/schema文件夹下面.
 
