@@ -15,5 +15,5 @@
 #
 #
 
-com.alibaba.nacos.plugin.datasource.dialect.MysqlDatabaseDialect
+com.alibaba.nacos.plugin.datasource.dialect.DefaultDatabaseDialect
 

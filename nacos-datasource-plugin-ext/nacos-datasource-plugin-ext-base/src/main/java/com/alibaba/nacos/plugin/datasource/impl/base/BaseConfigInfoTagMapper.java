@@ -34,10 +34,6 @@ public class BaseConfigInfoTagMapper extends ConfigInfoTagMapperByMySql {
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
     }
     
-    public String getLimitPageSqlWithMark(String sql) {
-        return databaseDialect.getLimitPageSqlWithMark(sql);
-    }
-    
     @Override
     public String getTableName() {
         return TableConstant.CONFIG_INFO_TAG;
@@ -45,7 +41,8 @@ public class BaseConfigInfoTagMapper extends ConfigInfoTagMapperByMySql {
     
     @Override
     public String findAllConfigInfoTagForDumpAllFetchRows(int startRow, int pageSize) {
-        String innerSql = getLimitPageSqlWithMark("SELECT id FROM config_info_tag  ORDER BY id ");
+        String innerSql = databaseDialect.getLimitPageSqlWithOffset("SELECT id FROM config_info_tag  ORDER BY id ",
+                startRow, pageSize);
         return " SELECT t.id,data_id,group_id,tenant_id,tag_id,app_name,content,md5,gmt_modified "
                 + " FROM (  " + innerSql + "  ) "
                 + "g, config_info_tag t  WHERE g.id = t.id  ";

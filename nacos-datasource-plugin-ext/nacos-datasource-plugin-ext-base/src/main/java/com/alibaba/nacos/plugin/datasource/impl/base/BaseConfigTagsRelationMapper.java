@@ -80,29 +80,6 @@ public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySq
     }
     
     @Override
-    public String findConfigInfoByGroupAndAdvanceFetchRows(final Map<String, String> params, int tagSize, int startRow, int pageSize) {
-        final String appName = params.get("appName");
-        StringBuilder sql = new StringBuilder(
-                "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content FROM config_info  a LEFT JOIN "
-                        + "config_tags_relation b ON a.id=b.id WHERE a.group_id=? AND a.tenant_id=? ");
-        
-        sql.append(" AND b.tag_name IN (");
-        for (int i = 0; i < tagSize; i++) {
-            if (i != 0) {
-                sql.append(", ");
-            }
-            sql.append('?');
-        }
-        sql.append(") ");
-        
-        if (StringUtils.isNotBlank(appName)) {
-            sql.append(" AND a.app_name=? ");
-        }
-    
-        return getLimitPageSqlWithOffset(sql.toString(),startRow,pageSize);
-    }
-    
-    @Override
     public String findConfigInfoLike4PageFetchRows(final Map<String, String> params, int tagSize, int startRow, int pageSize) {
         final String appName = params.get("appName");
         final String content = params.get("content");
@@ -134,28 +111,7 @@ public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySq
             where.append('?');
         }
         where.append(") ");
-        return getLimitPageSqlWithOffset(sqlFetchRows + where,startRow,pageSize);
+        return getLimitPageSqlWithOffset(sqlFetchRows + where, startRow, pageSize);
     }
-    
-    @Override
-    public String findConfigInfoByAdvanceFetchRows(Map<String, String> params, int tagSize, int startRow, int pageSize) {
-        final String appName = params.get("appName");
-        StringBuilder sql = new StringBuilder(
-                "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content FROM config_info  a LEFT JOIN "
-                        + "config_tags_relation b ON a.id=b.id WHERE a.tenant_id=? ");
-        sql.append(" AND b.tag_name IN (");
-        for (int i = 0; i < tagSize; i++) {
-            if (i != 0) {
-                sql.append(", ");
-            }
-            sql.append('?');
-        }
-        sql.append(") ");
-        if (StringUtils.isNotBlank(appName)) {
-            sql.append(" AND a.app_name=? ");
-        }
-        return getLimitPageSqlWithOffset(sql.toString(),startRow,pageSize);
-    }
-    
     
 }

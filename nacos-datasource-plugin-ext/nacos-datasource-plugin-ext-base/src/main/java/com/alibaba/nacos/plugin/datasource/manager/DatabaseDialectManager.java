@@ -18,7 +18,7 @@ package com.alibaba.nacos.plugin.datasource.manager;
 
 import com.alibaba.nacos.common.spi.NacosServiceLoader;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
-import com.alibaba.nacos.plugin.datasource.dialect.MysqlDatabaseDialect;
+import com.alibaba.nacos.plugin.datasource.dialect.DefaultDatabaseDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +56,7 @@ public class DatabaseDialectManager {
     public DatabaseDialect getDialect(String databaseType) {
         DatabaseDialect databaseDialect = SUPPORT_DIALECT_MAP.get(databaseType);
         if (databaseDialect == null) {
-            return new MysqlDatabaseDialect();
+            return new DefaultDatabaseDialect();
         }
         return databaseDialect;
     }

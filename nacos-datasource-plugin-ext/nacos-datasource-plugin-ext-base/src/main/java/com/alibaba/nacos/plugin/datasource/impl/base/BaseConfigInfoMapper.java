@@ -57,19 +57,6 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
     }
     
     @Override
-    public String findConfigInfoByDataIdFetchRows(int startRow, int pageSize) {
-        return getLimitPageSqlWithOffset("SELECT id,data_id,group_id,tenant_id,app_name,content FROM config_info "
-                + "WHERE data_id = ? AND tenant_id = ? ",startRow, pageSize);
-    }
-    
-    
-    @Override
-    public String findConfigInfoByDataIdAndAppFetchRows(int startRow, int pageSize) {
-        return getLimitPageSqlWithOffset("SELECT id,data_id,group_id,tenant_id,app_name,content FROM config_info "
-                + "WHERE data_id= ? AND tenant_id= ? AND app_name= ?",startRow, pageSize);
-    }
-    
-    @Override
     public String findConfigInfoByAppFetchRows(int startRow, int pageSize) {
         return getLimitPageSqlWithOffset("SELECT id,data_id,group_id,tenant_id,app_name,content FROM config_info"
                 + " WHERE tenant_id LIKE ? AND app_name= ?",startRow, pageSize);
@@ -99,14 +86,6 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
         return " SELECT t.id,data_id,group_id,content,md5"
                 + " FROM ( " + innerSql + "  ) "
                 + " g, config_info t  WHERE g.id = t.id ";
-    }
-    
-    @Override
-    public String findAllConfigInfoForDumpAllFetchRows(int startRow, int pageSize) {
-        String innerSql = getLimitPageSqlWithMark(" SELECT id FROM config_info ORDER BY id ");
-        return " SELECT t.id,type,data_id,group_id,tenant_id,app_name,content,type,md5,gmt_modified "
-                + " FROM ( " + innerSql + " )"
-                + " g, config_info t WHERE g.id = t.id ";
     }
     
     @Override
@@ -157,27 +136,6 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
     }
     
     @Override
-    public String findConfigInfoLikeFetchRows(Map<String, String> params, int startRow, int pageSize) {
-        final String sqlFetchRows = "SELECT id,data_id,group_id,tenant_id,app_name,content FROM config_info WHERE ";
-        String where = " 1=1 ";
-        if (!StringUtils.isEmpty(params.get(DATA_ID))) {
-            where += " AND data_id LIKE ? ";
-        }
-        if (!StringUtils.isEmpty(params.get(GROUP))) {
-            where += " AND group_id LIKE ? ";
-        }
-        where += " AND tenant_id LIKE ? ";
-        if (!StringUtils.isEmpty(params.get(APP_NAME))) {
-            where += " AND app_name = ? ";
-        }
-        if (!StringUtils.isBlank(params.get(CONTENT))) {
-            where += " AND content LIKE ? ";
-        }
-        
-        return getLimitPageSqlWithOffset(sqlFetchRows + where, startRow, pageSize);
-    }
-    
-    @Override
     public String findConfigInfoBaseLikeFetchRows(Map<String, String> params, int startRow, int pageSize) {
         final String sqlFetchRows = "SELECT id,data_id,group_id,tenant_id,content FROM config_info WHERE ";
         String where = " 1=1 AND tenant_id='' ";
@@ -191,17 +149,6 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
             where += " AND content LIKE ? ";
         }
         return getLimitPageSqlWithOffset(sqlFetchRows + where, startRow, pageSize);
-    }
-    
-    @Override
-    public String findConfigInfoByDataIdAndAdvanceFetchRows(Map<String, String> params, int startRow, int pageSize) {
-        final String appName = params.get(APP_NAME);
-        StringBuilder sql = new StringBuilder(
-                "SELECT id,data_id,group_id,tenant_id,app_name,content FROM config_info WHERE data_id=? AND tenant_id=? ");
-        if (StringUtils.isNotBlank(appName)) {
-            sql.append(" AND app_name=? ");
-        }
-        return getLimitPageSqlWithOffset(sql.toString(), startRow, pageSize);
     }
     
     @Override
@@ -222,34 +169,6 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
             where.append(" AND app_name=? ");
         }
         return getLimitPageSqlWithOffset(sql + where, startRow, pageSize);
-    }
-    
-    @Override
-    public String findConfigInfoBaseByDataIdFetchRows(int startRow, int pageSize) {
-        return getLimitPageSqlWithOffset("SELECT id,data_id,group_id,content FROM config_info WHERE data_id=? AND tenant_id=? ",startRow, pageSize);
-    }
-    
-    @Override
-    public String findConfigInfoByGroupFetchRows(int startRow, int pageSize) {
-        return getLimitPageSqlWithOffset("SELECT id,data_id,group_id,tenant_id,app_name,content FROM config_info WHERE"
-                + " group_id=? AND tenant_id=? ",startRow, pageSize);
-    }
-    
-    @Override
-    public String findConfigInfoByGroupAndAppFetchRows(int startRow, int pageSize) {
-        return getLimitPageSqlWithOffset("SELECT id,data_id,group_id,tenant_id,app_name,content FROM config_info WHERE "
-                + "group_id=? AND tenant_id=? AND app_name =? ",startRow, pageSize);
-    }
-    
-    @Override
-    public String findConfigInfoByAdvanceFetchRows(Map<String, String> params, int startRow, int pageSize) {
-        final String appName = params.get("appName");
-        StringBuilder sql = new StringBuilder(
-                "SELECT id,data_id,group_id,tenant_id,app_name,content FROM config_info WHERE tenant_id LIKE ? ");
-        if (StringUtils.isNotBlank(appName)) {
-            sql.append(" AND app_name=? ");
-        }
-        return getLimitPageSqlWithOffset(sql.toString(),startRow, pageSize);
     }
     
     @Override
@@ -288,17 +207,6 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
         return " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5 "
                 + " FROM ( " + innerSql + " )"
                 + " g, config_info t  WHERE g.id = t.id ";
-    }
-    
-    @Override
-    public String findConfigInfoByGroupAndAdvanceFetchRows(Map<String, String> params, int startRow, int pageSize) {
-        final String appName = params.get(APP_NAME);
-        StringBuilder sql = new StringBuilder(
-                "SELECT id,data_id,group_id,tenant_id,app_name,content FROM config_info WHERE group_id=? AND tenant_id=? ");
-        if (StringUtils.isNotBlank(appName)) {
-            sql.append(" AND app_name=? ");
-        }
-        return getLimitPageSqlWithOffset(sql.toString(),startRow, pageSize);
     }
     
     @Override

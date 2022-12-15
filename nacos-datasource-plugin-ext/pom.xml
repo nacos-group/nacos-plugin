@@ -14,7 +14,6 @@
     
     <modules>
         <module>nacos-datasource-plugin-ext-base</module>
-        <module>nacos-all-datasource-plugin-ext</module>
         <module>nacos-postgresql-datasource-plugin-ext</module>
     </modules>
     
