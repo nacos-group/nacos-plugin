@@ -4,7 +4,7 @@
 
 ### 1.1、修改数据库配置文件
 
-在application.properties文件中声明postgresql的配置信息：
+在application.properties文件中声明dameng的配置信息：
 
 ```java
 spring.datasource.platform=dm
