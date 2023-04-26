@@ -28,3 +28,8 @@ spring.datasource.platform=dm
     <systemPath>${basedir}/lib/DmJdbcDriver18.jar</systemPath>
 </dependency>
 ```
+
+### 1.3、表结构初始化
+
+在nacos数据库中执行schema/table.sql文件，创建表结构 然后执行schema/data.sql文件，初始化数据 注意修改模式名称，如果不是NACOS模式，需要修改schema/table.sql文件中的模式名称
+如果表结构没用及时适配，可以使用dameng自带的数据迁移工具进行转换（dameng安装目录/tool/dts.exe 版本8.4.2.98 低版本不识别mysql自增方言）， 或者手动修改表结构
