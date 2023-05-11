@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>nacos-plugin-ext</artifactId>
+        <groupId>com.alibaba.nacos</groupId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>nacos-config-change-plugin-ext</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>nacos-whitelist-config-change-plugin</module>
+        <module>nacos-fileformat-config-change-plugin</module>
+        <module>nacos-webhook-config-change-plugin</module>
+    </modules>
+
+    <properties>
+        <yaml.version>1.29</yaml.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-config-plugin</artifactId>
+            <version>${alibaba-nacos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${yaml.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>
