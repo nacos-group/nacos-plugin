@@ -81,7 +81,7 @@ public class AesEncryptionPluginService implements EncryptionPluginService {
             Cipher cipher = Cipher.getInstance(AES_MODE);
             cipher.init(Cipher.DECRYPT_MODE, key, generateIv(secretKey));
             byte[] result = cipher.doFinal(Hex.decodeHex(content.toCharArray()));
-            return new String(result);
+            return new String(result, StandardCharsets.UTF_8);
         } catch (Exception e) {
             LOGGER.error("[AesEncryptionPluginService] decrypt error", e);
         }
