@@ -23,6 +23,7 @@ import com.alibaba.nacos.common.http.param.Header;
 import com.alibaba.nacos.common.http.param.Query;
 import com.alibaba.nacos.plugin.config.constants.ConfigChangeConstants;
 import com.alibaba.nacos.plugin.config.constants.ConfigChangeExecuteTypes;
+import com.alibaba.nacos.plugin.config.constants.ConfigChangePointCutTypes;
 import com.alibaba.nacos.plugin.config.model.ConfigChangeRequest;
 import com.alibaba.nacos.plugin.config.model.ConfigChangeResponse;
 import com.alibaba.nacos.plugin.config.spi.ConfigChangePluginService;
@@ -83,6 +84,11 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
     @Override
     public int getOrder() {
         return Integer.MAX_VALUE;
+    }
+    
+    @Override
+    public ConfigChangePointCutTypes[] pointcutMethodNames() {
+        return ConfigChangePointCutTypes.values();
     }
     
     private ConfigChangeNotifyInfo wrapConfigChangeNotifyInfo(ConfigChangeNotifyInfo configChangeNotifyInfo,

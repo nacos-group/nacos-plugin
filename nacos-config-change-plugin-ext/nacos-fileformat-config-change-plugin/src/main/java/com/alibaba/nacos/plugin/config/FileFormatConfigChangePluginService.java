@@ -31,10 +31,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,14 +45,14 @@ import java.util.regex.Pattern;
  * @author liyunfei
  **/
 public class FileFormatConfigChangePluginService implements ConfigChangePluginService {
-
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(FileFormatConfigChangePluginService.class);
-
+    
     /**
      * the relationship of type and function of validating the file.
      */
     private static Map<String, Function<String, Boolean>> fileValidateMap = new HashMap<>(6);
-
+    
     @Override
     public void execute(ConfigChangeRequest configChangeRequest, ConfigChangeResponse configChangeResponse) {
         // RPC- dont need to validate
@@ -70,26 +70,32 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
             configChangeResponse.setMsg("content of publish content is not consistent with type");
         }
     }
-
+    
     @Override
     public ConfigChangeExecuteTypes executeType() {
         return ConfigChangeExecuteTypes.EXECUTE_BEFORE_TYPE;
     }
-
+    
     @Override
     public String getServiceType() {
         return "fileformatcheck";
     }
-
+    
     @Override
     public int getOrder() {
         return 0;
     }
-
+    
+    @Override
+    public ConfigChangePointCutTypes[] pointcutMethodNames() {
+        return new ConfigChangePointCutTypes[] {ConfigChangePointCutTypes.PUBLISH_BY_HTTP,
+                ConfigChangePointCutTypes.PUBLISH_BY_RPC};
+    }
+    
     static {
         loadUtils();
     }
-
+    
     static void loadUtils() {
         fileValidateMap.put("text", textValidate());
         fileValidateMap.put("json", jsonValidate());
@@ -98,7 +104,7 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
         fileValidateMap.put("properties", propertiesValidate());
         fileValidateMap.put("yaml", yamlValidate());
     }
-
+    
     /**
      * validate file is consistent with type.
      *
@@ -110,12 +116,13 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
         Function<String, Boolean> function = null;
         function = fileValidateMap.get(type);
         if (function == null) {
-            LOGGER.warn("load {} file format util fail,please add it at {}", type, FileFormatConfigChangePluginService.class);
+            LOGGER.warn("load {} file format util fail,please add it at {}", type,
+                    FileFormatConfigChangePluginService.class);
             return false;
         }
         return function.apply(content);
     }
-
+    
     /**
      * validate text format.
      *
@@ -124,7 +131,7 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
     static Function<String, Boolean> textValidate() {
         return Objects::nonNull;
     }
-
+    
     /**
      * validate json format.
      *
@@ -134,16 +141,15 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
         return (content) -> {
             try {
                 boolean result = false;
-                String jsonRegexp = "^(?:(?:\\s*\\[\\s*(?:(?:"
-                        + "(?:\"[^\"]*?\")|(?:true|false|null)|(?:[+-]?\\d+(?:\\.?\\d+)?"
-                        + "(?:[eE][+-]?\\d+)?)|(?<json1>(?:\\[.*?\\])|(?:\\{.*?\\})))\\s*,\\s*)*(?:"
-                        + "(?:\"[^\"]*?\")|(?:true|false|null)|(?:[+-]?\\d+(?:\\.?\\d+)?"
-                        + "(?:[eE][+-]?\\d+)?)|(?<json2>(?:\\[.*?\\])|(?:\\{.*?\\})))\\s*\\]\\s*)"
-                        + "|(?:\\s*\\{\\s*"
-                        + "(?:\"[^\"]*?\"\\s*:\\s*(?:(?:\"[^\"]*?\")|(?:true|false|null)|"
-                        + "(?:[+-]?\\d+(?:\\.?\\d+)?(?:[eE][+-]?\\d+)?)|(?<json3>(?:\\[.*?\\])|(?:\\{.*?\\})))\\s*,\\s*)*"
-                        + "(?:\"[^\"]*?\"\\s*:\\s*(?:(?:\"[^\"]*?\")|(?:true|false|null)|"
-                        + "(?:[+-]?\\d+(?:\\.?\\d+)?(?:[eE][+-]?\\d+)?)|(?<json4>(?:\\[.*?\\])|(?:\\{.*?\\}))))\\s*\\}\\s*))$";
+                String jsonRegexp =
+                        "^(?:(?:\\s*\\[\\s*(?:(?:" + "(?:\"[^\"]*?\")|(?:true|false|null)|(?:[+-]?\\d+(?:\\.?\\d+)?"
+                                + "(?:[eE][+-]?\\d+)?)|(?<json1>(?:\\[.*?\\])|(?:\\{.*?\\})))\\s*,\\s*)*(?:"
+                                + "(?:\"[^\"]*?\")|(?:true|false|null)|(?:[+-]?\\d+(?:\\.?\\d+)?"
+                                + "(?:[eE][+-]?\\d+)?)|(?<json2>(?:\\[.*?\\])|(?:\\{.*?\\})))\\s*\\]\\s*)"
+                                + "|(?:\\s*\\{\\s*" + "(?:\"[^\"]*?\"\\s*:\\s*(?:(?:\"[^\"]*?\")|(?:true|false|null)|"
+                                + "(?:[+-]?\\d+(?:\\.?\\d+)?(?:[eE][+-]?\\d+)?)|(?<json3>(?:\\[.*?\\])|(?:\\{.*?\\})))\\s*,\\s*)*"
+                                + "(?:\"[^\"]*?\"\\s*:\\s*(?:(?:\"[^\"]*?\")|(?:true|false|null)|"
+                                + "(?:[+-]?\\d+(?:\\.?\\d+)?(?:[eE][+-]?\\d+)?)|(?<json4>(?:\\[.*?\\])|(?:\\{.*?\\}))))\\s*\\}\\s*))$";
                 Pattern jsonPattern = Pattern.compile(jsonRegexp);
                 Matcher jsonMatcher = jsonPattern.matcher(content);
                 // recursion to validate
@@ -151,8 +157,7 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
                     result = true;
                     for (int i = 4; i >= 1; i--) {
                         if (!StringUtils.isEmpty(jsonMatcher.group("json" + i))) {
-                            result = jsonValidate()
-                                    .apply(jsonMatcher.group("json" + i));
+                            result = jsonValidate().apply(jsonMatcher.group("json" + i));
                             if (!result) {
                                 break;
                             }
@@ -173,7 +178,7 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
             }
         };
     }
-
+    
     /**
      * validate xml format.
      *
@@ -192,7 +197,7 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
             return flag;
         };
     }
-
+    
     /**
      * validate html format.
      *
@@ -206,7 +211,7 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
             return matcher.find();
         };
     }
-
+    
     /**
      * validate properties format.
      *
@@ -223,7 +228,7 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
             return true;
         };
     }
-
+    
     /**
      * validate yaml format.
      *
@@ -243,5 +248,5 @@ public class FileFormatConfigChangePluginService implements ConfigChangePluginSe
             return true;
         };
     }
-
+    
 }

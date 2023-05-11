@@ -19,6 +19,7 @@ package com.alibaba.nacos.plugin.config;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.config.constants.ConfigChangeConstants;
 import com.alibaba.nacos.plugin.config.constants.ConfigChangeExecuteTypes;
+import com.alibaba.nacos.plugin.config.constants.ConfigChangePointCutTypes;
 import com.alibaba.nacos.plugin.config.model.ConfigChangeRequest;
 import com.alibaba.nacos.plugin.config.model.ConfigChangeResponse;
 import com.alibaba.nacos.plugin.config.spi.ConfigChangePluginService;
@@ -84,13 +85,18 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
         return 200;
     }
     
+    @Override
+    public ConfigChangePointCutTypes[] pointcutMethodNames() {
+        return new ConfigChangePointCutTypes[] {ConfigChangePointCutTypes.IMPORT_BY_HTTP};
+    }
+    
     void filterFile(Object[] args, Set<String> whiteList) throws IOException {
         for (int index = 0; index < args.length; index++) {
             if (args[index] instanceof MultipartFile) {
                 MultipartFile file = (MultipartFile) args[index];
                 ZipUtils.UnZipResult unziped = ZipUtils.unzip(file.getBytes());
                 if (unziped.getMetaDataItem() == null) {
-                    LOGGER.warn("whitelist plugin service can not support V2 export file");
+                    LOGGER.warn("whitelist plugin service can not support V1 export file");
                     return;
                 }
                 String metaData = unziped.getMetaDataItem().getItemData();
