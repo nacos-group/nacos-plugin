@@ -17,6 +17,7 @@
 package com.alibaba.nacos.plugin.config;
 
 import com.alibaba.nacos.common.utils.StringUtils;
+import com.alibaba.nacos.plugin.config.constants.ConfigChangeConstants;
 import com.alibaba.nacos.plugin.config.constants.ConfigChangeExecuteTypes;
 import com.alibaba.nacos.plugin.config.model.ConfigChangeRequest;
 import com.alibaba.nacos.plugin.config.model.ConfigChangeResponse;
@@ -30,16 +31,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
-
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.HashMap;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -48,40 +49,41 @@ import java.util.stream.Collectors;
  * @author liyunfei
  **/
 public class WhiteListConfigChangePluginService implements ConfigChangePluginService {
-
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(WhiteListConfigChangePluginService.class);
-
+    
     @Override
     public void execute(ConfigChangeRequest configChangeRequest, ConfigChangeResponse configChangeResponse) {
-        final String whiteListUrls = (String) configChangeRequest.getArg("suffixs");
+        final Properties properties = (Properties) configChangeRequest.getArg(ConfigChangeConstants.PLUGIN_PROPERTIES);
+        final String whiteListUrls = properties.getProperty("suffixs", "");
         final String[] whiteLists = whiteListUrls.split("\\,");
         // is convenient to contains judge
         final Set<String> whiteList = Arrays.stream(whiteLists).collect(Collectors.toSet());
-        Object[] args = (Object[]) configChangeRequest.getArg("args");
+        Object[] args = (Object[]) configChangeRequest.getArg(ConfigChangeConstants.ORIGINAL_ARGS);
         try {
             filterFile(args, whiteList);
-            configChangeRequest.setArg("args", args);
+            configChangeResponse.setArgs(args);
         } catch (Throwable e) {
             LOGGER.warn("filter import file by whitelist failed {}", e.getMessage());
             configChangeResponse.setMsg(e.getMessage());
         }
     }
-
+    
     @Override
     public ConfigChangeExecuteTypes executeType() {
         return ConfigChangeExecuteTypes.EXECUTE_BEFORE_TYPE;
     }
-
+    
     @Override
     public String getServiceType() {
         return "whitelist";
     }
-
+    
     @Override
     public int getOrder() {
         return 200;
     }
-
+    
     void filterFile(Object[] args, Set<String> whiteList) throws IOException {
         for (int index = 0; index < args.length; index++) {
             if (args[index] instanceof MultipartFile) {
@@ -94,14 +96,14 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
                 String metaData = unziped.getMetaDataItem().getItemData();
                 Map<String, Object> map = parseYamlString(metaData);
                 ArrayList<LinkedHashMap<String, String>> lists;
-
+                
                 try {
                     lists = (ArrayList<LinkedHashMap<String, String>>) map.get("metadata");
                 } catch (ClassCastException e) {
                     LOGGER.error("load import file meta data fail,can not execute the whitelist plugin service");
                     return;
                 }
-
+                
                 Map<String, String> dataIdTypeMap = new HashMap<>(8);
                 List<ZipUtils.ZipItem> itemList = new ArrayList<>();
                 lists.forEach(item0 -> {
@@ -121,7 +123,7 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
             }
         }
     }
-
+    
     /**
      * parse yaml string.
      *
@@ -132,13 +134,13 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
         yaml = yaml.replace("\\r", "");
         yaml = yaml.replace("\\n", LineSeparator.DEFAULT.toString());
         LinkedHashMap<String, Object> sourceMap = null;
-
+        
         try {
             sourceMap = new Yaml().loadAs(yaml, LinkedHashMap.class);
         } catch (Exception e) {
             LOGGER.error("parseYamlString fail", e);
         }
-
+        
         if (Objects.isNull(sourceMap)) {
             return Collections.EMPTY_MAP;
         }
@@ -146,7 +148,7 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
         fillAllPathMap(sourceMap, targetMap, "");
         return targetMap;
     }
-
+    
     private static void fillAllPathMap(Map<String, Object> sourceMap, Map<String, Object> targetMap, String prefix) {
         prefix = StringUtils.isEmpty(prefix) ? prefix : prefix + ".";
         for (Map.Entry<String, Object> entry : sourceMap.entrySet()) {
