@@ -20,6 +20,10 @@ import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
 import com.alibaba.nacos.plugin.datasource.impl.mysql.ConfigInfoTagMapperByMySql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
+import com.alibaba.nacos.plugin.datasource.model.MapperContext;
+import com.alibaba.nacos.plugin.datasource.model.MapperResult;
+
+import java.util.Collections;
 
 /**
  * The base implementation of ConfigTagsRelationMapper.
@@ -40,12 +44,14 @@ public class BaseConfigInfoTagMapper extends ConfigInfoTagMapperByMySql {
     }
     
     @Override
-    public String findAllConfigInfoTagForDumpAllFetchRows(int startRow, int pageSize) {
-        String innerSql = databaseDialect.getLimitPageSqlWithOffset("SELECT id FROM config_info_tag  ORDER BY id ",
-                startRow, pageSize);
-        return " SELECT t.id,data_id,group_id,tenant_id,tag_id,app_name,content,md5,gmt_modified "
-                + " FROM (  " + innerSql + "  ) "
-                + "g, config_info_tag t  WHERE g.id = t.id  ";
+    public MapperResult findAllConfigInfoTagForDumpAllFetchRows(MapperContext context) {
+        int startRow = context.getStartRow();
+        int pageSize = context.getPageSize();
+        String innerSql = databaseDialect
+                .getLimitPageSqlWithOffset("SELECT id FROM config_info_tag  ORDER BY id ", startRow, pageSize);
+        String sql = " SELECT t.id,data_id,group_id,tenant_id,tag_id,app_name,content,md5,gmt_modified " + " FROM (  "
+                + innerSql + "  ) " + "g, config_info_tag t  WHERE g.id = t.id  ";
+        return new MapperResult(sql, Collections.emptyList());
     }
     
 }

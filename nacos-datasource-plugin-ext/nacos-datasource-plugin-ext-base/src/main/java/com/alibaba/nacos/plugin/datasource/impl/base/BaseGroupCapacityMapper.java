@@ -16,9 +16,13 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.base;
 
+import com.alibaba.nacos.common.utils.CollectionUtils;
+import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
 import com.alibaba.nacos.plugin.datasource.impl.mysql.GroupCapacityMapperByMysql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
+import com.alibaba.nacos.plugin.datasource.model.MapperContext;
+import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
 /**
  * The base implementation of GroupCapacityMapper.
@@ -34,8 +38,10 @@ public class BaseGroupCapacityMapper extends GroupCapacityMapperByMysql {
     }
     
     @Override
-    public String selectGroupInfoBySize() {
-        return databaseDialect.getLimitTopSqlWithMark("SELECT id, group_id FROM group_capacity WHERE id > ?");
+    public MapperResult selectGroupInfoBySize(MapperContext context) {
+        String sql = databaseDialect.getLimitTopSqlWithMark("SELECT id, group_id FROM group_capacity WHERE id > ?");
+        return new MapperResult(sql,
+                CollectionUtils.list(context.getWhereParameter(FieldConstant.ID), context.getPageSize()));
     }
     
 }
