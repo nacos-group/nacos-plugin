@@ -46,6 +46,8 @@ db.url.0=jdbc:postgresql://127.0.0.1:5432/nacos?tcpKeepAlive=true&reWriteBatched
 db.user=nacos
 db.password=nacos
 db.pool.config.driverClassName=org.postgresql.Driver
+#如果是 oracle 则需要改为 SELECT * FROM dual 
+#db.pool.config.connectionTestQuery=SELECT 1
 ```
 
 ### 2.3、导入Postgresql的数据库脚本文件
