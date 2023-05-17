@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 1999-2023 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.alibaba.nacos.plugin.datasource.impl.oracle;
 
-package com.alibaba.nacos.plugin.datasource.constants;
+import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
 
-/**
- * DatabaseType Constant.
- *
- * @author Long Yu
- **/
-public class DatabaseTypeConstant {
-
-    public static final String POSTGRESQL = "postgresql";
-
-    public static final String MYSQL = "mysql";
-
-    public static final String ORACLE = "oracle";
+/***
+ * @author onewe
+ */
+public class TenantInfoMapperByOracle extends AbstractOracleMapper implements TenantInfoMapper {
 
 }
