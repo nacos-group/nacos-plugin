@@ -8,21 +8,22 @@
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    
+
     <artifactId>nacos-datasource-plugin-ext</artifactId>
     <packaging>pom</packaging>
-    
+
     <modules>
         <module>nacos-datasource-plugin-ext-base</module>
         <module>nacos-postgresql-datasource-plugin-ext</module>
+        <module>nacos-oracle-datasource-plugin-ext</module>
         <module>nacos-dm-datasource-plugin-ext</module>
     </modules>
-    
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
@@ -33,5 +34,5 @@
             <artifactId>nacos-common</artifactId>
         </dependency>
     </dependencies>
-    
+
 </project>
