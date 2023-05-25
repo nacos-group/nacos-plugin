@@ -555,37 +555,6 @@ ON COLUMN "NOCOS"."CONFIG_INFO"."ENCRYPTED_DATA_KEY" IS '密钥';
 INSERT INTO "NOCOS"."USERS"("USERNAME", "PASSWORD", "ENABLED")
 VALUES ('nacos', '$2a$10$EuWPZHzz32dJN7jexM34MOeYirDdFAZm2kuWj7VEOJhhZkDrxfvUu', 1);
 
-
-
-SET
-IDENTITY_INSERT "NOCOS"."CONFIG_INFO" ON;
-INSERT INTO "NOCOS"."CONFIG_INFO"("ID", "DATA_ID", "GROUP_ID", "CONTENT", "MD5", "GMT_CREATE", "GMT_MODIFIED",
-                                  "SRC_USER", "SRC_IP", "APP_NAME", "TENANT_ID", "C_DESC", "C_USE", "EFFECT", "TYPE",
-                                  "C_SCHEMA", "ENCRYPTED_DATA_KEY")
-VALUES (1, '21', 'DEFAULT_GROUP', '322帆帆帆帆', '20c27b21664be89fbb9d24e5792fe67b', '2023-05-22 17:33:41',
-        '2023-05-22 17:33:48', 'nacos', '172.25.75.101', '', '', '2', '', '', 'text', '', '');
-
-SET
-IDENTITY_INSERT "NOCOS"."CONFIG_INFO" OFF;
-
-
-SET
-IDENTITY_INSERT "NOCOS"."HIS_CONFIG_INFO" ON;
-INSERT INTO "NOCOS"."HIS_CONFIG_INFO"("ID", "NID", "DATA_ID", "GROUP_ID", "APP_NAME", "CONTENT", "MD5", "GMT_CREATE",
-                                      "GMT_MODIFIED", "SRC_USER", "SRC_IP", "OP_TYPE", "TENANT_ID",
-                                      "ENCRYPTED_DATA_KEY")
-VALUES (0, 1, '21', 'DEFAULT_GROUP', '', '322', '5737c6ec2e0716f3d8a7a5c4e0de0d9a', '2023-05-22 17:33:41',
-        '2023-05-22 17:33:41', null, '172.25.75.101', 'I', '', '');
-INSERT INTO "NOCOS"."HIS_CONFIG_INFO"("ID", "NID", "DATA_ID", "GROUP_ID", "APP_NAME", "CONTENT", "MD5", "GMT_CREATE",
-                                      "GMT_MODIFIED", "SRC_USER", "SRC_IP", "OP_TYPE", "TENANT_ID",
-                                      "ENCRYPTED_DATA_KEY")
-VALUES (1, 2, '21', 'DEFAULT_GROUP', '', '322', '5737c6ec2e0716f3d8a7a5c4e0de0d9a', '2023-05-22 17:33:49',
-        '2023-05-22 17:33:48', 'nacos', '172.25.75.101', 'U', '', '');
-
-SET
-IDENTITY_INSERT "NOCOS"."HIS_CONFIG_INFO" OFF;
-
-
 INSERT INTO "NOCOS"."ROLES"("USERNAME", "ROLE")
 VALUES ('nacos', 'ROLE_ADMIN');
 
