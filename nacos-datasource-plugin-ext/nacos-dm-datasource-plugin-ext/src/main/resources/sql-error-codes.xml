@@ -12,6 +12,12 @@
 	- If this property is present, then it will be used instead of the id for
 	- looking up the error codes based on the current database.
 	-->
+
+<!--
+此文件主要做dameng数据库错误码与spring异常类的映射关系
+由于使用者可能会添加多个数据库插件 当添加dameng插件时 却不使用dameng数据库
+可能会导致此文件覆盖掉spring的默认文件所以这里冗余了多个数据库的配置
+-->
 <beans>
 
     <bean id="DB2" name="Db2" class="org.springframework.jdbc.support.SQLErrorCodes">
