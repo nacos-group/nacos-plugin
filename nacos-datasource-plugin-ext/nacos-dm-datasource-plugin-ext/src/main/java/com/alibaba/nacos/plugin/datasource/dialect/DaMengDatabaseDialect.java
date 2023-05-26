@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.constants;
+package com.alibaba.nacos.plugin.datasource.dialect;
+
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
 
 /**
- * DatabaseType Constant.
+ * dameng database dialect.
  *
- * @author Long Yu
- **/
-public class DatabaseTypeConstant {
+ * @author Xiao Yong
+ */
+public class DaMengDatabaseDialect extends AbstractDatabaseDialect {
 
-    public static final String POSTGRESQL = "postgresql";
+    @Override
+    public String[] getReturnPrimaryKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
 
+    @Override
+    public String getType() {
+        return DatabaseTypeConstant.DM;
+    }
 
-    public static final String MYSQL = "mysql";
-
-    public static final String ORACLE = "oracle";
-  
-    public static final String DM = "dm";
 }

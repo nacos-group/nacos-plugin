@@ -16,6 +16,7 @@
         <module>nacos-datasource-plugin-ext-base</module>
         <module>nacos-postgresql-datasource-plugin-ext</module>
         <module>nacos-oracle-datasource-plugin-ext</module>
+        <module>nacos-dm-datasource-plugin-ext</module>
     </modules>
 
     <properties>
