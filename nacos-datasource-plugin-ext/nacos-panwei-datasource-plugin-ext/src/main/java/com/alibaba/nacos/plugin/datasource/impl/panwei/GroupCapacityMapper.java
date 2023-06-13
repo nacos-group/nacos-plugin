@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.constants;
+package com.alibaba.nacos.plugin.datasource.impl.panwei;
+
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseGroupCapacityMapper;
 
 /**
- * DatabaseType Constant.
+ * The base implementation of GroupCapacityMapper.
  *
  * @author Long Yu
  **/
-public class DatabaseTypeConstant {
-
-    public static final String POSTGRESQL = "postgresql";
-
-
-    public static final String MYSQL = "mysql";
-
-    public static final String ORACLE = "oracle";
-  
-    public static final String DM = "dm";
-
-    public static final String PANWEI = "panwei";
+public class GroupCapacityMapper extends BaseGroupCapacityMapper {
+    
+    @Override
+    public String getDataSource() {
+        return DatabaseTypeConstant.PANWEI;
+    }
+    
 }
