@@ -16,14 +16,21 @@
         <maven.compiler.target>8</maven.compiler.target>
         <jdbc.panwer.version>1.0.0</jdbc.panwer.version>
     </properties>
-    
+
+    <repositories>
+        <repository>
+            <id>panwei-local</id>
+            <url>file:///${project.basedir}/localRepository</url>
+        </repository>
+    </repositories>
     
     <dependencies>
-        <!--<dependency>
+        <dependency>
             <groupId>org.panweidb</groupId>
             <artifactId>panweidb-jdbc</artifactId>
             <version>${jdbc.panwer.version}</version>
-        </dependency>-->
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-datasource-plugin-ext-base</artifactId>
