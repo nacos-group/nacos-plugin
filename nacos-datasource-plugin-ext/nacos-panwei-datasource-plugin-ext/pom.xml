@@ -3,37 +3,43 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>nacos-plugin-ext</artifactId>
+        <artifactId>nacos-datasource-plugin-ext</artifactId>
         <groupId>com.alibaba.nacos</groupId>
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>nacos-datasource-plugin-ext</artifactId>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>nacos-datasource-plugin-ext-base</module>
-        <module>nacos-postgresql-datasource-plugin-ext</module>
-        <module>nacos-oracle-datasource-plugin-ext</module>
-        <module>nacos-dm-datasource-plugin-ext</module>
-        <module>nacos-panwei-datasource-plugin-ext</module>
-    </modules>
-
+    
+    <artifactId>nacos-panwei-datasource-plugin-ext</artifactId>
+    
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <jdbc.panwer.version>1.0.0</jdbc.panwer.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>panwei-local</id>
+            <url>file:///${project.basedir}/localRepository</url>
+        </repository>
+    </repositories>
+    
     <dependencies>
         <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-datasource-plugin</artifactId>
+            <groupId>org.panweidb</groupId>
+            <artifactId>panweidb-jdbc</artifactId>
+            <version>${jdbc.panwer.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-common</artifactId>
+            <artifactId>nacos-datasource-plugin-ext-base</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
-
+    
+    
+    
+    
 </project>
