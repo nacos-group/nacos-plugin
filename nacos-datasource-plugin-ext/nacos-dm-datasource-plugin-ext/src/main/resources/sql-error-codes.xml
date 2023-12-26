@@ -28,7 +28,7 @@
             </list>
         </property>
         <property name="duplicateKeyCodes">
-            <value>-6602</value>
+            <value>-6602,-6625</value>
         </property>
     </bean>
 
