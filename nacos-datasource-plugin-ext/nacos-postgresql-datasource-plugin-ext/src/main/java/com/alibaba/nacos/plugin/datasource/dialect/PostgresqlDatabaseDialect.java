@@ -28,12 +28,7 @@ public class PostgresqlDatabaseDialect extends AbstractDatabaseDialect {
     public String getType() {
         return DatabaseTypeConstant.POSTGRESQL;
     }
-    
-    @Override
-    public String getLimitTopSqlWithMark(String sql) {
-        return sql + " LIMIT ? ";
-    }
-    
+
     @Override
     public String getLimitPageSqlWithMark(String sql) {
         return sql + "  OFFSET ? LIMIT ? ";

@@ -19,10 +19,9 @@ package com.alibaba.nacos.plugin.datasource.impl.base;
 
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
-import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
-import com.alibaba.nacos.plugin.datasource.impl.mysql.ConfigTagsRelationMapperByMySql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigTagsRelationMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -30,27 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The postgresql implementation of ConfigTagsRelationMapper.
+ *  The base  implementation of ConfigTagsRelationMapper.
  *
  * @author Long Yu
  **/
-public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySql {
+public abstract class BaseConfigTagsRelationMapper extends AbstractMapper implements ConfigTagsRelationMapper {
     
-    private DatabaseDialect databaseDialect;
-    
-    public BaseConfigTagsRelationMapper() {
-        databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
-    }
-    
-    public String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize) {
-        return databaseDialect.getLimitPageSqlWithOffset(sql, startOffset, pageSize);
-    }
-    
-    @Override
-    public String getTableName() {
-        return TableConstant.CONFIG_TAGS_RELATION;
-    }
-    
+
     @Override
     public MapperResult findConfigInfo4PageFetchRows(MapperContext context) {
         final String tenant = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
@@ -95,7 +80,8 @@ public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySq
         where.append(") ");
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();
-        String resultSql = getLimitPageSqlWithOffset(sql + where, startRow, pageSize);
+        String resultSql =  DatabaseDialectManager.getInstance().getDialect(getDataSource()).
+                getLimitPageSqlWithOffset(sql + where, startRow, pageSize);
         return new MapperResult(resultSql, paramList);
     }
     
@@ -141,7 +127,8 @@ public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySq
         where.append(") ");
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();
-        String sql = getLimitPageSqlWithOffset(sqlFetchRows + where, startRow, pageSize);
+        String sql =  DatabaseDialectManager.getInstance().getDialect(getDataSource()).
+                getLimitPageSqlWithOffset(sqlFetchRows + where, startRow, pageSize);
         return new MapperResult(sql, paramList);
     }
     
