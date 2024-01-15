@@ -18,9 +18,9 @@ package com.alibaba.nacos.plugin.datasource.impl.base;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
-import com.alibaba.nacos.plugin.datasource.impl.mysql.GroupCapacityMapperByMysql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.GroupCapacityMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -29,17 +29,11 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
  *
  * @author Long Yu
  **/
-public class BaseGroupCapacityMapper extends GroupCapacityMapperByMysql {
-    
-    private DatabaseDialect databaseDialect;
-    
-    public BaseGroupCapacityMapper() {
-        databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
-    }
-    
+public abstract class BaseGroupCapacityMapper extends AbstractMapper implements GroupCapacityMapper {
+
     @Override
     public MapperResult selectGroupInfoBySize(MapperContext context) {
-        String sql = databaseDialect.getLimitTopSqlWithMark("SELECT id, group_id FROM group_capacity WHERE id > ?");
+        String sql = DatabaseDialectManager.getInstance().getDialect(getDataSource()).getLimitTopSqlWithMark("SELECT id, group_id FROM group_capacity WHERE id > ?");
         return new MapperResult(sql,
                 CollectionUtils.list(context.getWhereParameter(FieldConstant.ID), context.getPageSize()));
     }

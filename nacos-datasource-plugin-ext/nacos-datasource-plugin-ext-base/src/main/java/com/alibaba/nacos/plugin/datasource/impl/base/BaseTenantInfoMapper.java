@@ -16,13 +16,14 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.base;
 
-import com.alibaba.nacos.plugin.datasource.impl.mysql.TenantInfoMapperByMySql;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
 
 /**
  * The base implementation of TenantInfo.
  *
  * @author Long Yu
  **/
-public class BaseTenantInfoMapper extends TenantInfoMapperByMySql {
+public abstract class BaseTenantInfoMapper extends AbstractMapper implements TenantInfoMapper {
 
 }

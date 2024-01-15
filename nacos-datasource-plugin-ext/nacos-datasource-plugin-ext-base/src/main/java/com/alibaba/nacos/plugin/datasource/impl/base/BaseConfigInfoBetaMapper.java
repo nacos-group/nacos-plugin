@@ -17,10 +17,9 @@
 package com.alibaba.nacos.plugin.datasource.impl.base;
 
 
-import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
-import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
-import com.alibaba.nacos.plugin.datasource.impl.mysql.ConfigInfoBetaMapperByMySql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoBetaMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -31,28 +30,16 @@ import java.util.Collections;
  *
  * @author Long Yu
  **/
-public class BaseConfigInfoBetaMapper extends ConfigInfoBetaMapperByMySql {
-    
-    private DatabaseDialect databaseDialect;
-    
-    public BaseConfigInfoBetaMapper() {
-        databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
-    }
-    
-    @Override
-    public String getTableName() {
-        return TableConstant.CONFIG_INFO_BETA;
-    }
-    
-    public String getLimitPageSqlWithOffset(String sql, int startRow, int pageSize) {
-        return databaseDialect.getLimitPageSqlWithOffset(sql, startRow, pageSize);
-    }
-    
+public abstract class BaseConfigInfoBetaMapper extends AbstractMapper implements ConfigInfoBetaMapper {
+
     @Override
     public MapperResult findAllConfigInfoBetaForDumpAllFetchRows(MapperContext context) {
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();
-        String sqlInner = getLimitPageSqlWithOffset("SELECT id FROM config_info_beta  ORDER BY id ", startRow,
+        String sqlInner = DatabaseDialectManager.getInstance().getDialect(getDataSource())
+                .getLimitPageSqlWithOffset(
+                "SELECT id FROM config_info_beta  ORDER BY id ",
+                startRow,
                 pageSize);
         String sql =
                 " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified,beta_ips,encrypted_data_key "

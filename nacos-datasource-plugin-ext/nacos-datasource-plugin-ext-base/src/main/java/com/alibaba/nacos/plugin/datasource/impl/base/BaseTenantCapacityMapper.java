@@ -18,9 +18,9 @@ package com.alibaba.nacos.plugin.datasource.impl.base;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
-import com.alibaba.nacos.plugin.datasource.impl.mysql.TenantCapacityMapperByMySql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.TenantCapacityMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -29,17 +29,11 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
  *
  * @author Long Yu
  **/
-public class BaseTenantCapacityMapper extends TenantCapacityMapperByMySql {
-    
-    private DatabaseDialect databaseDialect;
-    
-    public BaseTenantCapacityMapper() {
-        databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
-    }
-    
+public abstract class BaseTenantCapacityMapper extends AbstractMapper implements TenantCapacityMapper {
+
     @Override
     public MapperResult getCapacityList4CorrectUsage(MapperContext context) {
-        String sql = databaseDialect.getLimitTopSqlWithMark("SELECT id, tenant_id FROM tenant_capacity WHERE id>?");
+        String sql = DatabaseDialectManager.getInstance().getDialect(getDataSource()).getLimitTopSqlWithMark("SELECT id, tenant_id FROM tenant_capacity WHERE id>?");
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.ID),
                 context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
     }
