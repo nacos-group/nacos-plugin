@@ -49,8 +49,8 @@ public class PageHandlerAdapterFactory {
     }
     
     private PageHandlerAdapterFactory() {
-        handlerAdapters = new ArrayList<>(2);
-        handlerAdapterMap = new HashMap<>(2);
+        handlerAdapters = new ArrayList<>(5);
+        handlerAdapterMap = new HashMap<>(5);
         initHandlerAdapters();
     }
     
