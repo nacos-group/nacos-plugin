@@ -22,7 +22,7 @@ import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.datasource.constants.ContextConstant;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -37,17 +37,7 @@ import java.util.List;
  * @author QY Li
  **/
 
-public class ConfigInfoMapperBySqlServer extends BaseTenantInfoMapper {
-    
-    private static final String DATA_ID = "dataId";
-    
-    private static final String GROUP = "group";
-    
-    private static final String APP_NAME = "appName";
-    
-    private static final String CONTENT = "content";
-    
-    private static final String TENANT = "tenant";
+public class ConfigInfoMapperBySqlServer extends BaseConfigInfoMapper {
     
     @Override
     public MapperResult findConfigInfoByAppFetchRows(MapperContext context) {
@@ -95,7 +85,7 @@ public class ConfigInfoMapperBySqlServer extends BaseTenantInfoMapper {
     @Override
     public MapperResult findAllConfigInfoFragment(MapperContext context) {
         String contextParameter = context.getContextParameter(ContextConstant.NEED_CONTENT);
-        boolean needContent = contextParameter != null && Boolean.parseBoolean(contextParameter);
+        boolean needContent = Boolean.parseBoolean(contextParameter);
         String sql = "SELECT id,data_id,group_id,tenant_id,app_name," + (needContent ? "content," : "")
                 + "md5,gmt_modified,type,encrypted_data_key FROM config_info WHERE id > ? ORDER BY id ASC" + " OFFSET "
                 + context.getStartRow() + " ROWS FETCH NEXT " + context.getPageSize() + " ROWS ONLY";
