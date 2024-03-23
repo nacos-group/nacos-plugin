@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.constants;
+package com.alibaba.nacos.plugin.datasource.impl.mssql;
+
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantInfoMapper;
 
 /**
- * DatabaseType Constant.
+ * The SQL Server implementation of TenantInfoMapper.
  *
- * @author Long Yu
+ * @author QY Li
  **/
-public class DatabaseTypeConstant {
+public class TenantInfoMapperBySqlServer extends BaseTenantInfoMapper {
 
-    public static final String POSTGRESQL = "postgresql";
-
-
-    public static final String MYSQL = "mysql";
-
-    public static final String ORACLE = "oracle";
-  
-    public static final String DM = "dm";
-
-    public static final String SQLSERVER = "sqlserver";
+    @Override
+    public String getDataSource() {
+        return DatabaseTypeConstant.SQLSERVER;
+    }
 }
