@@ -24,7 +24,7 @@ import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
  * Always make sure that the primary key of the table is "id".
  * @author QY Li
  */
-public abstract class SqlServerDatabaseDialect extends AbstractDatabaseDialect {
+public class SqlServerDatabaseDialect extends AbstractDatabaseDialect {
     @Override
     public String getType() {
         return DatabaseTypeConstant.SQLSERVER;
