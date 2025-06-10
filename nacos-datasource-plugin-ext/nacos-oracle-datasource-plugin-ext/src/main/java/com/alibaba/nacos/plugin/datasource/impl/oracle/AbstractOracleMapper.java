@@ -21,6 +21,7 @@ import com.alibaba.nacos.common.utils.NamespaceUtil;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
+import com.alibaba.nacos.plugin.datasource.enums.TrustedOracleFunctionEnum;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
 import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
 
@@ -174,5 +175,10 @@ public abstract class AbstractOracleMapper extends AbstractMapper {
 
 	protected DatabaseDialect getDatabaseDialect() {
 		return databaseDialect;
+	}
+
+	@Override
+	public String getFunction(String functionName) {
+		return databaseDialect.getFunction(functionName);
 	}
 }

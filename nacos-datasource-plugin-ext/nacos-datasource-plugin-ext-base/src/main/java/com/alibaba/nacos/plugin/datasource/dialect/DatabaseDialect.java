@@ -16,6 +16,8 @@
 
 package com.alibaba.nacos.plugin.datasource.dialect;
 
+import com.alibaba.nacos.plugin.datasource.mapper.Mapper;
+
 /**
  * DatabaseDialect interface.
  * @author Long Yu
@@ -82,4 +84,12 @@ public interface DatabaseDialect {
      */
     public String[] getReturnPrimaryKeys();
 
+    /**
+     * Get the function corresponding to the dialect according to the function name
+     * @author Mr.Muzhi
+     * @since 2025/1/7 16:30
+     * @param functionName functionName
+     * @return function
+     */
+    String getFunction(String functionName);
 }

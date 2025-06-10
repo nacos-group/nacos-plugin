@@ -17,6 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.dialect;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.enums.mysql.TrustedMysqlFunctionEnum;
 
 /**
  * defauLT database dialect.
@@ -27,6 +28,11 @@ public class DefaultDatabaseDialect extends AbstractDatabaseDialect {
     @Override
     public String getType() {
         return DatabaseTypeConstant.MYSQL;
+    }
+
+    @Override
+    public String getFunction(String functionName) {
+        return TrustedMysqlFunctionEnum.getFunctionByName(functionName);
     }
 
 }

@@ -18,6 +18,7 @@ package com.alibaba.nacos.plugin.datasource.dialect;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.emums.TrustedDaMengFunctionEnum;
 
 /**
  * dameng database dialect.
@@ -34,6 +35,12 @@ public class DaMengDatabaseDialect extends AbstractDatabaseDialect {
     @Override
     public String getType() {
         return DatabaseTypeConstant.DM;
+    }
+
+
+    @Override
+    public String getFunction(String functionName) {
+        return TrustedDaMengFunctionEnum.getFunctionByName(functionName);
     }
 
 }

@@ -53,5 +53,10 @@ public class BaseConfigInfoTagMapper extends ConfigInfoTagMapperByMySql {
                 + innerSql + "  ) " + "g, config_info_tag t  WHERE g.id = t.id  ";
         return new MapperResult(sql, Collections.emptyList());
     }
+
+    @Override
+    public String getFunction(String functionName) {
+        return databaseDialect.getFunction(functionName);
+    }
     
 }

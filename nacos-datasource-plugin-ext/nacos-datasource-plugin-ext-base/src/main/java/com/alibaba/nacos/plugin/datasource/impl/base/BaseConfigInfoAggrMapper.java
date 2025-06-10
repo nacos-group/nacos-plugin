@@ -59,5 +59,9 @@ public class BaseConfigInfoAggrMapper extends ConfigInfoAggrMapperByMySql {
         List<Object> paramList = CollectionUtils.list(dataId, groupId, tenantId);
         return new MapperResult(sql, paramList);
     }
-    
+
+    @Override
+    public String getFunction(String functionName) {
+        return databaseDialect.getFunction(functionName);
+    }
 }

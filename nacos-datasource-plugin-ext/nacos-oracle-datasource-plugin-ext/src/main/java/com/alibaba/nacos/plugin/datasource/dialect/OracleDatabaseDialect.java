@@ -18,6 +18,7 @@ package com.alibaba.nacos.plugin.datasource.dialect;
 
 import com.alibaba.nacos.common.utils.NamespaceUtil;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.enums.TrustedOracleFunctionEnum;
 
 /***
  * oracle datasource dialect.
@@ -50,9 +51,15 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
 	public String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize) {
 		return sql + "  OFFSET " + startOffset + " ROWS FETCH NEXT " + pageSize + " ROWS ONLY ";
 	}
-	
+
 	@Override
 	public String getLimitPageSql(String sql, int pageNo, int pageSize) {
 		return sql + "  OFFSET " + getPagePrevNum(pageNo, pageSize) + " ROWS FETCH NEXT " + pageSize + " ROWS ONLY ";
+	}
+
+
+	@Override
+	public String getFunction(String functionName) {
+		return TrustedOracleFunctionEnum.getFunctionByName(functionName);
 	}
 }

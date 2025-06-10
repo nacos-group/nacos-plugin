@@ -285,5 +285,9 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
     public String getTableName() {
         return TableConstant.CONFIG_INFO;
     }
-    
+
+    @Override
+    public String getFunction(String functionName) {
+        return databaseDialect.getFunction(functionName);
+    }
 }

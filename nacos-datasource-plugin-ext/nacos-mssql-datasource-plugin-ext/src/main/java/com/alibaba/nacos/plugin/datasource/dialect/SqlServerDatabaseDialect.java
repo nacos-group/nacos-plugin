@@ -17,6 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.dialect;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.enums.TrustedSqlServerFunctionEnum;
 
 /**
  * Microsoft SQL Server database dialect.
@@ -50,5 +51,10 @@ public class SqlServerDatabaseDialect extends AbstractDatabaseDialect {
     public String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize){
         return sql + " ORDER BY id OFFSET " + startOffset + " ROWS FETCH NEXT "
                 + pageSize + " ROWS ONLY ";
+    }
+
+    @Override
+    public String getFunction(String functionName) {
+        return TrustedSqlServerFunctionEnum.getFunctionByName(functionName);
     }
 }

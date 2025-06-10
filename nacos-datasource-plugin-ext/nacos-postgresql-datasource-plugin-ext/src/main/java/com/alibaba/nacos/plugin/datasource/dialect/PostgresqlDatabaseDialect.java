@@ -17,6 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.dialect;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.enums.TrustedPostgresqFunctionEnum;
 
 /**
  * PostgreSQL database dialect.
@@ -47,6 +48,11 @@ public class PostgresqlDatabaseDialect extends AbstractDatabaseDialect {
     @Override
     public String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize){
         return sql + "  OFFSET " + startOffset + " LIMIT " + pageSize;
+    }
+
+    @Override
+    public String getFunction(String functionName) {
+        return TrustedPostgresqFunctionEnum.getFunctionByName(functionName);
     }
 
 }
