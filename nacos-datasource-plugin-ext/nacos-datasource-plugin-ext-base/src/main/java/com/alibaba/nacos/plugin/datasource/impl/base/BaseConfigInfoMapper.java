@@ -87,7 +87,8 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
         int pageSize = context.getPageSize();
         String innerSql = getLimitPageSqlWithOffset(" SELECT id FROM config_info WHERE tenant_id LIKE ? ORDER BY id ",
                 startRow, pageSize);
-        String sql = " SELECT data_id,group_id,app_name  FROM ( " + innerSql + " g, config_info t WHERE g.id = t.id  ";
+        // fix-bug 缺失括号
+        String sql = " SELECT data_id,group_id,app_name  FROM ( " + innerSql + " ) g, config_info t WHERE g.id = t.id  ";
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.TENANT_ID)));
     }
     
