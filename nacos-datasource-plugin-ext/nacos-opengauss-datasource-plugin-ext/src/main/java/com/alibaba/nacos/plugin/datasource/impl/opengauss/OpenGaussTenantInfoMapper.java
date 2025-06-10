@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.constants;
+package com.alibaba.nacos.plugin.datasource.impl.opengauss;
+
+import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
 
 /**
- * DatabaseType Constant.
+ * The base implementation of TenantInfo.
  *
  * @author Long Yu
  **/
-public class DatabaseTypeConstant {
+public class OpenGaussTenantInfoMapper extends AbstractMapperByGaussdb implements TenantInfoMapper {
 
-    public static final String POSTGRESQL = "postgresql";
-
-    public static final String GUASSDB = "gaussdb";
-
-    public static final String MYSQL = "mysql";
-
-    public static final String ORACLE = "oracle";
-  
-    public static final String DM = "dm";
-
-    public static final String SQLSERVER = "sqlserver";
 }

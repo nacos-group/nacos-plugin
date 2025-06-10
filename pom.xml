@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <alibaba-nacos.version>2.3.0-SNAPSHOT</alibaba-nacos.version>
+        <alibaba-nacos.version>2.4.3</alibaba-nacos.version>
         <maven-flatten-version>1.1.0</maven-flatten-version>
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
         <junit.version>4.12</junit.version>
