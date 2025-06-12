@@ -14,10 +14,11 @@
 # limitations under the License.
 #
 
-com.alibaba.nacos.plugin.datasource.impl.dm.ConfigInfoAggrMapperByDaMeng
+com.alibaba.nacos.plugin.datasource.impl.dm.ConfigInfoGrayMapperByDaMeng
 com.alibaba.nacos.plugin.datasource.impl.dm.ConfigInfoBetaMapperByDaMeng
 com.alibaba.nacos.plugin.datasource.impl.dm.ConfigInfoMapperByDaMeng
 com.alibaba.nacos.plugin.datasource.impl.dm.ConfigInfoTagMapperByDaMeng
+com.alibaba.nacos.plugin.datasource.impl.dm.ConfigMigrateMapperByDaMeng
 com.alibaba.nacos.plugin.datasource.impl.dm.ConfigTagsRelationMapperByDaMeng
 com.alibaba.nacos.plugin.datasource.impl.dm.HistoryConfigInfoMapperByDaMeng
 com.alibaba.nacos.plugin.datasource.impl.dm.TenantInfoMapperByDaMeng

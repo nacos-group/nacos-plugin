@@ -16,25 +16,18 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.dm;
 
-import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
+import com.alibaba.nacos.plugin.datasource.enums.dm.TrustedDamengFunctionEnum;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
 
 /**
- * The dameng implementation of ConfigInfoAggrMapper.
+ * The abstract dameng mapper contains CRUD methods.
  *
- * @author Xiao Yong
+ * @author yak.wang
  **/
-
-public class ConfigInfoAggrMapperByDaMeng extends BaseConfigInfoAggrMapper {
-
-    @Override
-    public String getDataSource() {
-        return DatabaseTypeConstant.DM;
-    }
+public abstract class AbstractMapperByDaMeng extends AbstractMapper {
 
     @Override
-    public String[] getPrimaryKeyGeneratedKeys() {
-        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    public String getFunction(String functionName) {
+        return TrustedDamengFunctionEnum.getFunctionByName(functionName);
     }
 }

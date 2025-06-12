@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 1999-2024 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,15 @@
 package com.alibaba.nacos.plugin.datasource.impl.dm;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigMigrateMapper;
 
 /**
- * The dameng implementation of TenantInfoMapper.
+ * The type Config migrate mapper by dameng.
  *
  * @author Yak Wang
- **/
-public class TenantInfoMapperByDaMeng extends AbstractMapperByDaMeng implements TenantInfoMapper {
-
+ */
+public class ConfigMigrateMapperByDaMeng extends AbstractMapperByDaMeng implements ConfigMigrateMapper {
+    
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.DM;
