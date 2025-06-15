@@ -17,17 +17,23 @@
 package com.alibaba.nacos.plugin.datasource.impl.dm;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantInfoMapper;
 
 /**
  * The dameng implementation of TenantInfoMapper.
  *
  * @author Yak Wang
  **/
-public class TenantInfoMapperByDaMeng extends AbstractMapperByDaMeng implements TenantInfoMapper {
+public class TenantInfoMapperByDaMeng extends BaseTenantInfoMapper {
 
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.DM;
+    }
+
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
     }
 }

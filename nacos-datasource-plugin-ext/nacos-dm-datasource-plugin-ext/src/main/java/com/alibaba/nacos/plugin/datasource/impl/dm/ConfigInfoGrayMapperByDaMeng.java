@@ -17,11 +17,8 @@
 package com.alibaba.nacos.plugin.datasource.impl.dm;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoGrayMapper;
-import com.alibaba.nacos.plugin.datasource.model.MapperContext;
-import com.alibaba.nacos.plugin.datasource.model.MapperResult;
-
-import java.util.Collections;
+import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
 
 /**
  * The dameng implementation of ConfigInfoAggrMapper.
@@ -29,19 +26,14 @@ import java.util.Collections;
  * @author Yak Wang
  **/
 
-public class ConfigInfoGrayMapperByDaMeng extends AbstractMapperByDaMeng implements ConfigInfoGrayMapper {
-
-    @Override
-    public MapperResult findAllConfigInfoGrayForDumpAllFetchRows(MapperContext context) {
-        String sql = " SELECT id,data_id,group_id,tenant_id,gray_name,gray_rule,app_name,content,md5,gmt_modified "
-                + " FROM  config_info_gray  ORDER BY id LIMIT " + context.getStartRow() + "," + context.getPageSize();
-        return new MapperResult(sql, Collections.emptyList());
-    }
-	
+public class ConfigInfoGrayMapperByDaMeng extends BaseConfigInfoGrayMapper {
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.DM;
     }
 
-
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
 }

@@ -17,6 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.impl.base;
 
 
+import com.alibaba.nacos.common.utils.ArrayUtils;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
@@ -36,7 +37,7 @@ import java.util.List;
  **/
 public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySql {
     
-    private DatabaseDialect databaseDialect;
+    private final DatabaseDialect databaseDialect;
     
     public BaseConfigTagsRelationMapper() {
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
@@ -59,6 +60,7 @@ public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySq
         final String appName = (String) context.getWhereParameter(FieldConstant.APP_NAME);
         final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
         final String[] tagArr = (String[]) context.getWhereParameter(FieldConstant.TAG_ARR);
+        
         List<Object> paramList = new ArrayList<>();
         StringBuilder where = new StringBuilder(" WHERE ");
         final String sql =
@@ -67,6 +69,7 @@ public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySq
         
         where.append(" a.tenant_id=? ");
         paramList.add(tenant);
+        
         if (StringUtils.isNotBlank(dataId)) {
             where.append(" AND a.data_id=? ");
             paramList.add(dataId);
@@ -83,7 +86,6 @@ public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySq
             where.append(" AND a.content LIKE ? ");
             paramList.add(content);
         }
-        
         where.append(" AND b.tag_name IN (");
         for (int i = 0; i < tagArr.length; i++) {
             if (i != 0) {
@@ -107,6 +109,7 @@ public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySq
         final String appName = (String) context.getWhereParameter(FieldConstant.APP_NAME);
         final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
         final String[] tagArr = (String[]) context.getWhereParameter(FieldConstant.TAG_ARR);
+        final String[] types = (String[]) context.getWhereParameter(FieldConstant.TYPE);
         List<Object> paramList = new ArrayList<>();
         StringBuilder where = new StringBuilder(" WHERE ");
         final String sqlFetchRows = "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content "
@@ -138,6 +141,10 @@ public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySq
             where.append('?');
             paramList.add(tagArr[i]);
         }
+		if (!ArrayUtils.isEmpty(types)) {
+			where.append(" AND a.type in (?)");
+			paramList.add(types);
+		}
         where.append(") ");
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();

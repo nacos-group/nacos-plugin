@@ -32,7 +32,7 @@ import java.util.Collections;
  **/
 public class BaseConfigInfoTagMapper extends ConfigInfoTagMapperByMySql {
     
-    private DatabaseDialect databaseDialect;
+    private final DatabaseDialect databaseDialect;
     
     public BaseConfigInfoTagMapper() {
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());

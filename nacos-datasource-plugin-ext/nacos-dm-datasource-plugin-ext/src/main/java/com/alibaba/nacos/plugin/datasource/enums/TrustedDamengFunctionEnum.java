@@ -14,38 +14,35 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.emums;
+package com.alibaba.nacos.plugin.datasource.enums;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The TrustedSqlFunctionEnum enum class is used to enumerate and manage a list of trusted built-in SQL functions.
+ * The TrustedDamengFunctionEnum enum class is used to enumerate and manage a list of trusted built-in SQL functions for Dameng database.
  * By using this enum, you can verify whether a given SQL function is part of the trusted functions list
  * to avoid potential SQL injection risks.
- *
- * @author blake.qiu
  */
-public enum TrustedDaMengFunctionEnum {
+public enum TrustedDamengFunctionEnum {
 
     /**
      * NOW().
      */
-    NOW("NOW()", "SYSDATE");
+    NOW("NOW()", "SYSDATE()");
 
-    private static final Map<String, TrustedDaMengFunctionEnum> LOOKUP_MAP = new HashMap<>();
+    private static final Map<String, TrustedDamengFunctionEnum> LOOKUP_MAP = new HashMap<>();
 
     static {
-        for (TrustedDaMengFunctionEnum entry : TrustedDaMengFunctionEnum.values()) {
+        for (TrustedDamengFunctionEnum entry : TrustedDamengFunctionEnum.values()) {
             LOOKUP_MAP.put(entry.functionName, entry);
         }
     }
 
     private final String functionName;
-
     private final String function;
 
-    TrustedDaMengFunctionEnum(String functionName, String function) {
+    TrustedDamengFunctionEnum(String functionName, String function) {
         this.functionName = functionName;
         this.function = function;
     }
@@ -57,7 +54,7 @@ public enum TrustedDaMengFunctionEnum {
      * @return function
      */
     public static String getFunctionByName(String functionName) {
-        TrustedDaMengFunctionEnum entry = LOOKUP_MAP.get(functionName);
+        TrustedDamengFunctionEnum entry = LOOKUP_MAP.get(functionName);
         if (entry != null) {
             return entry.function;
         }

@@ -16,6 +16,7 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.base;
 
+import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
 import com.alibaba.nacos.plugin.datasource.impl.mysql.TenantInfoMapperByMySql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
@@ -27,12 +28,17 @@ import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
  **/
 public class BaseTenantInfoMapper extends TenantInfoMapperByMySql {
 
-    private DatabaseDialect databaseDialect;
+    private final DatabaseDialect databaseDialect;
 
     public BaseTenantInfoMapper() {
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
     }
-
-
-
+    @Override
+    public String getTableName() {
+        return TableConstant.TENANT_INFO;
+    }
+    @Override
+    public String getFunction(String functionName) {
+        return databaseDialect.getFunction(functionName);
+    }
 }

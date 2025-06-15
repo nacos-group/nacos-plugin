@@ -17,17 +17,23 @@
 package com.alibaba.nacos.plugin.datasource.impl.dm;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.mapper.ConfigMigrateMapper;
+import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigMigrateMapper;
 
 /**
  * The type Config migrate mapper by dameng.
  *
  * @author Yak Wang
  */
-public class ConfigMigrateMapperByDaMeng extends AbstractMapperByDaMeng implements ConfigMigrateMapper {
-    
+public class ConfigMigrateMapperByDaMeng extends BaseConfigMigrateMapper {
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.DM;
     }
+
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
+
 }

@@ -33,7 +33,7 @@ import java.util.Collections;
  **/
 public class BaseConfigInfoBetaMapper extends ConfigInfoBetaMapperByMySql {
     
-    private DatabaseDialect databaseDialect;
+    private final DatabaseDialect databaseDialect;
     
     public BaseConfigInfoBetaMapper() {
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());

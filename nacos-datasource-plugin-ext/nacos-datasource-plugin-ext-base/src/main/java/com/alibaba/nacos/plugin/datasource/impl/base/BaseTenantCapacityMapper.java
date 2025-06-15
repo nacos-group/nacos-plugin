@@ -18,6 +18,7 @@ package com.alibaba.nacos.plugin.datasource.impl.base;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
+import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
 import com.alibaba.nacos.plugin.datasource.impl.mysql.TenantCapacityMapperByMySql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
@@ -31,12 +32,15 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
  **/
 public class BaseTenantCapacityMapper extends TenantCapacityMapperByMySql {
     
-    private DatabaseDialect databaseDialect;
+    private final DatabaseDialect databaseDialect;
     
     public BaseTenantCapacityMapper() {
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
     }
-    
+    @Override
+    public String getTableName() {
+        return TableConstant.TENANT_CAPACITY;
+    }
     @Override
     public MapperResult getCapacityList4CorrectUsage(MapperContext context) {
         String sql = databaseDialect.getLimitTopSqlWithMark("SELECT id, tenant_id FROM tenant_capacity WHERE id>?");

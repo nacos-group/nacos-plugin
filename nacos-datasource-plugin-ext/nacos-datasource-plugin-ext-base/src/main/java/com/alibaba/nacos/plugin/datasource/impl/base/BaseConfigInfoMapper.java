@@ -16,8 +16,11 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.base;
 
+import com.alibaba.nacos.common.utils.ArrayUtils;
 import com.alibaba.nacos.common.utils.CollectionUtils;
+import com.alibaba.nacos.common.utils.NamespaceUtil;
 import com.alibaba.nacos.common.utils.StringUtils;
+import com.alibaba.nacos.plugin.datasource.constants.ContextConstant;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
@@ -31,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
+
 /**
  * The base implementation of ConfigInfoMapper.
  *
@@ -38,7 +43,7 @@ import java.util.List;
  **/
 public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
     
-    private DatabaseDialect databaseDialect;
+    private final DatabaseDialect databaseDialect;
     
     public BaseConfigInfoMapper() {
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
@@ -68,7 +73,8 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();
         String sql = getLimitPageSqlWithOffset(
-                "SELECT tenant_id FROM config_info WHERE tenant_id != '' GROUP BY tenant_id ", startRow, pageSize);
+                "SELECT tenant_id FROM config_info WHERE tenant_id != '" + NamespaceUtil.getNamespaceDefaultId()
+                + "' GROUP BY tenant_id ", startRow, pageSize);
         return new MapperResult(sql, Collections.emptyList());
     }
     
@@ -77,7 +83,8 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();
         String sql = getLimitPageSqlWithOffset(
-                "SELECT group_id FROM config_info WHERE tenant_id ='' GROUP BY group_id ", +startRow, pageSize);
+                "SELECT group_id FROM config_info WHERE tenant_id ='" + NamespaceUtil.getNamespaceDefaultId()
+				+ "' GROUP BY group_id ", +startRow, pageSize);
         return new MapperResult(sql, Collections.emptyList());
     }
     
@@ -96,19 +103,22 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
     public MapperResult findAllConfigInfoBaseFetchRows(MapperContext context) {
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();
-        String innerSql = getLimitPageSqlWithMark(" SELECT id FROM config_info ORDER BY id ");
+        String innerSql = getLimitPageSqlWithOffset(" SELECT id FROM config_info ORDER BY id ", startRow, pageSize);
         String sql = " SELECT t.id,data_id,group_id,content,md5" + " FROM ( " + innerSql + "  ) "
                 + " g, config_info t  WHERE g.id = t.id ";
-        return new MapperResult(sql, CollectionUtils.list(startRow, pageSize));
+        return new MapperResult(sql, Collections.emptyList());
     }
     
     @Override
     public MapperResult findAllConfigInfoFragment(MapperContext context) {
+        String contextParameter = context.getContextParameter(ContextConstant.NEED_CONTENT);
+        boolean needContent = contextParameter != null && Boolean.parseBoolean(contextParameter);
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();
         String sql = getLimitPageSqlWithOffset(
-                "SELECT id,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified,type,encrypted_data_key "
-                        + "FROM config_info WHERE id > ? ORDER BY id ASC ", startRow, pageSize);
+                "SELECT id,data_id,group_id,tenant_id,app_name," + (needContent ? "content," : "")
+				 + "md5,gmt_modified,type,encrypted_data_key FROM config_info WHERE id > ? ORDER BY id ASC ",
+				  startRow, pageSize);
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.ID)));
     }
     
@@ -125,7 +135,7 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
         final int pageSize = context.getPageSize();
         List<Object> paramList = new ArrayList<>();
         
-        final String sqlFetchRows = "SELECT id,data_id,group_id,tenant_id,app_name,content,type,md5,gmt_modified FROM config_info WHERE ";
+        final String sqlFetchRows = "SELECT id,data_id,group_id,tenant_id,app_name,type,md5,gmt_modified FROM config_info WHERE ";
         String where = " 1=1 ";
         if (!StringUtils.isBlank(dataId)) {
             where += " AND data_id LIKE ? ";
@@ -172,9 +182,12 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
         final String dataId = (String) context.getWhereParameter(FieldConstant.DATA_ID);
         final String group = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
         final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
+        
         final String sqlFetchRows = "SELECT id,data_id,group_id,tenant_id,content FROM config_info WHERE ";
-        String where = " 1=1 AND tenant_id='' ";
+        String where = " 1=1 AND tenant_id='" + NamespaceUtil.getNamespaceDefaultId() + "' ";
+        
         List<Object> paramList = new ArrayList<>();
+        
         if (!StringUtils.isBlank(dataId)) {
             where += " AND data_id LIKE ? ";
             paramList.add(dataId);
@@ -200,8 +213,10 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
         final String group = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
         final String appName = (String) context.getWhereParameter(FieldConstant.APP_NAME);
         final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
+        
         List<Object> paramList = new ArrayList<>();
-        final String sql = "SELECT id,data_id,group_id,tenant_id,app_name,content,type,encrypted_data_key FROM config_info";
+        
+        final String sql = "SELECT id,data_id,group_id,tenant_id,app_name,content,md5,type,encrypted_data_key FROM config_info";
         StringBuilder where = new StringBuilder(" WHERE ");
         where.append(" tenant_id=? ");
         paramList.add(tenant);
@@ -244,7 +259,9 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
         final String group = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
         final String appName = (String) context.getWhereParameter(FieldConstant.APP_NAME);
         final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
-        final String sqlFetchRows = "SELECT id,data_id,group_id,tenant_id,app_name,content,encrypted_data_key FROM config_info";
+        final String[] types = (String[]) context.getWhereParameter(FieldConstant.TYPE);
+
+        final String sqlFetchRows = "SELECT id,data_id,group_id,tenant_id,app_name,content,md5,encrypted_data_key,type FROM config_info";
         StringBuilder where = new StringBuilder(" WHERE ");
         where.append(" tenant_id LIKE ? ");
         List<Object> paramList = new ArrayList<>();
@@ -265,6 +282,10 @@ public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
             where.append(" AND content LIKE ? ");
             paramList.add(content);
         }
+		if (!ArrayUtils.isEmpty(types)) {
+			where.append(" AND type in (?)");
+			paramList.add(types);
+		}
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();
         String sql = getLimitPageSqlWithOffset(sqlFetchRows + where, startRow, pageSize);
