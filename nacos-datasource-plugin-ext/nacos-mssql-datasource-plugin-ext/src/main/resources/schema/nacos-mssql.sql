@@ -16,38 +16,51 @@
 
 -- Table: config_info
 CREATE TABLE config_info (
-    id bigint NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    data_id varchar(255) NOT NULL,
-    group_id varchar(128) NULL,
-    content nvarchar(max) NOT NULL,
-    md5 varchar(32) NULL,
-    gmt_create datetime NOT NULL DEFAULT GETDATE(),
-    gmt_modified datetime NOT NULL DEFAULT GETDATE(),
-    src_user nvarchar(max),
-    src_ip varchar(50) NULL,
-    app_name varchar(128) NULL,
-    tenant_id varchar(128) DEFAULT '',
-    c_desc varchar(256) NULL,
-    c_use varchar(64) NULL,
-    effect varchar(64) NULL,
-    type varchar(64) NULL,
-    c_schema nvarchar(max),
-    encrypted_data_key nvarchar(max) NOT NULL,
-    UNIQUE (data_id, group_id, tenant_id)
+                             id BIGINT IDENTITY(1,1) NOT NULL,
+                             data_id NVARCHAR(255) NOT NULL,
+                             group_id NVARCHAR(128) NULL,
+                             content NVARCHAR(MAX) NOT NULL,
+                             md5 NVARCHAR(32) NULL,
+                             gmt_create DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                             gmt_modified DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                             src_user NVARCHAR(MAX) NULL,
+                             src_ip NVARCHAR(50) NULL,
+                             app_name NVARCHAR(128) NULL,
+                             tenant_id NVARCHAR(128) DEFAULT N'',
+                             c_desc NVARCHAR(256) NULL,
+                             c_use NVARCHAR(64) NULL,
+                             effect NVARCHAR(64) NULL,
+                             type NVARCHAR(64) NULL,
+                             c_schema NVARCHAR(MAX) NULL,
+                             encrypted_data_key NVARCHAR(1024) NOT NULL DEFAULT N''
 );
 
--- Table: config_info_aggr
-CREATE TABLE config_info_aggr (
-     id bigint NOT NULL IDENTITY(1,1) PRIMARY KEY,
-     data_id varchar(255) NOT NULL,
-     group_id varchar(128) NOT NULL,
-     datum_id varchar(255) NOT NULL,
-     content nvarchar(max) NOT NULL,
-     gmt_modified datetime NOT NULL,
-     app_name varchar(128) NULL,
-     tenant_id varchar(128) DEFAULT '',
-     UNIQUE (data_id, group_id, tenant_id, datum_id)
+ALTER TABLE config_info ADD CONSTRAINT PK_config_info PRIMARY KEY (id);
+CREATE UNIQUE INDEX uk_configinfo_datagrouptenant ON config_info (data_id, group_id, tenant_id);
+
+-- Table: config_info_gray
+CREATE TABLE config_info_gray (
+                                  id BIGINT IDENTITY(1,1) NOT NULL,
+                                  data_id NVARCHAR(255) NOT NULL,
+                                  group_id NVARCHAR(128) NOT NULL,
+                                  content NVARCHAR(MAX) NOT NULL,
+                                  md5 NVARCHAR(32) NULL,
+                                  src_user NVARCHAR(MAX) NULL,
+                                  src_ip NVARCHAR(100) NULL,
+                                  gmt_create DATETIME2(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                  gmt_modified DATETIME2(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                  app_name NVARCHAR(128) NULL,
+                                  tenant_id NVARCHAR(128) DEFAULT N'',
+                                  gray_name NVARCHAR(128) NOT NULL,
+                                  gray_rule NVARCHAR(MAX) NOT NULL,
+                                  encrypted_data_key NVARCHAR(256) NOT NULL DEFAULT N''
 );
+
+ALTER TABLE config_info_gray ADD CONSTRAINT PK_config_info_gray PRIMARY KEY (id);
+CREATE UNIQUE INDEX uk_configinfogray_datagrouptenantgray ON config_info_gray (data_id, group_id, tenant_id, gray_name);
+CREATE INDEX idx_dataid_gmt_modified_gray ON config_info_gray (data_id, gmt_modified);
+CREATE INDEX idx_gmt_modified_gray ON config_info_gray (gmt_modified);
+
 
 -- Table: config_info_beta
 CREATE TABLE config_info_beta (
@@ -86,100 +99,116 @@ CREATE TABLE config_info_tag (
 
 -- Table: config_tags_relation
 CREATE TABLE config_tags_relation (
-    id bigint IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    tag_name varchar(128) NOT NULL,
-    tag_type varchar(64) NULL,
-    data_id varchar(255) NOT NULL,
-    group_id varchar(128) NOT NULL,
-    tenant_id varchar(128) DEFAULT '',
-    nid bigint NOT NULL,
-    UNIQUE (id, tag_name, tag_type),
-    INDEX idx_tenant_id (tenant_id)
+                                      id BIGINT NOT NULL,
+                                      tag_name NVARCHAR(128) NOT NULL,
+                                      tag_type NVARCHAR(64) NULL,
+                                      data_id NVARCHAR(255) NOT NULL,
+                                      group_id NVARCHAR(128) NOT NULL,
+                                      tenant_id NVARCHAR(128) DEFAULT N'',
+                                      nid BIGINT IDENTITY(1,1) NOT NULL
 );
+
+ALTER TABLE config_tags_relation ADD CONSTRAINT PK_config_tags_relation PRIMARY KEY (nid);
+CREATE UNIQUE INDEX uk_configtagrelation_configidtag ON config_tags_relation (id, tag_name, tag_type);
+CREATE INDEX idx_tenant_id_relation ON config_tags_relation (tenant_id);
 
 -- Table: group_capacity
 CREATE TABLE group_capacity (
-    id bigint NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    group_id varchar(128) NOT NULL DEFAULT '',
-    quota int NOT NULL DEFAULT 0 CHECK (quota >= 0),
-    usage int NOT NULL DEFAULT 0 CHECK (usage >= 0),
-    max_size int NOT NULL DEFAULT 0 CHECK (max_size >= 0),
-    max_aggr_count int NOT NULL DEFAULT 0 CHECK (max_aggr_count >= 0),
-    max_aggr_size int NOT NULL DEFAULT 0 CHECK (max_aggr_size >= 0),
-    max_history_count int NOT NULL DEFAULT 0 CHECK (max_history_count >= 0),
-    gmt_create datetime NOT NULL DEFAULT GETDATE(),
-    gmt_modified datetime NOT NULL DEFAULT GETDATE(),
-    UNIQUE (group_id)
+                                id BIGINT IDENTITY(1,1) NOT NULL,
+                                group_id NVARCHAR(128) NOT NULL DEFAULT N'',
+                                quota INT NOT NULL DEFAULT 0,
+                                usage INT NOT NULL DEFAULT 0,
+                                max_size INT NOT NULL DEFAULT 0,
+                                max_aggr_count INT NOT NULL DEFAULT 0,
+                                max_aggr_size INT NOT NULL DEFAULT 0,
+                                max_history_count INT NOT NULL DEFAULT 0,
+                                gmt_create DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                gmt_modified DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE group_capacity ADD CONSTRAINT PK_group_capacity PRIMARY KEY (id);
+CREATE UNIQUE INDEX uk_group_id_capacity ON group_capacity (group_id);
+
 
 -- Table: his_config_info
 CREATE TABLE his_config_info (
-    id bigint NOT NULL ,
-    nid bigint NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    data_id varchar(255) NOT NULL,
-    group_id varchar(128) NOT NULL,
-    app_name varchar(128) NULL,
-    content nvarchar(max) NOT NULL,
-    md5 varchar(32) NULL,
-    gmt_create datetime NOT NULL DEFAULT GETDATE(),
-    gmt_modified datetime NOT NULL DEFAULT GETDATE(),
-    src_user nvarchar(max),
-    src_ip varchar(50) NULL,
-    op_type char(10) NULL,
-    tenant_id varchar(128) DEFAULT '',
-    encrypted_data_key nvarchar(max) NOT NULL,
-    INDEX idx_gmt_create (gmt_create),
-    INDEX idx_gmt_modified (gmt_modified),
-    INDEX idx_did (data_id)
+                                 id BIGINT NOT NULL,
+                                 nid BIGINT IDENTITY(1,1) NOT NULL,
+                                 data_id NVARCHAR(255) NOT NULL,
+                                 group_id NVARCHAR(128) NOT NULL,
+                                 app_name NVARCHAR(128) NULL,
+                                 content NVARCHAR(MAX) NOT NULL,
+                                 md5 NVARCHAR(32) NULL,
+                                 gmt_create DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                 gmt_modified DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                 src_user NVARCHAR(MAX) NULL,
+                                 src_ip NVARCHAR(50) NULL,
+                                 op_type NCHAR(10) NULL,
+                                 tenant_id NVARCHAR(128) DEFAULT N'',
+                                 encrypted_data_key NVARCHAR(1024) NOT NULL DEFAULT N'',
+                                 publish_type NVARCHAR(50) DEFAULT N'formal',
+                                 gray_name NVARCHAR(128) NULL,
+                                 ext_info NVARCHAR(MAX) NULL
 );
+
+ALTER TABLE his_config_info ADD CONSTRAINT PK_his_config_info PRIMARY KEY (nid);
+CREATE INDEX idx_gmt_create_info ON his_config_info (gmt_create);
+CREATE INDEX idx_gmt_modified_info ON his_config_info (gmt_modified);
+CREATE INDEX idx_did_info ON his_config_info (data_id);
 
 -- Table: tenant_capacity
 CREATE TABLE tenant_capacity (
-    id bigint NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    tenant_id varchar(128) NOT NULL DEFAULT '',
-    quota int NOT NULL DEFAULT 0 CHECK (quota >= 0),
-    usage int NOT NULL DEFAULT 0 CHECK (usage >= 0),
-    max_size int NOT NULL DEFAULT 0 CHECK (max_size >= 0),
-    max_aggr_count int NOT NULL DEFAULT 0 CHECK (max_aggr_count >= 0),
-    max_aggr_size int NOT NULL DEFAULT 0 CHECK (max_aggr_size >= 0),
-    max_history_count int NOT NULL DEFAULT 0 CHECK (max_history_count >= 0),
-    gmt_create datetime NOT NULL DEFAULT GETDATE(),
-    gmt_modified datetime NOT NULL DEFAULT GETDATE(),
-    UNIQUE (tenant_id)
+                                 id BIGINT IDENTITY(1,1) NOT NULL,
+                                 tenant_id NVARCHAR(128) NOT NULL DEFAULT N'',
+                                 quota INT NOT NULL DEFAULT 0,
+                                 usage INT NOT NULL DEFAULT 0,
+                                 max_size INT NOT NULL DEFAULT 0,
+                                 max_aggr_count INT NOT NULL DEFAULT 0,
+                                 max_aggr_size INT NOT NULL DEFAULT 0,
+                                 max_history_count INT NOT NULL DEFAULT 0,
+                                 gmt_create DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                 gmt_modified DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE tenant_capacity ADD CONSTRAINT PK_tenant_capacity PRIMARY KEY (id);
+CREATE UNIQUE INDEX uk_tenant_id_capacity ON tenant_capacity (tenant_id);
+
 
 -- Table: tenant_info
 CREATE TABLE tenant_info (
-    id bigint NOT NULL idENTITY(1,1) PRIMARY KEY,
-    kp varchar(128) NOT NULL,
-    tenant_id varchar(128) DEFAULT '',
-    tenant_name varchar(128) DEFAULT '',
-    tenant_desc varchar(256) NULL,
-    create_source varchar(32) NULL,
-    gmt_create bigint NOT NULL,
-    gmt_modified bigint NOT NULL,
-    UNIQUE (kp,tenant_id),
-    INDEX idx_tenant_id (tenant_id)
+                             id BIGINT IDENTITY(1,1) NOT NULL,
+                             kp NVARCHAR(128) NOT NULL,
+                             tenant_id NVARCHAR(128) DEFAULT N'',
+                             tenant_name NVARCHAR(128) DEFAULT N'',
+                             tenant_desc NVARCHAR(256) NULL,
+                             create_source NVARCHAR(32) NULL,
+                             gmt_create BIGINT NOT NULL,
+                             gmt_modified BIGINT NOT NULL
 );
 
+ALTER TABLE tenant_info ADD CONSTRAINT PK_tenant_info PRIMARY KEY (id);
+CREATE UNIQUE INDEX uk_tenant_info_kptenantid ON tenant_info (kp, tenant_id);
+CREATE INDEX idx_tenant_id_info ON tenant_info (tenant_id);
+
 CREATE TABLE users (
-    username varchar(50) NOT NULL PRIMARY KEY,
-    password varchar(500) NOT NULL,
-    enabled bit NOT NULL
+                       username NVARCHAR(50) NOT NULL PRIMARY KEY,
+                       password NVARCHAR(500) NOT NULL,
+                       enabled BIT NOT NULL
 );
 
 CREATE TABLE roles (
-    username varchar(50) NOT NULL,
-    role varchar(50) NOT NULL,
-    CONSTRAINT idx_user_role PRIMARY KEY (username, role)
+                       username NVARCHAR(50) NOT NULL,
+                       role NVARCHAR(50) NOT NULL
 );
+CREATE UNIQUE INDEX idx_user_role_roles ON roles (username, role);
 
 CREATE TABLE permissions (
-    role varchar(50) NOT NULL,
-    resource varchar(255) NOT NULL,
-    action varchar(8) NOT NULL,
-    CONSTRAINT uk_role_permission PRIMARY KEY (role, resource, action)
+                             role NVARCHAR(50) NOT NULL,
+                             resource NVARCHAR(128) NOT NULL,
+                             action NVARCHAR(8) NOT NULL
 );
+
+CREATE UNIQUE INDEX uk_role_permission_perm ON permissions (role, resource, action);
 
 INSERT INTO users (username, [password], [enabled]) VALUES ('nacos', '$2a$10$EuWPZHzz32dJN7jexM34MOeYirDdFAZm2kuWj7VEOJhhZkDrxfvUu', 1);
 

@@ -19,6 +19,7 @@ com.alibaba.nacos.plugin.datasource.impl.mssql.ConfigInfoBetaMapperBySqlServer
 com.alibaba.nacos.plugin.datasource.impl.mssql.ConfigInfoMapperBySqlServer
 com.alibaba.nacos.plugin.datasource.impl.mssql.ConfigInfoTagMapperBySqlServer
 com.alibaba.nacos.plugin.datasource.impl.mssql.ConfigTagsRelationMapperBySqlServer
+com.alibaba.nacos.plugin.datasource.impl.mssql.ConfigMigrateMapperBySqlServer
 com.alibaba.nacos.plugin.datasource.impl.mssql.HistoryConfigInfoMapperBySqlServer
 com.alibaba.nacos.plugin.datasource.impl.mssql.TenantInfoMapperBySqlServer
 com.alibaba.nacos.plugin.datasource.impl.mssql.TenantCapacityMapperBySqlServer

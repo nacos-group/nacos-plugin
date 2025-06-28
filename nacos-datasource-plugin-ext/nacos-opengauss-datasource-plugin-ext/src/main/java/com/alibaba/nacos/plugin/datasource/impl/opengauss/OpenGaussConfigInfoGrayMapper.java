@@ -14,23 +14,28 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.impl.kingbase;
+package com.alibaba.nacos.plugin.datasource.impl.opengauss;
+
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
 
 /**
- * The kingbase implementation of ConfigInfoAggrMapper.
+ * The base implementation of ConfigInfoBetaMapper.
  *
- * @author leon
+ * @author Long Yu
  **/
-
-public class ConfigInfoAggrMapperByKingbase extends BaseConfigInfoAggrMapper {
+public class OpenGaussConfigInfoGrayMapper extends BaseConfigInfoGrayMapper {
 
     @Override
     public String getDataSource() {
-        return DatabaseTypeConstant.KINGBASE;
+        return DatabaseTypeConstant.GUASSDB;
+    }
+
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
     }
 
 }

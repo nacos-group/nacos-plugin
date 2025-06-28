@@ -16,24 +16,25 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.opengauss;
 
-import com.alibaba.nacos.common.utils.CollectionUtils;
-import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.mapper.TenantCapacityMapper;
-import com.alibaba.nacos.plugin.datasource.model.MapperContext;
-import com.alibaba.nacos.plugin.datasource.model.MapperResult;
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantCapacityMapper;
 
 /**
  * The base implementation of TenantCapacityMapper.
  *
  * @author Long Yu
  **/
-public class OpenGaussTenantCapacityMapper extends AbstractMapperByGaussdb implements TenantCapacityMapper {
+public class OpenGaussTenantCapacityMapper extends BaseTenantCapacityMapper {
 
     @Override
-    public MapperResult getCapacityList4CorrectUsage(MapperContext context) {
-        String sql = getDatabaseDialect().getLimitTopSqlWithMark("SELECT id, tenant_id FROM tenant_capacity WHERE id>?");
-        return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.ID),
-                context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
+    public String getDataSource() {
+        return DatabaseTypeConstant.GUASSDB;
+    }
+
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
     }
 
 }

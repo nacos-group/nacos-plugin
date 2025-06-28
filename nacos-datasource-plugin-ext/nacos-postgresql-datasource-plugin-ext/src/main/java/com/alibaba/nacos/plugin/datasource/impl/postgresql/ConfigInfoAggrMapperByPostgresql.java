@@ -17,7 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.impl.postgresql;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
 
 /**
  * The postgresql implementation of ConfigInfoAggrMapper.
@@ -25,7 +25,7 @@ import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
  * @author Long Yu
  **/
 
-public class ConfigInfoAggrMapperByPostgresql extends BaseConfigInfoAggrMapper {
+public class ConfigInfoAggrMapperByPostgresql extends BaseConfigInfoGrayMapper {
     
     @Override
     public String getDataSource() {

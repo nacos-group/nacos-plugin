@@ -16,12 +16,8 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.mssql;
 
-import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
-import com.alibaba.nacos.plugin.datasource.model.MapperContext;
-import com.alibaba.nacos.plugin.datasource.model.MapperResult;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
 
 import java.util.List;
 
@@ -30,24 +26,8 @@ import java.util.List;
  *
  * @author QY Li
  **/
-public class ConfigInfoAggrMapperBySqlServer extends BaseConfigInfoAggrMapper {
-    
-    @Override
-    public MapperResult findConfigInfoAggrByPageFetchRows(MapperContext context) {
-        int startRow =  context.getStartRow();
-        int pageSize =  context.getPageSize();
-        String dataId = (String) context.getWhereParameter(FieldConstant.DATA_ID);
-        String groupId = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
-        String tenantId = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
-        
-        String sql =
-                "SELECT data_id,group_id,tenant_id,datum_id,app_name,content FROM config_info_aggr WHERE data_id= ? AND "
-                        + "group_id= ? AND tenant_id= ? ORDER BY datum_id OFFSET " + startRow + " ROWS FETCH NEXT " + pageSize
-                        + " ROWS ONLY";
-        List<Object> paramList = CollectionUtils.list(dataId, groupId, tenantId);
-        return new MapperResult(sql, paramList);
-    }
-    
+public class ConfigInfoAggrMapperBySqlServer extends BaseConfigInfoGrayMapper {
+
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.SQLSERVER;

@@ -16,34 +16,25 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.opengauss;
 
-import java.util.Collections;
-
-import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
-import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoTagMapper;
-import com.alibaba.nacos.plugin.datasource.model.MapperContext;
-import com.alibaba.nacos.plugin.datasource.model.MapperResult;
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoTagMapper;
 
 /**
  * The base implementation of ConfigTagsRelationMapper.
  *
  * @author Long Yu
  **/
-public class OpenGaussConfigInfoTagMapper extends AbstractMapperByGaussdb implements ConfigInfoTagMapper {
-    
+public class OpenGaussConfigInfoTagMapper extends BaseConfigInfoTagMapper {
+
     @Override
-    public String getTableName() {
-        return TableConstant.CONFIG_INFO_TAG;
+    public String getDataSource() {
+        return DatabaseTypeConstant.GUASSDB;
     }
-    
+
     @Override
-    public MapperResult findAllConfigInfoTagForDumpAllFetchRows(MapperContext context) {
-        int startRow = context.getStartRow();
-        int pageSize = context.getPageSize();
-        String innerSql = getDatabaseDialect()
-                .getLimitPageSqlWithOffset("SELECT id FROM config_info_tag  ORDER BY id ", startRow, pageSize);
-        String sql = " SELECT t.id,data_id,group_id,tenant_id,tag_id,app_name,content,md5,gmt_modified " + " FROM (  "
-                + innerSql + "  ) " + "g, config_info_tag t  WHERE g.id = t.id  ";
-        return new MapperResult(sql, Collections.emptyList());
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
     }
-    
+
 }

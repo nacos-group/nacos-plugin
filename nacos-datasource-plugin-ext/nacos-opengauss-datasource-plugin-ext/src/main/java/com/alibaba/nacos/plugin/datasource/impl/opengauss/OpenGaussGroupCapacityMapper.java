@@ -16,24 +16,25 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.opengauss;
 
-import com.alibaba.nacos.common.utils.CollectionUtils;
-import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.mapper.GroupCapacityMapper;
-import com.alibaba.nacos.plugin.datasource.model.MapperContext;
-import com.alibaba.nacos.plugin.datasource.model.MapperResult;
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseGroupCapacityMapper;
 
 /**
  * The base implementation of GroupCapacityMapper.
  *
  * @author Long Yu
  **/
-public class OpenGaussGroupCapacityMapper extends AbstractMapperByGaussdb implements GroupCapacityMapper {
-    
+public class OpenGaussGroupCapacityMapper extends BaseGroupCapacityMapper {
+
     @Override
-    public MapperResult selectGroupInfoBySize(MapperContext context) {
-        String sql = getDatabaseDialect().getLimitTopSqlWithMark("SELECT id, group_id FROM group_capacity WHERE id > ?");
-        return new MapperResult(sql,
-                CollectionUtils.list(context.getWhereParameter(FieldConstant.ID), context.getPageSize()));
+    public String getDataSource() {
+        return DatabaseTypeConstant.GUASSDB;
     }
-    
+
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
+
 }

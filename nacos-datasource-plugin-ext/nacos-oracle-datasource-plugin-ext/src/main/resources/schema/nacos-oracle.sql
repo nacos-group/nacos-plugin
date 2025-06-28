@@ -26,112 +26,110 @@ EXCEPTION
 END IF;
 END;
 CREATE TABLE config_info (
-                             id int NOT NULL,
-                             data_id varchar2(255)  NOT NULL,
-                             group_id varchar2(255) ,
-                             content CLOB  NOT NULL,
-                             md5 varchar2(32) ,
-                             gmt_create timestamp(6) NOT NULL,
-                             gmt_modified timestamp(6) NOT NULL,
-                             src_user CLOB ,
-                             src_ip varchar2(20) ,
-                             app_name varchar2(128) ,
-                             tenant_id varchar2(128) DEFAULT 'PUBLIC',
-                             c_desc varchar2(256) ,
-                             c_use varchar2(64) ,
-                             effect varchar2(64) ,
-                             type varchar2(64) ,
-                             c_schema CLOB ,
-                             encrypted_data_key CLOB  DEFAULT ''
-)
-;
+                             id NUMBER(20) PRIMARY KEY,
+                             data_id VARCHAR2(255) NOT NULL,
+                             group_id VARCHAR2(128) DEFAULT NULL,
+                             content CLOB NOT NULL,
+                             md5 VARCHAR2(32) DEFAULT NULL,
+                             gmt_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                             gmt_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                             src_user CLOB,
+                             src_ip VARCHAR2(50) DEFAULT NULL,
+                             app_name VARCHAR2(128) DEFAULT NULL,
+                             tenant_id VARCHAR2(128) DEFAULT '',
+                             c_desc VARCHAR2(256) DEFAULT NULL,
+                             c_use VARCHAR2(64) DEFAULT NULL,
+                             effect VARCHAR2(64) DEFAULT NULL,
+                             type VARCHAR2(64) DEFAULT NULL,
+                             c_schema CLOB,
+                             encrypted_data_key VARCHAR2(1024) DEFAULT '' NOT NULL
+);
 
+CREATE UNIQUE INDEX uk_configinfo_datagrouptenant ON config_info (data_id, group_id, tenant_id);
+
+COMMENT ON TABLE config_info IS 'config_info';
 COMMENT ON COLUMN config_info.id IS 'id';
 COMMENT ON COLUMN config_info.data_id IS 'data_id';
+COMMENT ON COLUMN config_info.group_id IS 'group_id';
 COMMENT ON COLUMN config_info.content IS 'content';
 COMMENT ON COLUMN config_info.md5 IS 'md5';
 COMMENT ON COLUMN config_info.gmt_create IS '创建时间';
 COMMENT ON COLUMN config_info.gmt_modified IS '修改时间';
 COMMENT ON COLUMN config_info.src_user IS 'source user';
 COMMENT ON COLUMN config_info.src_ip IS 'source ip';
+COMMENT ON COLUMN config_info.app_name IS 'app_name';
 COMMENT ON COLUMN config_info.tenant_id IS '租户字段';
-COMMENT ON COLUMN config_info.encrypted_data_key IS '秘钥';
-COMMENT ON TABLE config_info IS 'config_info';
+COMMENT ON COLUMN config_info.c_desc IS 'configuration description';
+COMMENT ON COLUMN config_info.c_use IS 'configuration usage';
+COMMENT ON COLUMN config_info.effect IS '配置生效的描述';
+COMMENT ON COLUMN config_info.type IS '配置的类型';
+COMMENT ON COLUMN config_info.c_schema IS '配置的模式';
+COMMENT ON COLUMN config_info.encrypted_data_key IS '密钥';
 
+CREATE SEQUENCE config_info_seq START WITH 1 INCREMENT BY 1 NOCACHE;
 
+CREATE OR REPLACE TRIGGER config_info_trg
+BEFORE INSERT ON config_info
+FOR EACH ROW
 BEGIN
-EXECUTE IMMEDIATE 'DROP SEQUENCE config_info_id_seq';
-EXCEPTION
-   WHEN OTHERS THEN
-      IF SQLCODE != -2289 THEN
-         RAISE;
-END IF;
+    :new.id := config_info_seq.NEXTVAL;
 END;
-create sequence config_info_id_seq
-    minvalue 1
-    increment by 1
-    start with 1;
-
-create or replace trigger config_info_id_inc
-before insert on config_info for each row
-begin
-select config_info_id_seq.nextval into:new.id from dual;
-end;
 -- ----------------------------
--- Table structure for config_info_aggr
+-- 表名称 = config_info_gray
 -- ----------------------------
 BEGIN
-EXECUTE IMMEDIATE 'DROP TABLE config_info_aggr';
+EXECUTE IMMEDIATE 'DROP TABLE config_info_gray';
 EXCEPTION
    WHEN OTHERS THEN
       IF SQLCODE != -942 THEN
          RAISE;
 END IF;
 END;
-CREATE TABLE config_info_aggr (
-                                  id int NOT NULL,
-                                  data_id varchar2(255)  NOT NULL,
-                                  group_id varchar2(255)  NOT NULL,
-                                  datum_id varchar2(255)  NOT NULL,
-                                  content CLOB  NOT NULL,
-                                  gmt_modified timestamp(6) NOT NULL,
-                                  app_name varchar2(128) ,
-                                  tenant_id varchar2(128) DEFAULT 'PUBLIC'
-)
-;
-COMMENT ON COLUMN config_info_aggr.id IS 'id';
-COMMENT ON COLUMN config_info_aggr.data_id IS 'data_id';
-COMMENT ON COLUMN config_info_aggr.group_id IS 'group_id';
-COMMENT ON COLUMN config_info_aggr.datum_id IS 'datum_id';
-COMMENT ON COLUMN config_info_aggr.content IS '内容';
-COMMENT ON COLUMN config_info_aggr.gmt_modified IS '修改时间';
-COMMENT ON COLUMN config_info_aggr.tenant_id IS '租户字段';
-COMMENT ON TABLE config_info_aggr IS '增加租户字段';
+CREATE TABLE config_info_gray (
+                                  id NUMBER(20) PRIMARY KEY,
+                                  data_id VARCHAR2(255) NOT NULL,
+                                  group_id VARCHAR2(128) NOT NULL,
+                                  content CLOB NOT NULL,
+                                  md5 VARCHAR2(32) DEFAULT NULL,
+                                  src_user CLOB,
+                                  src_ip VARCHAR2(100) DEFAULT NULL,
+                                  gmt_create TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                  gmt_modified TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                  app_name VARCHAR2(128) DEFAULT NULL,
+                                  tenant_id VARCHAR2(128) DEFAULT '',
+                                  gray_name VARCHAR2(128) NOT NULL,
+                                  gray_rule CLOB NOT NULL,
+                                  encrypted_data_key VARCHAR2(256) DEFAULT '' NOT NULL
+);
 
+CREATE UNIQUE INDEX uk_configinfogray_datagrouptenantgray ON config_info_gray (data_id, group_id, tenant_id, gray_name);
+CREATE INDEX idx_dataid_gmt_modified_gray ON config_info_gray (data_id, gmt_modified);
+CREATE INDEX idx_gmt_modified_gray ON config_info_gray (gmt_modified);
 
+COMMENT ON TABLE config_info_gray IS 'config_info_gray';
+COMMENT ON COLUMN config_info_gray.id IS 'id';
+COMMENT ON COLUMN config_info_gray.data_id IS 'data_id';
+COMMENT ON COLUMN config_info_gray.group_id IS 'group_id';
+COMMENT ON COLUMN config_info_gray.content IS 'content';
+COMMENT ON COLUMN config_info_gray.md5 IS 'md5';
+COMMENT ON COLUMN config_info_gray.src_user IS 'src_user';
+COMMENT ON COLUMN config_info_gray.src_ip IS 'src_ip';
+COMMENT ON COLUMN config_info_gray.gmt_create IS 'gmt_create';
+COMMENT ON COLUMN config_info_gray.gmt_modified IS 'gmt_modified';
+COMMENT ON COLUMN config_info_gray.app_name IS 'app_name';
+COMMENT ON COLUMN config_info_gray.tenant_id IS 'tenant_id';
+COMMENT ON COLUMN config_info_gray.gray_name IS 'gray_name';
+COMMENT ON COLUMN config_info_gray.gray_rule IS 'gray_rule';
+COMMENT ON COLUMN config_info_gray.encrypted_data_key IS 'encrypted_data_key';
+
+CREATE SEQUENCE config_info_gray_seq START WITH 1 INCREMENT BY 1 NOCACHE;
+
+CREATE OR REPLACE TRIGGER config_info_gray_trg
+BEFORE INSERT ON config_info_gray
+FOR EACH ROW
 BEGIN
-EXECUTE IMMEDIATE 'DROP SEQUENCE config_info_aggr_id_seq';
-EXCEPTION
-   WHEN OTHERS THEN
-      IF SQLCODE != -2289 THEN
-         RAISE;
-END IF;
+    :new.id := config_info_gray_seq.NEXTVAL;
 END;
-create sequence config_info_aggr_id_seq
-    minvalue 1
-    increment by 1
-    start with 1;
-
-create or replace trigger config_info_aggr_id_inc
-before insert on config_info_aggr for each row
-begin
-select config_info_aggr_id_seq.nextval into:new.id from dual;
-end;
--- ----------------------------
--- Records of config_info_aggr
--- ----------------------------
-BEGIN;
-COMMIT;
 
 -- ----------------------------
 -- Table structure for config_info_beta
@@ -278,42 +276,35 @@ EXCEPTION
 END IF;
 END;
 CREATE TABLE config_tags_relation (
-                                      id int NOT NULL,
-                                      tag_name varchar2(128)  NOT NULL,
-                                      tag_type varchar2(64) ,
-                                      data_id varchar2(255)  NOT NULL,
-                                      group_id varchar2(128)  NOT NULL,
-                                      tenant_id varchar2(128) DEFAULT 'PUBLIC',
-                                      nid int NOT NULL
-)
-;
+                                      id NUMBER(20) NOT NULL,
+                                      tag_name VARCHAR2(128) NOT NULL,
+                                      tag_type VARCHAR2(64) DEFAULT NULL,
+                                      data_id VARCHAR2(255) NOT NULL,
+                                      group_id VARCHAR2(128) NOT NULL,
+                                      tenant_id VARCHAR2(128) DEFAULT '',
+                                      nid NUMBER(20) PRIMARY KEY
+);
+
+CREATE UNIQUE INDEX uk_configtagrelation_configidtag ON config_tags_relation (id, tag_name, tag_type);
+CREATE INDEX idx_tenant_id_relation ON config_tags_relation (tenant_id);
+
+COMMENT ON TABLE config_tags_relation IS 'config_tag_relation';
 COMMENT ON COLUMN config_tags_relation.id IS 'id';
 COMMENT ON COLUMN config_tags_relation.tag_name IS 'tag_name';
 COMMENT ON COLUMN config_tags_relation.tag_type IS 'tag_type';
 COMMENT ON COLUMN config_tags_relation.data_id IS 'data_id';
 COMMENT ON COLUMN config_tags_relation.group_id IS 'group_id';
 COMMENT ON COLUMN config_tags_relation.tenant_id IS 'tenant_id';
-COMMENT ON TABLE config_tags_relation IS 'config_tag_relation';
+COMMENT ON COLUMN config_tags_relation.nid IS 'nid, 自增长标识';
 
+CREATE SEQUENCE config_tags_relation_seq START WITH 1 INCREMENT BY 1 NOCACHE;
 
+CREATE OR REPLACE TRIGGER config_tags_relation_trg
+BEFORE INSERT ON config_tags_relation
+FOR EACH ROW
 BEGIN
-EXECUTE IMMEDIATE 'DROP SEQUENCE config_tags_relation_id_seq';
-EXCEPTION
-   WHEN OTHERS THEN
-      IF SQLCODE != -2289 THEN
-         RAISE;
-END IF;
+    :new.nid := config_tags_relation_seq.NEXTVAL;
 END;
-create sequence config_tags_relation_id_seq
-    minvalue 1
-    increment by 1
-    start with 1;
-
-create or replace trigger config_tags_relation_id_inc
-before insert on config_tags_relation for each row
-begin
-select config_tags_relation_id_seq.nextval into:new.id from dual;
-end;
 -- ----------------------------
 -- Records of config_tags_relation
 -- ----------------------------
@@ -332,18 +323,21 @@ EXCEPTION
 END IF;
 END;
 CREATE TABLE group_capacity (
-                                id int NOT NULL,
-                                group_id varchar2(128)  NOT NULL,
-                                quota int NOT NULL,
-                                usage int NOT NULL,
-                                max_size int NOT NULL,
-                                max_aggr_count int NOT NULL,
-                                max_aggr_size int NOT NULL,
-                                max_history_count int NOT NULL,
-                                gmt_create timestamp(6) NOT NULL,
-                                gmt_modified timestamp(6) NOT NULL
-)
-;
+                                id NUMBER(20) PRIMARY KEY,
+                                group_id VARCHAR2(128) DEFAULT '' NOT NULL,
+                                quota NUMBER(10) DEFAULT 0 NOT NULL,
+                                usage NUMBER(10) DEFAULT 0 NOT NULL,
+                                max_size NUMBER(10) DEFAULT 0 NOT NULL,
+                                max_aggr_count NUMBER(10) DEFAULT 0 NOT NULL,
+                                max_aggr_size NUMBER(10) DEFAULT 0 NOT NULL,
+                                max_history_count NUMBER(10) DEFAULT 0 NOT NULL,
+                                gmt_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                gmt_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE UNIQUE INDEX uk_group_id_capacity ON group_capacity (group_id);
+
+COMMENT ON TABLE group_capacity IS '集群、各Group容量信息表';
 COMMENT ON COLUMN group_capacity.id IS '主键ID';
 COMMENT ON COLUMN group_capacity.group_id IS 'Group ID，空字符表示整个集群';
 COMMENT ON COLUMN group_capacity.quota IS '配额，0表示使用默认值';
@@ -354,27 +348,15 @@ COMMENT ON COLUMN group_capacity.max_aggr_size IS '单个聚合数据的子配�
 COMMENT ON COLUMN group_capacity.max_history_count IS '最大变更历史数量';
 COMMENT ON COLUMN group_capacity.gmt_create IS '创建时间';
 COMMENT ON COLUMN group_capacity.gmt_modified IS '修改时间';
-COMMENT ON TABLE group_capacity IS '集群、各Group容量信息表';
 
+CREATE SEQUENCE group_capacity_seq START WITH 1 INCREMENT BY 1 NOCACHE;
 
+CREATE OR REPLACE TRIGGER group_capacity_trg
+BEFORE INSERT ON group_capacity
+FOR EACH ROW
 BEGIN
-EXECUTE IMMEDIATE 'DROP SEQUENCE group_capacity_id_seq';
-EXCEPTION
-   WHEN OTHERS THEN
-      IF SQLCODE != -2289 THEN
-         RAISE;
-END IF;
+    :new.id := group_capacity_seq.NEXTVAL;
 END;
-create sequence group_capacity_id_seq
-    minvalue 1
-    increment by 1
-    start with 1;
-
-create or replace trigger group_capacity_id_inc
-before insert on group_capacity for each row
-begin
-select group_capacity_id_seq.nextval into:new.id from dual;
-end;
 -- ----------------------------
 -- Records of group_capacity
 -- ----------------------------
@@ -393,46 +375,56 @@ EXCEPTION
 END IF;
 END;
 CREATE TABLE his_config_info (
-                                 id int NOT NULL,
-                                 nid int NOT NULL,
-                                 data_id varchar2(255)  NOT NULL,
-                                 group_id varchar2(128)  NOT NULL,
-                                 app_name varchar2(128) ,
-                                 content CLOB  NOT NULL,
-                                 md5 varchar2(32) ,
-                                 gmt_create timestamp(6) DEFAULT CURRENT_TIMESTAMP,
-                                 gmt_modified timestamp(6) NOT NULL,
-                                 src_user CLOB ,
-                                 src_ip varchar2(20) ,
-                                 op_type char(10) ,
-                                 tenant_id varchar2(128) DEFAULT 'PUBLIC',
-                                 encrypted_data_key CLOB  DEFAULT ''
-)
-;
-COMMENT ON COLUMN his_config_info.app_name IS 'app_name';
-COMMENT ON COLUMN his_config_info.tenant_id IS '租户字段';
-COMMENT ON COLUMN his_config_info.encrypted_data_key IS '秘钥';
+                                 id NUMBER(20) NOT NULL,
+                                 nid NUMBER(20) PRIMARY KEY,
+                                 data_id VARCHAR2(255) NOT NULL,
+                                 group_id VARCHAR2(128) NOT NULL,
+                                 app_name VARCHAR2(128) DEFAULT NULL,
+                                 content CLOB NOT NULL,
+                                 md5 VARCHAR2(32) DEFAULT NULL,
+                                 gmt_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                 gmt_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                 src_user CLOB,
+                                 src_ip VARCHAR2(50) DEFAULT NULL,
+                                 op_type CHAR(10) DEFAULT NULL,
+                                 tenant_id VARCHAR2(128) DEFAULT '',
+                                 encrypted_data_key VARCHAR2(1024) DEFAULT '' NOT NULL,
+                                 publish_type VARCHAR2(50) DEFAULT 'formal',
+                                 gray_name VARCHAR2(128) DEFAULT NULL,
+                                 ext_info CLOB DEFAULT NULL
+);
+
+CREATE INDEX idx_gmt_create_info ON his_config_info (gmt_create);
+CREATE INDEX idx_gmt_modified_info ON his_config_info (gmt_modified);
+CREATE INDEX idx_did_info ON his_config_info (data_id);
+
 COMMENT ON TABLE his_config_info IS '多租户改造';
+COMMENT ON COLUMN his_config_info.id IS 'id';
+COMMENT ON COLUMN his_config_info.nid IS 'nid, 自增标识';
+COMMENT ON COLUMN his_config_info.data_id IS 'data_id';
+COMMENT ON COLUMN his_config_info.group_id IS 'group_id';
+COMMENT ON COLUMN his_config_info.app_name IS 'app_name';
+COMMENT ON COLUMN his_config_info.content IS 'content';
+COMMENT ON COLUMN his_config_info.md5 IS 'md5';
+COMMENT ON COLUMN his_config_info.gmt_create IS '创建时间';
+COMMENT ON COLUMN his_config_info.gmt_modified IS '修改时间';
+COMMENT ON COLUMN his_config_info.src_user IS 'source user';
+COMMENT ON COLUMN his_config_info.src_ip IS 'source ip';
+COMMENT ON COLUMN his_config_info.op_type IS 'operation type';
+COMMENT ON COLUMN his_config_info.tenant_id IS '租户字段';
+COMMENT ON COLUMN his_config_info.encrypted_data_key IS '密钥';
+COMMENT ON COLUMN his_config_info.publish_type IS 'publish type gray or formal';
+COMMENT ON COLUMN his_config_info.gray_name IS 'gray_name';
+COMMENT ON COLUMN his_config_info.ext_info IS 'ext info';
 
+CREATE SEQUENCE his_config_info_seq START WITH 1 INCREMENT BY 1 NOCACHE;
 
+CREATE OR REPLACE TRIGGER his_config_info_trg
+BEFORE INSERT ON his_config_info
+FOR EACH ROW
 BEGIN
-EXECUTE IMMEDIATE 'DROP SEQUENCE his_config_info_nid_seq';
-EXCEPTION
-   WHEN OTHERS THEN
-      IF SQLCODE != -2289 THEN
-         RAISE;
-END IF;
+    :new.nid := his_config_info_seq.NEXTVAL;
 END;
-create sequence his_config_info_nid_seq
-    minvalue 1
-    increment by 1
-    start with 1;
-
-create or replace trigger his_config_info_nid_inc
-before insert on his_config_info for each row
-begin
-select his_config_info_nid_seq.nextval into:new.nid from dual;
-end;
 -- ----------------------------
 -- Table structure for permissions
 -- ----------------------------
@@ -445,11 +437,17 @@ EXCEPTION
 END IF;
 END;
 CREATE TABLE permissions (
-                             "ROLE" varchar2(50)  NOT NULL,
-                             "RESOURCE" varchar2(512)  NOT NULL,
-                             "ACTION" varchar2(8)  NOT NULL
-)
-;
+                             role VARCHAR2(50) NOT NULL,
+                             resource VARCHAR2(128) NOT NULL,
+                             action VARCHAR2(8) NOT NULL
+);
+
+CREATE UNIQUE INDEX uk_role_permission_perm ON permissions (role, resource, action);
+
+COMMENT ON TABLE permissions IS '权限表';
+COMMENT ON COLUMN permissions.role IS 'role';
+COMMENT ON COLUMN permissions.resource IS 'resource';
+COMMENT ON COLUMN permissions.action IS 'action';
 
 -- ----------------------------
 -- Records of permissions
@@ -469,10 +467,15 @@ EXCEPTION
 END IF;
 END;
 CREATE TABLE roles (
-                       "USERNAME" varchar2(50)  NOT NULL,
-                       "ROLE" varchar2(50)  NOT NULL
-)
-;
+                       username VARCHAR2(50) NOT NULL,
+                       role VARCHAR2(50) NOT NULL
+);
+
+CREATE UNIQUE INDEX idx_user_role_roles ON roles (username, role);
+
+COMMENT ON TABLE roles IS '角色表';
+COMMENT ON COLUMN roles.username IS 'username';
+COMMENT ON COLUMN roles.role IS 'role';
 
 -- ----------------------------
 -- Records of roles
@@ -493,18 +496,21 @@ EXCEPTION
 END IF;
 END;
 CREATE TABLE tenant_capacity (
-                                 id int NOT NULL,
-                                 tenant_id varchar2(128)  NOT NULL,
-                                 quota int NOT NULL,
-                                 usage int NOT NULL,
-                                 max_size int NOT NULL,
-                                 max_aggr_count int NOT NULL,
-                                 max_aggr_size int NOT NULL,
-                                 max_history_count int NOT NULL,
-                                 gmt_create timestamp(6) NOT NULL,
-                                 gmt_modified timestamp(6) NOT NULL
-)
-;
+                                 id NUMBER(20) PRIMARY KEY,
+                                 tenant_id VARCHAR2(128) DEFAULT '' NOT NULL,
+                                 quota NUMBER(10) DEFAULT 0 NOT NULL,
+                                 usage NUMBER(10) DEFAULT 0 NOT NULL,
+                                 max_size NUMBER(10) DEFAULT 0 NOT NULL,
+                                 max_aggr_count NUMBER(10) DEFAULT 0 NOT NULL,
+                                 max_aggr_size NUMBER(10) DEFAULT 0 NOT NULL,
+                                 max_history_count NUMBER(10) DEFAULT 0 NOT NULL,
+                                 gmt_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                 gmt_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE UNIQUE INDEX uk_tenant_id_capacity ON tenant_capacity (tenant_id);
+
+COMMENT ON TABLE tenant_capacity IS '租户容量信息表';
 COMMENT ON COLUMN tenant_capacity.id IS '主键ID';
 COMMENT ON COLUMN tenant_capacity.tenant_id IS 'Tenant ID';
 COMMENT ON COLUMN tenant_capacity.quota IS '配额，0表示使用默认值';
@@ -515,28 +521,15 @@ COMMENT ON COLUMN tenant_capacity.max_aggr_size IS '单个聚合数据的子配�
 COMMENT ON COLUMN tenant_capacity.max_history_count IS '最大变更历史数量';
 COMMENT ON COLUMN tenant_capacity.gmt_create IS '创建时间';
 COMMENT ON COLUMN tenant_capacity.gmt_modified IS '修改时间';
-COMMENT ON TABLE tenant_capacity IS '租户容量信息表';
 
+CREATE SEQUENCE tenant_capacity_seq START WITH 1 INCREMENT BY 1 NOCACHE;
 
+CREATE OR REPLACE TRIGGER tenant_capacity_trg
+BEFORE INSERT ON tenant_capacity
+FOR EACH ROW
 BEGIN
-EXECUTE IMMEDIATE 'DROP SEQUENCE tenant_capacity_id_seq';
-EXCEPTION
-   WHEN OTHERS THEN
-      IF SQLCODE != -2289 THEN
-         RAISE;
-END IF;
+    :new.id := tenant_capacity_seq.NEXTVAL;
 END;
-create sequence tenant_capacity_id_seq
-    minvalue 1
-    increment by 1
-    start with 1;
-
-
-create or replace trigger tenant_capacity_id_inc
-before insert on tenant_capacity for each row
-begin
-select tenant_capacity_id_seq.nextval into:new.id from dual;
-end;
 -- ----------------------------
 -- Records of tenant_capacity
 -- ----------------------------
@@ -555,16 +548,20 @@ EXCEPTION
 END IF;
 END;
 CREATE TABLE tenant_info (
-                             id int NOT NULL,
-                             kp varchar2(128)  NOT NULL,
-                             tenant_id varchar2(128) DEFAULT 'PUBLIC',
-                             tenant_name varchar2(128) ,
-                             tenant_desc varchar2(256) ,
-                             create_source varchar2(32) ,
-                             gmt_create int NOT NULL,
-                             gmt_modified int NOT NULL
-)
-;
+                             id NUMBER(20) PRIMARY KEY,
+                             kp VARCHAR2(128) NOT NULL,
+                             tenant_id VARCHAR2(128) DEFAULT '',
+                             tenant_name VARCHAR2(128) DEFAULT '',
+                             tenant_desc VARCHAR2(256) DEFAULT NULL,
+                             create_source VARCHAR2(32) DEFAULT NULL,
+                             gmt_create NUMBER(20) NOT NULL,
+                             gmt_modified NUMBER(20) NOT NULL
+);
+
+CREATE UNIQUE INDEX uk_tenant_info_kptenantid ON tenant_info (kp, tenant_id);
+CREATE INDEX idx_tenant_id_info ON tenant_info (tenant_id);
+
+COMMENT ON TABLE tenant_info IS 'tenant_info';
 COMMENT ON COLUMN tenant_info.id IS 'id';
 COMMENT ON COLUMN tenant_info.kp IS 'kp';
 COMMENT ON COLUMN tenant_info.tenant_id IS 'tenant_id';
@@ -573,27 +570,15 @@ COMMENT ON COLUMN tenant_info.tenant_desc IS 'tenant_desc';
 COMMENT ON COLUMN tenant_info.create_source IS 'create_source';
 COMMENT ON COLUMN tenant_info.gmt_create IS '创建时间';
 COMMENT ON COLUMN tenant_info.gmt_modified IS '修改时间';
-COMMENT ON TABLE tenant_info IS 'tenant_info';
 
+CREATE SEQUENCE tenant_info_seq START WITH 1 INCREMENT BY 1 NOCACHE;
 
+CREATE OR REPLACE TRIGGER tenant_info_trg
+BEFORE INSERT ON tenant_info
+FOR EACH ROW
 BEGIN
-EXECUTE IMMEDIATE 'DROP SEQUENCE tenant_info_id_seq';
-EXCEPTION
-   WHEN OTHERS THEN
-      IF SQLCODE != -2289 THEN
-         RAISE;
-END IF;
+    :new.id := tenant_info_seq.NEXTVAL;
 END;
-create sequence tenant_info_id_seq
-    minvalue 1
-    increment by 1
-    start with 1;
-
-create or replace trigger tenant_info_id_inc
-before insert on tenant_info for each row
-begin
-select tenant_info_id_seq.nextval into:new.id from dual;
-end;
 -- ----------------------------
 -- Records of tenant_info
 -- ----------------------------
@@ -612,11 +597,15 @@ EXCEPTION
 END IF;
 END;
 CREATE TABLE users (
-                       username varchar2(50)  NOT NULL,
-                       password varchar2(500)  NOT NULL,
+                       username VARCHAR2(50) PRIMARY KEY,
+                       password VARCHAR2(500) NOT NULL,
                        enabled NUMBER(1) NOT NULL
-)
-;
+);
+
+COMMENT ON TABLE users IS '用户表';
+COMMENT ON COLUMN users.username IS 'username';
+COMMENT ON COLUMN users.password IS 'password';
+COMMENT ON COLUMN users.enabled IS 'enabled';
 
 -- ----------------------------
 -- Records of users

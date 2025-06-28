@@ -17,6 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.dialect;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.impl.enums.GaussdbFunctionEnum;
 
 /**
  * PostgreSQL database dialect.
@@ -28,12 +29,7 @@ public class GaussdbDatabaseDialect extends AbstractDatabaseDialect {
     public String getType() {
         return DatabaseTypeConstant.GUASSDB;
     }
-    
-    @Override
-    public String getLimitTopSqlWithMark(String sql) {
-        return sql + " LIMIT ? ";
-    }
-    
+
     @Override
     public String getLimitPageSqlWithMark(String sql) {
         return sql + "  OFFSET ? LIMIT ? ";
@@ -47,6 +43,11 @@ public class GaussdbDatabaseDialect extends AbstractDatabaseDialect {
     @Override
     public String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize){
         return sql + "  OFFSET " + startOffset + " LIMIT " + pageSize;
+    }
+
+    @Override
+    public String getFunction(String functionName) {
+        return GaussdbFunctionEnum.getFunctionByName(functionName);
     }
 
 }

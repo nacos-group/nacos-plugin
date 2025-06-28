@@ -17,7 +17,9 @@ package com.alibaba.nacos.plugin.datasource.impl.oracle;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.common.utils.NamespaceUtil;
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseHistoryConfigInfoMapper;
 import com.alibaba.nacos.plugin.datasource.mapper.HistoryConfigInfoMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
@@ -28,51 +30,11 @@ import java.util.List;
 /***
  * @author onewe
  */
-public class HistoryConfigInfoMapperOracle extends AbstractOracleMapper
-		implements HistoryConfigInfoMapper {
+public class HistoryConfigInfoMapperOracle extends BaseHistoryConfigInfoMapper {
 
 	@Override
-	public MapperResult removeConfigHistory(MapperContext context) {
-		String sql = "DELETE FROM his_config_info WHERE ROWID in (SELECT ROWID FROM his_config_info WHERE gmt_modified < ? FETCH FIRST ? ROWS ONLY) ";
-		return new MapperResult(sql,
-				CollectionUtils.list(context.getWhereParameter(FieldConstant.START_TIME),
-						context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
+	public String getDataSource() {
+		return DatabaseTypeConstant.ORACLE;
 	}
 
-	@Override
-	public MapperResult pageFindConfigHistoryFetchRows(MapperContext context) {
-		String dataId = (String) context.getWhereParameter(FieldConstant.DATA_ID);
-		String groupId = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
-		String tenantId = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
-		
-		List<Object> sqlArgs = new ArrayList<>();
-		sqlArgs.add(dataId);
-		sqlArgs.add(groupId);
-		sqlArgs.add(tenantId);
-		
-		String sql =
-				"SELECT nid,data_id,group_id,tenant_id,app_name,src_ip,src_user,op_type,gmt_create,gmt_modified FROM his_config_info "
-						+ " WHERE data_id = ? AND group_id = ? AND  tenant_id = NVL(?, '"+ NamespaceUtil.getNamespaceDefaultId() +"') "
-						+ " ORDER BY nid DESC OFFSET " + context.getStartRow() + " ROWS FETCH NEXT " + context
-						.getPageSize() + " ROWS ONLY ";
-		return new MapperResult(sql, sqlArgs);
-	}
-	
-	@Override
-	public MapperResult findConfigHistoryFetchRows(MapperContext context) {
-		String dataId = (String) context.getWhereParameter(FieldConstant.DATA_ID);
-		String groupId = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
-		String tenantId = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
-		
-		List<Object> sqlArgs = new ArrayList<>();
-		sqlArgs.add(dataId);
-		sqlArgs.add(groupId);
-		sqlArgs.add(tenantId);
-		
-		String sqlBuilder =
-				"SELECT nid,data_id,group_id,tenant_id,app_name,src_ip,src_user,op_type,gmt_create,gmt_modified FROM his_config_info "
-						+ " WHERE data_id = ? AND group_id = ? " + " AND tenant_id = NVL(?,'" + NamespaceUtil
-						.getNamespaceDefaultId() + "') " + " ORDER BY nid DESC";
-		return new MapperResult(sqlBuilder, sqlArgs);
-	}
 }

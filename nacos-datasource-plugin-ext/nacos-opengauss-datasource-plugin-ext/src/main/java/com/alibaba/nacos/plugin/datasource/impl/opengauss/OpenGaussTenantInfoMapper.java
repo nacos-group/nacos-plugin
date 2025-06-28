@@ -16,13 +16,24 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.opengauss;
 
-import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantInfoMapper;
 
 /**
  * The base implementation of TenantInfo.
  *
  * @author Long Yu
  **/
-public class OpenGaussTenantInfoMapper extends AbstractMapperByGaussdb implements TenantInfoMapper {
+public class OpenGaussTenantInfoMapper extends BaseTenantInfoMapper {
+    @Override
+    public String getDataSource() {
+        return DatabaseTypeConstant.GUASSDB;
+    }
+
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
 
 }

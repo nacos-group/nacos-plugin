@@ -15,26 +15,24 @@
  */
 package com.alibaba.nacos.plugin.datasource.impl.oracle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.common.utils.NamespaceUtil;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantCapacityMapper;
-import com.alibaba.nacos.plugin.datasource.mapper.TenantCapacityMapper;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoGrayMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /***
  * @author onewe
  */
-public class TenantCapacityMapperByOracle extends BaseTenantCapacityMapper {
-
+public class ConfigInfoGrayMapperByOracle extends BaseConfigInfoGrayMapper {
 	@Override
 	public String getDataSource() {
 		return DatabaseTypeConstant.ORACLE;
 	}
-
 }
