@@ -31,4 +31,9 @@ public class ConfigInfoMapperByKingbase extends BaseConfigInfoMapper {
     public String getDataSource() {
         return DatabaseTypeConstant.KINGBASE;
     }
+
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+    return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+}
 }

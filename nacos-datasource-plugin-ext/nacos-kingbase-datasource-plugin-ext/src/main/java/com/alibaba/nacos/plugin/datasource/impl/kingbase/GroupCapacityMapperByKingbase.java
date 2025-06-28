@@ -32,4 +32,8 @@ public class GroupCapacityMapperByKingbase extends BaseGroupCapacityMapper {
         return DatabaseTypeConstant.KINGBASE;
     }
 
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
 }

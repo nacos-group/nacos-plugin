@@ -33,4 +33,8 @@ public class ConfigTagsRelationMapperByKingbase extends BaseConfigTagsRelationMa
         return DatabaseTypeConstant.KINGBASE;
     }
 
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
 }
