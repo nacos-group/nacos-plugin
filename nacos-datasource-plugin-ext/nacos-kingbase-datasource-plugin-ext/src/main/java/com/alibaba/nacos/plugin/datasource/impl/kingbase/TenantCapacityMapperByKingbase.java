@@ -32,4 +32,8 @@ public class TenantCapacityMapperByKingbase extends BaseTenantCapacityMapper {
         return DatabaseTypeConstant.KINGBASE;
     }
 
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
 }
