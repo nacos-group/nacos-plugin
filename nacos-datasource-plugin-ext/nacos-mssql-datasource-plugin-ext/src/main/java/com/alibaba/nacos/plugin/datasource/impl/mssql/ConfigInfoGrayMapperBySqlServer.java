@@ -19,14 +19,12 @@ package com.alibaba.nacos.plugin.datasource.impl.mssql;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
 
-import java.util.List;
-
 /**
  * The SQL Server implementation of ConfigInfoAggrMapper.
  *
  * @author QY Li
  **/
-public class ConfigInfoAggrMapperBySqlServer extends BaseConfigInfoGrayMapper {
+public class ConfigInfoGrayMapperBySqlServer extends BaseConfigInfoGrayMapper {
 
     @Override
     public String getDataSource() {

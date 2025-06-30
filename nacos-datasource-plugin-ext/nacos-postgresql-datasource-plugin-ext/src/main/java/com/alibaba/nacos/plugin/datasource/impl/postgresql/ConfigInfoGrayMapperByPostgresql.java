@@ -25,7 +25,7 @@ import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
  * @author Long Yu
  **/
 
-public class ConfigInfoAggrMapperByPostgresql extends BaseConfigInfoGrayMapper {
+public class ConfigInfoGrayMapperByPostgresql extends BaseConfigInfoGrayMapper {
     
     @Override
     public String getDataSource() {
