@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>com.alibaba.nacos</groupId>
     <artifactId>nacos-plugin-ext</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
-    
+
     <developers>
         <developer>
             <name>li-xiao-shuang</name>
             <email>644968328@qq.com</email>
         </developer>
     </developers>
-    
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -23,7 +23,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
+
     <organization>
         <name>nacos-group</name>
         <url>https://github.com/nacos-group</url>
@@ -56,7 +56,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -85,7 +85,7 @@
                 <version>${alibaba-nacos.version}</version>
                 <scope>provided</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-common</artifactId>
@@ -101,8 +101,32 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.2</version>
+                    <executions>
+                        <execution>
+                            <id>copy-lib</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                            <configuration>
+                                <!-- 可将依赖输出到 target 下的 libs 子目录 -->
+                                <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                                <!-- 可选：仅复制特定分组的依赖 -->
+                                <includeArtifactIds>${copy-lib.artifact-ids}</includeArtifactIds>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <!--Packaging plug-in-->
             <plugin>
@@ -120,7 +144,8 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                             </transformers>
                             <filters>
                                 <filter>
@@ -142,7 +167,7 @@
                     </execution>
                 </executions>
             </plugin>
-    
+
             <!--Process version placeholders-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

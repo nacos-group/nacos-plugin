@@ -16,6 +16,8 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <jdbc.postgresql.version>42.2.19</jdbc.postgresql.version>
+
+        <copy-lib.artifact-ids>opengauss-jdbc</copy-lib.artifact-ids>
     </properties>
     
     
@@ -24,6 +26,8 @@
             <groupId>org.opengauss</groupId>
             <artifactId>opengauss-jdbc</artifactId>
             <version>5.1.0-og</version>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
@@ -40,6 +44,10 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
             <!--Packaging plug-in-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

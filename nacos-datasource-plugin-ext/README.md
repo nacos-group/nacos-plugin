@@ -24,17 +24,45 @@ nacos-postgresql-datasource-plugin-ext工程可打包适配Postgresql的数据�
 
 ### 2.1、插件引入
 
-方式一：使用postgresql作为依赖引入到Nacos主分支源码中，例如：
+- 方式一：使用postgresql作为依赖引入到Nacos主分支源码中，例如：
 
 ```xml
 <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-postgresql-datasource-plugin-ext</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
+    <groupId>com.alibaba.nacos</groupId>
+    <artifactId>nacos-postgresql-datasource-plugin-ext</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
 ```
 
-方式二：下载当前插件项目源码，打包为jar包，将该文件的路径配置到startup.sh文件中，使用Nacos的loader.path机制指定该插件的路径，可修改startup.sh中的loader.path参数的位置进行指定。
+- 方式二：下载当前插件项目源码，打包为jar包 将该文件的路径配置到startup.sh文件中，使用Nacos的loader.path机制指定该插件的路径，可修改startup.sh中的loader.path参数的位置进行指定。
+- 默认情况下，startup.sh 脚本中已经指定了默认的插件路径 ${NACOS_HOME}/plugins
+- 因此，可以将打包后的插件 jar 包放到此目录下
+- 最终形成的目录结构如下
+
+```shell
+bin
+  startup.sh
+conf
+  application.properties
+target
+  nacos-server.jar
+plugins
+```
+
+- 因此，你要做的就是，将插件的 jar 包，以及包含依赖的 jar 包都放到 plugins 目录下即可
+- 本 fork 分支下，我们提供数据源插件的打包的 jar 包，但是，这个 jar 包是不包含数据库的 JDBC 驱动的
+- 因此，你除了将需要的数据源的 jar 包放到 plugins 目录下之外，还需要对应的 JDBC 的驱动 jar 包也放到下面去
+  - 这样做的目的是为了将 JDBC 驱动进行解耦，以便于你可以选择自己更合适的 JDBC 驱动版本
+  - 而不是插件里面直接合并的驱动版本
+- 以 postgre 为例，你需要这两个 jar 包
+
+```shell
+nacos-postgresql-datasource-plugin-ext-1.0.0-SNAPSHOT.jar
+postgresql-42.2.19.jar
+```
+
+- 因此，只需要将这两个 jar 包放到 plugins 目录下即可
+- 然后就是更改 conf/application.properties 里面的配置为你的数据源即可
 
 ### 2.2、修改数据库配置文件
 
