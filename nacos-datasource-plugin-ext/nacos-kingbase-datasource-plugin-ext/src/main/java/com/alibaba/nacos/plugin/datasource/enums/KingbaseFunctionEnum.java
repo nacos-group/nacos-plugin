@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.impl.enums;
+package com.alibaba.nacos.plugin.datasource.enums;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,17 +26,17 @@ import java.util.Map;
  *
  * @author blake.qiu
  */
-public enum GaussdbFunctionEnum {
+public enum KingbaseFunctionEnum {
 
     /**
      * NOW().
      */
     NOW("NOW()", "NOW()");
 
-    private static final Map<String, GaussdbFunctionEnum> LOOKUP_MAP = new HashMap<>();
+    private static final Map<String, KingbaseFunctionEnum> LOOKUP_MAP = new HashMap<>();
 
     static {
-        for (GaussdbFunctionEnum entry : GaussdbFunctionEnum.values()) {
+        for (KingbaseFunctionEnum entry : KingbaseFunctionEnum.values()) {
             LOOKUP_MAP.put(entry.functionName, entry);
         }
     }
@@ -45,7 +45,7 @@ public enum GaussdbFunctionEnum {
 
     private final String function;
 
-    GaussdbFunctionEnum(String functionName, String function) {
+    KingbaseFunctionEnum(String functionName, String function) {
         this.functionName = functionName;
         this.function = function;
     }
@@ -57,7 +57,7 @@ public enum GaussdbFunctionEnum {
      * @return function
      */
     public static String getFunctionByName(String functionName) {
-        GaussdbFunctionEnum entry = LOOKUP_MAP.get(functionName);
+        KingbaseFunctionEnum entry = LOOKUP_MAP.get(functionName);
         if (entry != null) {
             return entry.function;
         }

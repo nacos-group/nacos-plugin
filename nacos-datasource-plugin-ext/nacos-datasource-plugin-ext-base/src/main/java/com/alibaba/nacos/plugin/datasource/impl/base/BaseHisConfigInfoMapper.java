@@ -19,9 +19,9 @@ package com.alibaba.nacos.plugin.datasource.impl.base;
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
-import com.alibaba.nacos.plugin.datasource.impl.mysql.TenantCapacityMapperByMySql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
 import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.HistoryConfigInfoMapper;
 import com.alibaba.nacos.plugin.datasource.mapper.TenantCapacityMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
@@ -31,57 +31,51 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
  *
  * @author Long Yu
  **/
-public abstract class BaseTenantCapacityMapper extends AbstractMapper implements TenantCapacityMapper {
-    
+public abstract class BaseHisConfigInfoMapper extends AbstractMapper implements HistoryConfigInfoMapper {
+
     private DatabaseDialect databaseDialect;
-    
-    public BaseTenantCapacityMapper() {
+
+    public BaseHisConfigInfoMapper() {
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
     }
-    
+
     @Override
-    public MapperResult getCapacityList4CorrectUsage(MapperContext context) {
-        String sql = databaseDialect.getLimitTopSqlWithMark("SELECT id, tenant_id FROM tenant_capacity WHERE id>?");
-        return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.ID),
-                context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
+    public MapperResult removeConfigHistory(MapperContext context) {
+        return null;
     }
+
+    @Override
+    public MapperResult pageFindConfigHistoryFetchRows(MapperContext context) {
+        return null;
+    }
+
     @Override
     public String getFunction(String functionName) {
         return databaseDialect.getFunction(functionName);
     }
 
     @Override
-    public MapperResult insertTenantCapacity(MapperContext context) {
-        return null;
+    public MapperResult findConfigHistoryCountByTime(MapperContext context) {
+        return HistoryConfigInfoMapper.super.findConfigHistoryCountByTime(context);
     }
 
     @Override
-    public MapperResult correctUsage(MapperContext context) {
-        return null;
+    public MapperResult findDeletedConfig(MapperContext context) {
+        return HistoryConfigInfoMapper.super.findDeletedConfig(context);
     }
 
     @Override
-    public MapperResult decrementUsage(MapperContext context) {
-        return null;
+    public MapperResult findConfigHistoryFetchRows(MapperContext context) {
+        return HistoryConfigInfoMapper.super.findConfigHistoryFetchRows(context);
     }
 
     @Override
-    public MapperResult incrementUsage(MapperContext context) {
-        return null;
+    public MapperResult detailPreviousConfigHistory(MapperContext context) {
+        return HistoryConfigInfoMapper.super.detailPreviousConfigHistory(context);
     }
 
     @Override
-    public MapperResult incrementUsageWithQuotaLimit(MapperContext context) {
-        return null;
-    }
-
-    @Override
-    public MapperResult incrementUsageWithDefaultQuotaLimit(MapperContext context) {
-        return null;
-    }
-
-    @Override
-    public MapperResult select(MapperContext context) {
-        return null;
+    public MapperResult getNextHistoryInfo(MapperContext context) {
+        return HistoryConfigInfoMapper.super.getNextHistoryInfo(context);
     }
 }

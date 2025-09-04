@@ -17,8 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.impl.kingbase;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
 
 /**
  * The kingbase implementation of ConfigInfoAggrMapper.
@@ -26,7 +25,7 @@ import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
  * @author leon
  **/
 
-public class ConfigInfoAggrMapperByKingbase extends BaseConfigInfoAggrMapper {
+public class ConfigInfoAggrMapperByKingbase extends BaseConfigInfoGrayMapper {
 
     @Override
     public String getDataSource() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.enums.postgresql;
+package com.alibaba.nacos.plugin.datasource.enums;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,19 +24,19 @@ import java.util.Map;
  * By using this enum, you can verify whether a given SQL function is part of the trusted functions list
  * to avoid potential SQL injection risks.
  *
- * @author caoyanan
+ * @author blake.qiu
  */
-public enum TrustedPostgresqlFunctionEnum {
+public enum GaussdbFunctionEnum {
 
     /**
      * NOW().
      */
     NOW("NOW()", "NOW()");
 
-    private static final Map<String, TrustedPostgresqlFunctionEnum> LOOKUP_MAP = new HashMap<>();
+    private static final Map<String, GaussdbFunctionEnum> LOOKUP_MAP = new HashMap<>();
 
     static {
-        for (TrustedPostgresqlFunctionEnum entry : TrustedPostgresqlFunctionEnum.values()) {
+        for (GaussdbFunctionEnum entry : GaussdbFunctionEnum.values()) {
             LOOKUP_MAP.put(entry.functionName, entry);
         }
     }
@@ -45,7 +45,7 @@ public enum TrustedPostgresqlFunctionEnum {
 
     private final String function;
 
-    TrustedPostgresqlFunctionEnum(String functionName, String function) {
+    GaussdbFunctionEnum(String functionName, String function) {
         this.functionName = functionName;
         this.function = function;
     }
@@ -57,7 +57,7 @@ public enum TrustedPostgresqlFunctionEnum {
      * @return function
      */
     public static String getFunctionByName(String functionName) {
-        TrustedPostgresqlFunctionEnum entry = LOOKUP_MAP.get(functionName);
+        GaussdbFunctionEnum entry = LOOKUP_MAP.get(functionName);
         if (entry != null) {
             return entry.function;
         }

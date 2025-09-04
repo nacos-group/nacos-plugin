@@ -15,11 +15,17 @@
  */
 package com.alibaba.nacos.plugin.datasource.impl.oracle;
 
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantInfoMapper;
 import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
 
 /***
  * @author onewe
  */
-public class TenantInfoMapperByOracle extends AbstractOracleMapper implements TenantInfoMapper {
+public class TenantInfoMapperByOracle extends BaseTenantInfoMapper {
 
+    @Override
+    public String getDataSource() {
+        return DatabaseTypeConstant.ORACLE;
+    }
 }

@@ -18,14 +18,14 @@ package com.alibaba.nacos.plugin.datasource.impl.base;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
-import com.alibaba.nacos.plugin.datasource.impl.mysql.ConfigInfoAggrMapperByMySql;
+import com.alibaba.nacos.plugin.datasource.impl.mysql.ConfigInfoGrayMapperByMySql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoGrayMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,35 +33,36 @@ import java.util.List;
  *
  * @author Long Yu
  **/
-public class BaseConfigInfoAggrMapper extends ConfigInfoAggrMapperByMySql {
+public abstract class BaseConfigInfoGrayMapper extends AbstractMapper implements ConfigInfoGrayMapper {
     
     private DatabaseDialect databaseDialect;
     
-    public BaseConfigInfoAggrMapper() {
+    public BaseConfigInfoGrayMapper() {
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
     }
-    
-    @Override
-    public String getTableName() {
-        return TableConstant.CONFIG_INFO_AGGR;
-    }
-    
-    @Override
-    public MapperResult findConfigInfoAggrByPageFetchRows(MapperContext context) {
-        int startRow = context.getStartRow();
-        int pageSize = context.getPageSize();
-        String dataId = (String) context.getWhereParameter(FieldConstant.DATA_ID);
-        String groupId = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
-        String tenantId = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
-        String sql = databaseDialect.getLimitPageSqlWithOffset(
-                "SELECT data_id,group_id,tenant_id,datum_id,app_name,content FROM config_info_aggr WHERE data_id= ? AND "
-                        + "group_id= ? AND tenant_id= ? ORDER BY datum_id ", startRow, pageSize);
-        List<Object> paramList = CollectionUtils.list(dataId, groupId, tenantId);
-        return new MapperResult(sql, paramList);
+
+    public DatabaseDialect getDatabaseDialect() {
+        return databaseDialect;
     }
 
     @Override
     public String getFunction(String functionName) {
         return databaseDialect.getFunction(functionName);
+    }
+
+    @Override
+    public MapperResult findAllConfigInfoGrayForDumpAllFetchRows(MapperContext context) {
+        int startRow = context.getStartRow();
+        int pageSize = context.getPageSize();
+        String dataId = (String) context.getWhereParameter(FieldConstant.DATA_ID);
+        String groupId = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
+        String tenantId = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
+        String innerSql = getDatabaseDialect().getLimitPageSqlWithOffset(
+                "SELECT id FROM " + getTableName()+ " WHERE data_id= ? AND "
+                        + "group_id= ? AND tenant_id= ? ORDER BY datum_id ", startRow, pageSize);
+        String sql = "SELECT t. id,data_id,group_id,tenant_id,gray_name,app_name,content,md5,gmt_modified FROM ("
+                + innerSql + ") g, " + getTableName() + " t WHERE g. id = t. id";
+        List<Object> paramList = CollectionUtils.list(dataId, groupId, tenantId);
+        return new MapperResult(sql, paramList);
     }
 }

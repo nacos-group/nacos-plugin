@@ -18,7 +18,7 @@ package com.alibaba.nacos.plugin.datasource.impl.opengauss;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
-import com.alibaba.nacos.plugin.datasource.impl.enums.GaussdbFunctionEnum;
+import com.alibaba.nacos.plugin.datasource.enums.GaussdbFunctionEnum;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
 import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
 

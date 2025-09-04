@@ -31,14 +31,6 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 public class TenantCapacityMapperBySqlServer extends BaseTenantCapacityMapper {
 
     @Override
-    public MapperResult getCapacityList4CorrectUsage(MapperContext context) {
-        String sql = "SELECT id, tenant_id FROM tenant_capacity WHERE id > ? ORDER BY id "
-                + " OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY ";
-        return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.ID),
-                context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
-    }
-
-    @Override
     public String getDataSource() {
         return DatabaseTypeConstant.SQLSERVER;
     }

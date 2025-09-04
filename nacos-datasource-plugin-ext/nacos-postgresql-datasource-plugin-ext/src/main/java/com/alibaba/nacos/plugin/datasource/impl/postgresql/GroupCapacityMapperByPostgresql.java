@@ -25,7 +25,7 @@ import com.alibaba.nacos.plugin.datasource.impl.base.BaseGroupCapacityMapper;
  * @author Long Yu
  **/
 public class GroupCapacityMapperByPostgresql extends BaseGroupCapacityMapper {
-    
+
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.POSTGRESQL;

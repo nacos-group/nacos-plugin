@@ -18,7 +18,7 @@ package com.alibaba.nacos.plugin.datasource.impl.dm;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
 
 /**
  * The dameng implementation of ConfigInfoAggrMapper.
@@ -26,7 +26,7 @@ import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
  * @author Xiao Yong
  **/
 
-public class ConfigInfoAggrMapperByDaMeng extends BaseConfigInfoAggrMapper {
+public class ConfigInfoAggrMapperByDaMeng extends BaseConfigInfoGrayMapper {
 
     @Override
     public String getDataSource() {

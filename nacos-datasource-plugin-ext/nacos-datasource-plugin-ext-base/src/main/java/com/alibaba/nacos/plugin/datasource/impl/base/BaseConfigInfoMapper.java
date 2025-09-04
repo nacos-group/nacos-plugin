@@ -23,6 +23,8 @@ import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
 import com.alibaba.nacos.plugin.datasource.impl.mysql.ConfigInfoMapperByMySql;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -36,7 +38,7 @@ import java.util.List;
  *
  * @author Long Yu
  **/
-public class BaseConfigInfoMapper extends ConfigInfoMapperByMySql {
+public abstract class BaseConfigInfoMapper extends AbstractMapper implements ConfigInfoMapper {
     
     private DatabaseDialect databaseDialect;
     

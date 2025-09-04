@@ -31,13 +31,6 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
  */
 public class GroupCapacityMapperBySqlServer extends BaseGroupCapacityMapper {
 
-    @Override
-    public MapperResult selectGroupInfoBySize(MapperContext context) {
-        String sql = "SELECT id, group_id FROM group_capacity WHERE id > ? "
-                + " ORDER BY id OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY ";
-        return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.ID),
-                context.getPageSize()));
-    }
 
     @Override
     public String getDataSource() {

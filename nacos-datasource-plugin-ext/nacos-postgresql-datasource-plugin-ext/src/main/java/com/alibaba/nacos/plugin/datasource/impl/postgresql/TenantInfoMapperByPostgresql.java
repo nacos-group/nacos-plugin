@@ -17,6 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.impl.postgresql;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.enums.TrustedPostgresqFunctionEnum;
 import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantInfoMapper;
 
 /**
@@ -30,5 +31,7 @@ public class TenantInfoMapperByPostgresql extends BaseTenantInfoMapper {
     public String getDataSource() {
         return DatabaseTypeConstant.POSTGRESQL;
     }
-    
+
+
+
 }

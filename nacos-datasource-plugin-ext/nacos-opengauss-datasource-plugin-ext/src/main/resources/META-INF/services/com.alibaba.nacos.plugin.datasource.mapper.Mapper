@@ -15,7 +15,7 @@
 #
 
 
-com.alibaba.nacos.plugin.datasource.impl.opengauss.OpenGaussConfigInfoAggrMapper
+com.alibaba.nacos.plugin.datasource.impl.opengauss.OpenGaussConfigInfoGrayMapper
 com.alibaba.nacos.plugin.datasource.impl.opengauss.OpenGaussConfigInfoBetaMapper
 com.alibaba.nacos.plugin.datasource.impl.opengauss.OpenGaussConfigInfoMapper
 com.alibaba.nacos.plugin.datasource.impl.opengauss.OpenGaussConfigInfoTagMapper
