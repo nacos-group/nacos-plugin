@@ -16,13 +16,18 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.opengauss;
 
-import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoGrayMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigMigrateMapper;
+import com.alibaba.nacos.plugin.datasource.model.MapperContext;
+import com.alibaba.nacos.plugin.datasource.model.MapperResult;
+
+import java.util.Collections;
 
 /**
  * The base implementation of TenantInfo.
  *
  * @author  chen zhida
  **/
-public class OpenGaussTenantInfoMapper extends AbstractMapperByGaussdb implements TenantInfoMapper {
+public class OpenGaussConfigMigrateMapper extends AbstractMapperByGaussdb implements ConfigMigrateMapper {
 
 }

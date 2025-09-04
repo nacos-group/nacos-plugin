@@ -16,13 +16,24 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.opengauss;
 
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoGrayMapper;
 import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.model.MapperContext;
+import com.alibaba.nacos.plugin.datasource.model.MapperResult;
+
+import java.util.Collections;
 
 /**
  * The base implementation of TenantInfo.
  *
  * @author  chen zhida
  **/
-public class OpenGaussTenantInfoMapper extends AbstractMapperByGaussdb implements TenantInfoMapper {
+public class OpenGaussConfigInfoGrayMapper extends AbstractMapperByGaussdb implements ConfigInfoGrayMapper {
 
+    @Override
+    public MapperResult findAllConfigInfoGrayForDumpAllFetchRows(MapperContext context) {
+        String sql = " SELECT id,data_id,group_id,tenant_id,gray_name,gray_rule,app_name,content,md5,gmt_modified "
+                + " FROM  config_info_gray  ORDER BY id LIMIT " + context.getStartRow() + "," + context.getPageSize();
+        return new MapperResult(sql, Collections.emptyList());
+    }
 }
