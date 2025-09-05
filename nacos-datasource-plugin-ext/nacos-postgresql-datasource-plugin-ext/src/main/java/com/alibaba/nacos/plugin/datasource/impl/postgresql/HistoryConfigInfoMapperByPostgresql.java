@@ -29,15 +29,8 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
  * @author Long Yu
  **/
 public class HistoryConfigInfoMapperByPostgresql extends HistoryConfigInfoMapperByMySql {
-    
-    @Override
-    public MapperResult removeConfigHistory(MapperContext context) {
-        String sql = "WITH temp_table as (SELECT id FROM his_config_info WHERE gmt_modified < ? LIMIT ? ) "
-                + "DELETE FROM his_config_info WHERE id in (SELECT id FROM temp_table) ";
-        return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.START_TIME),
-                context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
-    }
-    
+
+
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.POSTGRESQL;

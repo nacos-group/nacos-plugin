@@ -64,8 +64,8 @@ public abstract class BaseConfigTagsRelationMapper extends AbstractMapper implem
         List<Object> paramList = new ArrayList<>();
         StringBuilder where = new StringBuilder(" WHERE ");
         final String sql =
-                "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content FROM config_info  a LEFT JOIN "
-                        + "config_tags_relation b ON a.id=b.id";
+                "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content FROM " + TableConstant.CONFIG_INFO + " a LEFT JOIN "
+                        + getTableName() + " b ON a.id=b.id";
         
         where.append(" a.tenant_id=? ");
         paramList.add(tenant);
@@ -112,7 +112,7 @@ public abstract class BaseConfigTagsRelationMapper extends AbstractMapper implem
         List<Object> paramList = new ArrayList<>();
         StringBuilder where = new StringBuilder(" WHERE ");
         final String sqlFetchRows = "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content "
-                + "FROM config_info a LEFT JOIN config_tags_relation b ON a.id=b.id ";
+                + "FROM " + TableConstant.CONFIG_INFO + " a LEFT JOIN " + getTableName() + " b ON a.id=b.id ";
         
         where.append(" a.tenant_id LIKE ? ");
         paramList.add(tenant);

@@ -17,6 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.impl.base;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
+import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
@@ -25,6 +26,8 @@ import com.alibaba.nacos.plugin.datasource.mapper.HistoryConfigInfoMapper;
 import com.alibaba.nacos.plugin.datasource.mapper.TenantCapacityMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
+
+import java.util.List;
 
 /**
  * The base implementation of TenantCapacityMapper.
@@ -39,19 +42,25 @@ public abstract class BaseHisConfigInfoMapper extends AbstractMapper implements 
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
     }
 
-    @Override
-    public MapperResult removeConfigHistory(MapperContext context) {
-        return null;
-    }
 
-    @Override
-    public MapperResult pageFindConfigHistoryFetchRows(MapperContext context) {
-        return null;
-    }
 
     @Override
     public String getFunction(String functionName) {
         return databaseDialect.getFunction(functionName);
+    }
+    @Override
+    public MapperResult removeConfigHistory(MapperContext context) {
+        String sql = "DELETE FROM his_config_info WHERE gmt_modified < ? LIMIT ?";
+        return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.START_TIME),
+                context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
+    }
+
+    @Override
+    public MapperResult pageFindConfigHistoryFetchRows(MapperContext context) {
+        String sql = databaseDialect.getLimitPageSqlWithOffset("SELECT nid,data_id,group_id,tenant_id,app_name,src_ip,src_user,op_type,ext_info,publish_type,gray_name,gmt_create,gmt_modified "
+                + "FROM " + getTableName()  + " WHERE data_id = ? AND group_id = ? AND tenant_id = ? ORDER BY nid DESC", context.getStartRow(), context.getPageSize());
+        return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.DATA_ID),
+                context.getWhereParameter(FieldConstant.GROUP_ID), context.getWhereParameter(FieldConstant.TENANT_ID)));
     }
 
     @Override
@@ -61,7 +70,14 @@ public abstract class BaseHisConfigInfoMapper extends AbstractMapper implements 
 
     @Override
     public MapperResult findDeletedConfig(MapperContext context) {
-        return HistoryConfigInfoMapper.super.findDeletedConfig(context);
+        String sql = databaseDialect.getLimitTopSqlWithMark("SELECT id, nid, data_id, group_id, app_name, content, md5, gmt_create, gmt_modified, src_user, src_ip, op_type, tenant_id, "
+                + "publish_type, gray_name, ext_info, encrypted_data_key FROM " + getTableName() + " WHERE op_type = 'D' AND "
+                + "publish_type = ? and gmt_modified >= ? and nid > ? order by nid ");
+        return new MapperResult(sql,
+                CollectionUtils.list(context.getWhereParameter(FieldConstant.PUBLISH_TYPE),
+                        context.getWhereParameter(FieldConstant.START_TIME),
+                        context.getWhereParameter(FieldConstant.LAST_MAX_ID),
+                        context.getWhereParameter(FieldConstant.PAGE_SIZE)));
     }
 
     @Override
@@ -76,6 +92,21 @@ public abstract class BaseHisConfigInfoMapper extends AbstractMapper implements 
 
     @Override
     public MapperResult getNextHistoryInfo(MapperContext context) {
-        return HistoryConfigInfoMapper.super.getNextHistoryInfo(context);
+        String sql = databaseDialect.getLimitPageSql("SELECT nid,data_id,group_id,tenant_id,app_name,content,md5,src_user,src_ip,op_type,publish_type,"
+                + "gray_name,ext_info,gmt_create,gmt_modified,encrypted_data_key FROM " + getTableName()
+                + " WHERE data_id = ? AND group_id = ? AND tenant_id = ? AND publish_type = ? "
+                + (StringUtils.isBlank(context.getContextParameter(FieldConstant.GRAY_NAME)) ? "" : "AND gray_name = ? ")
+                + " AND nid > ? ORDER BY nid ", 1, 1);
+
+        List<Object> paramList = CollectionUtils.list(
+                context.getWhereParameter(FieldConstant.DATA_ID),
+                context.getWhereParameter(FieldConstant.GROUP_ID),
+                context.getWhereParameter(FieldConstant.TENANT_ID),
+                context.getWhereParameter(FieldConstant.PUBLISH_TYPE),
+                context.getWhereParameter(FieldConstant.NID));
+        if (!StringUtils.isEmpty(context.getContextParameter(FieldConstant.GRAY_NAME))) {
+            paramList.add(4, context.getWhereParameter(FieldConstant.GRAY_NAME));
+        }
+        return new MapperResult(sql, paramList);
     }
 }

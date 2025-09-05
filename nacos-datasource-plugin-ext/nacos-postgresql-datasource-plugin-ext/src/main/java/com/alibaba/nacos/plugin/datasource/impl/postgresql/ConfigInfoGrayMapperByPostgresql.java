@@ -16,14 +16,8 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.postgresql;
 
-import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
-import com.alibaba.nacos.plugin.datasource.model.MapperContext;
-import com.alibaba.nacos.plugin.datasource.model.MapperResult;
-
-import java.util.List;
 
 /**
  * The postgresql implementation of ConfigInfoAggrMapper.
