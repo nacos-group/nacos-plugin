@@ -26,7 +26,7 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 /**
  * The base implementation of ConfigTagsRelationMapper.
  *
- * @author Long Yu
+ * @author  chen zhida
  **/
 public class OpenGaussConfigInfoTagMapper extends AbstractMapperByGaussdb implements ConfigInfoTagMapper {
     
@@ -34,15 +34,12 @@ public class OpenGaussConfigInfoTagMapper extends AbstractMapperByGaussdb implem
     public String getTableName() {
         return TableConstant.CONFIG_INFO_TAG;
     }
-    
+
     @Override
     public MapperResult findAllConfigInfoTagForDumpAllFetchRows(MapperContext context) {
-        int startRow = context.getStartRow();
-        int pageSize = context.getPageSize();
-        String innerSql = getDatabaseDialect()
-                .getLimitPageSqlWithOffset("SELECT id FROM config_info_tag  ORDER BY id ", startRow, pageSize);
-        String sql = " SELECT t.id,data_id,group_id,tenant_id,tag_id,app_name,content,md5,gmt_modified " + " FROM (  "
-                + innerSql + "  ) " + "g, config_info_tag t  WHERE g.id = t.id  ";
+        String sql = " SELECT t.id,data_id,group_id,tenant_id,tag_id,app_name,content,md5,gmt_modified "
+                + " FROM (  SELECT id FROM config_info_tag  ORDER BY id LIMIT " + context.getStartRow() + ","
+                + context.getPageSize() + " ) " + "g, config_info_tag t  WHERE g.id = t.id  ";
         return new MapperResult(sql, Collections.emptyList());
     }
     

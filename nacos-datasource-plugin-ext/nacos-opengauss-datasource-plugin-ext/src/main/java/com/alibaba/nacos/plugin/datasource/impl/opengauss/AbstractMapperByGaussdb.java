@@ -25,7 +25,7 @@ import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
 /**
  * The base implementation of ConfigTagsRelationMapper.
  *
- * @author Long Yu
+ * @author  chen zhida
  **/
 public abstract class AbstractMapperByGaussdb extends AbstractMapper {
     
