@@ -25,9 +25,9 @@ import com.alibaba.nacos.plugin.datasource.enums.TrustedOracleFunctionEnum;
  * @author onewe
  */
 public class OracleDatabaseDialect extends AbstractDatabaseDialect {
-
+	
 	private static final String DEFAULT_NAMESPACE_ID = "PUBLIC";
-
+	
 	static {
 		NamespaceUtil.namespaceDefaultId = DEFAULT_NAMESPACE_ID;
 	}
@@ -36,32 +36,25 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
 	public String getType() {
 		return DatabaseTypeConstant.ORACLE;
 	}
-
+	
 	@Override
 	public String getLimitTopSqlWithMark(String sql) {
-		// 使用Oracle 11g兼容的ROWNUM方式实现
-		return "SELECT * FROM (" + sql + ") WHERE ROWNUM <= ?";
+		return sql + " FETCH FIRST ? ROWS ONLY ";
 	}
-
+	
 	@Override
 	public String getLimitPageSqlWithMark(String sql) {
-		// 使用Oracle 11g兼容的分页方式实现
-		return "SELECT * FROM (SELECT ROWNUM rn, t.* FROM (" + sql + ") t WHERE ROWNUM <= ?) WHERE rn > ?";
+		return sql + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
 	}
-
+	
 	@Override
 	public String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize) {
-		int endOffset = startOffset + pageSize;
-		// 使用Oracle 11g兼容的分页方式实现
-		return "SELECT * FROM (SELECT ROWNUM rn, t.* FROM (" + sql + ") t WHERE ROWNUM <= " + endOffset + ") WHERE rn > " + startOffset;
+		return sql + "  OFFSET " + startOffset + " ROWS FETCH NEXT " + pageSize + " ROWS ONLY ";
 	}
 
 	@Override
 	public String getLimitPageSql(String sql, int pageNo, int pageSize) {
-		int startOffset = getPagePrevNum(pageNo, pageSize);
-		int endOffset = startOffset + pageSize;
-		// 使用Oracle 11g兼容的分页方式实现
-		return "SELECT * FROM (SELECT ROWNUM rn, t.* FROM (" + sql + ") t WHERE ROWNUM <= " + endOffset + ") WHERE rn > " + startOffset;
+		return sql + "  OFFSET " + getPagePrevNum(pageNo, pageSize) + " ROWS FETCH NEXT " + pageSize + " ROWS ONLY ";
 	}
 
 
