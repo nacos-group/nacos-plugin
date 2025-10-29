@@ -55,7 +55,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 				"SELECT count(*) FROM config_info WHERE ");
 		if (StringUtils.isBlank(tenantId)) {
 			sqlBuilder.append(" tenant_id = '")
-					.append(NamespaceUtil.getNamespaceDefaultId()).append(" ");
+					.append(DEFAULT_NAMESPACE_ID).append(" ");
 		}
 		else {
 			sqlBuilder.append(" tenant_id LIKE ? ");
@@ -78,7 +78,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 				"SELECT count(*) FROM config_info WHERE ");
 		if (StringUtils.isBlank(tenantId)) {
 			sqlBuilder.append(" tenant_id = '")
-					.append(NamespaceUtil.getNamespaceDefaultId()).append("' ");
+					.append(DEFAULT_NAMESPACE_ID).append("' ");
 		}
 		else {
 			sqlBuilder.append(" tenant_id LIKE ? ");
@@ -117,7 +117,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 			String appName = (String) context.getWhereParameter(FieldConstant.APP_NAME);
 
 			where.append(" tenant_id = NVL(?, '")
-					.append(NamespaceUtil.getNamespaceDefaultId()).append("') ");
+					.append(DEFAULT_NAMESPACE_ID).append("') ");
 			paramList.add(tenantId);
 
 			if (StringUtils.isNotBlank(dataId)) {
@@ -144,7 +144,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 
 		final List<Object> paramList = new ArrayList<>();
 		final String sqlCountRows = "SELECT count(*) FROM config_info WHERE ";
-		String where = " tenant_id='" + NamespaceUtil.getNamespaceDefaultId() + "' ";
+		String where = " tenant_id='" + DEFAULT_NAMESPACE_ID + "' ";
 
 		if (!StringUtils.isBlank(dataId)) {
 			where += " AND data_id LIKE ? ";
@@ -174,7 +174,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 		final String sqlCount = "SELECT count(*) FROM config_info";
 		StringBuilder where = new StringBuilder(" WHERE ");
 
-		where.append(" tenant_id=NVL(?, '").append(NamespaceUtil.getNamespaceDefaultId())
+		where.append(" tenant_id=NVL(?, '").append(DEFAULT_NAMESPACE_ID)
 				.append("') ");
 		paramList.add(tenantId);
 		if (StringUtils.isNotBlank(dataId)) {
@@ -211,7 +211,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 		StringBuilder where = new StringBuilder(" WHERE ");
 
 		if (StringUtils.isBlank(tenantId)) {
-			where.append(" tenant_id='").append(NamespaceUtil.getNamespaceDefaultId())
+			where.append(" tenant_id='").append(DEFAULT_NAMESPACE_ID)
 					.append("' ");
 		}
 		else {
@@ -261,7 +261,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 		String sqlBuilder = "UPDATE config_info SET "
 				+ "content=?, md5 = ?, src_ip=?,src_user=?,gmt_modified=?, app_name=?,c_desc=?,c_use=?,effect=?,type=?,c_schema=? "
 				+ "WHERE data_id=? AND group_id=? " + " AND tenant_id=NVL(?, '"
-				+ NamespaceUtil.getNamespaceDefaultId() + "') "
+				+ DEFAULT_NAMESPACE_ID + "') "
 				+ " AND (md5=? OR md5 IS NULL OR md5='')";
 		return new MapperResult(sqlBuilder, paramList);
 	}
@@ -279,7 +279,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 				"SELECT id,data_id,group_id,tenant_id,app_name,content FROM config_info where ");
 		if (StringUtils.isBlank(tenantId)) {
 			sqlBuilder.append(" tenant_id='")
-					.append(NamespaceUtil.getNamespaceDefaultId()).append("' ");
+					.append(DEFAULT_NAMESPACE_ID).append("' ");
 		}
 		else {
 			sqlBuilder.append(" tenant_id LIKE ? ");
@@ -299,7 +299,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 		int pageSize = context.getPageSize();
 		String sql = getLimitPageSqlWithOffset(
 				"SELECT tenant_id FROM config_info WHERE tenant_id != '"
-						+ NamespaceUtil.getNamespaceDefaultId() + "' GROUP BY tenant_id ",
+						+ DEFAULT_NAMESPACE_ID + "' GROUP BY tenant_id ",
 				startRow, pageSize);
 		return new MapperResult(sql, Collections.emptyList());
 	}
@@ -310,7 +310,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 		int pageSize = context.getPageSize();
 		String sql = getLimitPageSqlWithOffset(
 				"SELECT group_id FROM config_info WHERE tenant_id != '"
-						+ NamespaceUtil.getNamespaceDefaultId() + "' GROUP BY group_id ",
+						+ DEFAULT_NAMESPACE_ID + "' GROUP BY group_id ",
 				+startRow, pageSize);
 		return new MapperResult(sql, Collections.emptyList());
 	}
@@ -327,7 +327,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 				" SELECT id FROM config_info WHERE ");
 		if (StringUtils.isBlank(tenantId)) {
 			innerSqlBuilder.append(" tenant_id='")
-					.append(NamespaceUtil.getNamespaceDefaultId()).append("' ");
+					.append(DEFAULT_NAMESPACE_ID).append("' ");
 		}
 		else {
 			innerSqlBuilder.append(" tenant_id LIKE ? ");
@@ -430,14 +430,14 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 		final String group = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
 		final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
 		final String sqlFetchRows = "SELECT id,data_id,group_id,tenant_id,content FROM config_info WHERE ";
-		String where = " tenant_id='" + NamespaceUtil.getNamespaceDefaultId() + "' ";
+		String where = " tenant_id='" + DEFAULT_NAMESPACE_ID + "' ";
 		List<Object> paramList = new ArrayList<>();
 		if (!StringUtils.isBlank(dataId)) {
 			where += " AND data_id LIKE ? ";
 			paramList.add(dataId);
 		}
 		if (!StringUtils.isBlank(group)) {
-			where += " AND group_id LIKE ";
+			where += " AND group_id LIKE ? ";
 			paramList.add(group);
 		}
 		if (!StringUtils.isBlank(content)) {
@@ -461,7 +461,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 		final String sql = "SELECT id,data_id,group_id,tenant_id,app_name,content,type,encrypted_data_key FROM config_info";
 		StringBuilder where = new StringBuilder(" WHERE ");
 
-		where.append(" tenant_id=NVL(?, '").append(NamespaceUtil.getNamespaceDefaultId())
+		where.append(" tenant_id=NVL(?, '").append(DEFAULT_NAMESPACE_ID)
 				.append("') ");
 		paramList.add(tenant);
 
@@ -500,7 +500,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 		sqlArgs.add(tenantId);
 
 		String sql = "SELECT id,data_id,group_id,content FROM config_info WHERE group_id=? and "
-				+ " tenant_id=NVL(?, '" + NamespaceUtil.getNamespaceDefaultId() + "') ";
+				+ " tenant_id=NVL(?, '" + DEFAULT_NAMESPACE_ID + "') ";
 		String resultSql = getLimitPageSqlWithOffset(sql, startRow, pageSize);
 		return new MapperResult(resultSql, sqlArgs);
 	}
@@ -517,7 +517,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 		List<Object> paramList = new ArrayList<>();
 
 		if (StringUtils.isBlank(tenant)) {
-			where.append(" tenant_id='").append(NamespaceUtil.getNamespaceDefaultId())
+			where.append(" tenant_id='").append(DEFAULT_NAMESPACE_ID)
 					.append("' ");
 		}
 		else {
@@ -555,7 +555,7 @@ public class ConfigInfoMapperByOceanbase extends AbstractOceanbaseMapper
 		StringBuilder sqlBuilder = new StringBuilder("SELECT id FROM config_info WHERE ");
 		if (StringUtils.isBlank(tenantId)) {
 			sqlBuilder.append(" tenant_id='")
-					.append(NamespaceUtil.getNamespaceDefaultId()).append("' ");
+					.append(DEFAULT_NAMESPACE_ID).append("' ");
 		}
 		else {
 			sqlBuilder.append(" tenant_id LIKE ? ");

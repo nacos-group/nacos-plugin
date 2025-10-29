@@ -63,7 +63,7 @@ public class ConfigInfoTagMapperByOceanbase extends AbstractOceanbaseMapper
 
 		String sql =
 				"UPDATE config_info_tag SET content = ?, md5 = ?, src_ip = ?,src_user = ?,gmt_modified = ?,app_name = ? "
-						+ "WHERE data_id = ? AND group_id = ? AND tenant_id = NVL(?,'"+ NamespaceUtil.getNamespaceDefaultId() +"') AND tag_id = ? AND (md5 = ? OR md5 IS NULL OR md5 = '')";
+						+ "WHERE data_id = ? AND group_id = ? AND tenant_id = NVL(?,'"+ DEFAULT_NAMESPACE_ID +"') AND tag_id = ? AND (md5 = ? OR md5 IS NULL OR md5 = '')";
 		return new MapperResult(sql,
 				CollectionUtils.list(content, md5, srcIp, srcUser, gmtModified, appName, dataId, groupId, tenantId,
 						tagId, oldMd5));

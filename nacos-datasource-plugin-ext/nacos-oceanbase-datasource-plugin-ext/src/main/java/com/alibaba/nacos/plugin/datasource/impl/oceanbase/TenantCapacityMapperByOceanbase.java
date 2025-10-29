@@ -46,7 +46,7 @@ public class TenantCapacityMapperByOceanbase extends AbstractOceanbaseMapper
 	@Override
 	public MapperResult incrementUsageWithDefaultQuotaLimit(MapperContext context) {
 		return new MapperResult(
-				"UPDATE tenant_capacity SET usage = usage + 1, gmt_modified = ? WHERE tenant_id = NVL(?,'"+ NamespaceUtil.getNamespaceDefaultId()
+				"UPDATE tenant_capacity SET usage = usage + 1, gmt_modified = ? WHERE tenant_id = NVL(?,'"+ DEFAULT_NAMESPACE_ID
 						+"') AND usage <"
 						+ " ? AND quota = 0",
 				CollectionUtils.list(context.getUpdateParameter(FieldConstant.GMT_MODIFIED),
@@ -57,7 +57,7 @@ public class TenantCapacityMapperByOceanbase extends AbstractOceanbaseMapper
 	@Override
 	public MapperResult incrementUsageWithQuotaLimit(MapperContext context) {
 		return new MapperResult(
-				"UPDATE tenant_capacity SET usage = usage + 1, gmt_modified = ? WHERE tenant_id = NVL(?,'"+NamespaceUtil.getNamespaceDefaultId()+"') AND usage < "
+				"UPDATE tenant_capacity SET usage = usage + 1, gmt_modified = ? WHERE tenant_id = NVL(?,'"+DEFAULT_NAMESPACE_ID+"') AND usage < "
 						+ "quota AND quota != 0",
 				CollectionUtils.list(context.getUpdateParameter(FieldConstant.GMT_MODIFIED),
 						context.getWhereParameter(FieldConstant.TENANT_ID)));
@@ -65,7 +65,7 @@ public class TenantCapacityMapperByOceanbase extends AbstractOceanbaseMapper
 
 	@Override
 	public MapperResult incrementUsage(MapperContext context) {
-		return new MapperResult("UPDATE tenant_capacity SET usage = usage + 1, gmt_modified = ? WHERE tenant_id = NVL(?, '"+NamespaceUtil.getNamespaceDefaultId()+"')",
+		return new MapperResult("UPDATE tenant_capacity SET usage = usage + 1, gmt_modified = ? WHERE tenant_id = NVL(?, '"+DEFAULT_NAMESPACE_ID+"')",
 				CollectionUtils.list(context.getUpdateParameter(FieldConstant.GMT_MODIFIED),
 						context.getWhereParameter(FieldConstant.TENANT_ID)));
 	}
@@ -73,7 +73,7 @@ public class TenantCapacityMapperByOceanbase extends AbstractOceanbaseMapper
 	@Override
 	public MapperResult decrementUsage(MapperContext context) {
 		return new MapperResult(
-				"UPDATE tenant_capacity SET usage = usage - 1, gmt_modified = ? WHERE tenant_id = NVL(?, '"+NamespaceUtil.getNamespaceDefaultId()+"') AND usage > 0",
+				"UPDATE tenant_capacity SET usage = usage - 1, gmt_modified = ? WHERE tenant_id = NVL(?, '"+DEFAULT_NAMESPACE_ID+"') AND usage > 0",
 				CollectionUtils.list(context.getUpdateParameter(FieldConstant.GMT_MODIFIED),
 						context.getWhereParameter(FieldConstant.TENANT_ID)));
 	}
@@ -81,8 +81,8 @@ public class TenantCapacityMapperByOceanbase extends AbstractOceanbaseMapper
 	@Override
 	public MapperResult correctUsage(MapperContext context) {
 		return new MapperResult(
-				"UPDATE tenant_capacity SET usage = (SELECT count(*) FROM config_info WHERE tenant_id = NVL(?, '"+NamespaceUtil.getNamespaceDefaultId()+"')), "
-						+ "gmt_modified = ? WHERE tenant_id = NVL(?, '"+NamespaceUtil.getNamespaceDefaultId()+"')",
+				"UPDATE tenant_capacity SET usage = (SELECT count(*) FROM config_info WHERE tenant_id = NVL(?, '"+DEFAULT_NAMESPACE_ID+"')), "
+						+ "gmt_modified = ? WHERE tenant_id = NVL(?, '"+DEFAULT_NAMESPACE_ID+"')",
 				CollectionUtils.list(context.getWhereParameter(FieldConstant.TENANT_ID),
 						context.getUpdateParameter(FieldConstant.GMT_MODIFIED),
 						context.getWhereParameter(FieldConstant.TENANT_ID)));
@@ -102,7 +102,7 @@ public class TenantCapacityMapperByOceanbase extends AbstractOceanbaseMapper
 
 		return new MapperResult(
 				"INSERT INTO tenant_capacity (tenant_id, quota, usage, max_size, max_aggr_count, max_aggr_size, "
-						+ "gmt_create, gmt_modified) SELECT ?, ?, count(*), ?, ?, ?, ?, ? FROM config_info WHERE tenant_id=NVL(?, '"+NamespaceUtil.getNamespaceDefaultId()+"')",
+						+ "gmt_create, gmt_modified) SELECT ?, ?, count(*), ?, ?, ?, ?, ? FROM config_info WHERE tenant_id=NVL(?, '"+DEFAULT_NAMESPACE_ID+"')",
 				paramList);
 	}
 }

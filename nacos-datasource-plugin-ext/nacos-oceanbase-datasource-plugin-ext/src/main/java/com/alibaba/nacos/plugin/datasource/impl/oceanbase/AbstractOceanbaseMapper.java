@@ -17,7 +17,6 @@ package com.alibaba.nacos.plugin.datasource.impl.oceanbase;
 
 import java.util.List;
 
-import com.alibaba.nacos.common.utils.NamespaceUtil;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
@@ -30,6 +29,12 @@ import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
  * @author OceanBase Plugin Team
  */
 public abstract class AbstractOceanbaseMapper extends AbstractMapper {
+
+	/**
+	 * Default namespace ID for OceanBase in Oracle mode.
+	 * Oracle mode uses 'PUBLIC' as the default namespace instead of the empty string.
+	 */
+	protected static final String DEFAULT_NAMESPACE_ID = "PUBLIC";
 
 	private final DatabaseDialect databaseDialect;
 
@@ -69,7 +74,7 @@ public abstract class AbstractOceanbaseMapper extends AbstractMapper {
 		for (int i = 0; i < where.size(); i++) {
 			String condition = where.get(i);
 			if (StringUtils.equalsIgnoreCase(condition, "tenant_id")) {
-				sql.append("tenant_id").append(" = ").append("NVL(?, '").append(NamespaceUtil.getNamespaceDefaultId())
+				sql.append("tenant_id").append(" = ").append("NVL(?, '").append(DEFAULT_NAMESPACE_ID)
 						.append("')");
 			}
 			else {
@@ -106,7 +111,7 @@ public abstract class AbstractOceanbaseMapper extends AbstractMapper {
 		for (int i = 0; i < where.size(); i++) {
 			String condition = where.get(i);
 			if (StringUtils.equalsIgnoreCase(condition, "tenant_id")) {
-				sql.append("tenant_id").append(" = ").append("NVL(?, '").append(NamespaceUtil.getNamespaceDefaultId())
+				sql.append("tenant_id").append(" = ").append("NVL(?, '").append(DEFAULT_NAMESPACE_ID)
 						.append("')");
 			}
 			else {
@@ -129,7 +134,7 @@ public abstract class AbstractOceanbaseMapper extends AbstractMapper {
 
 			String condition = params.get(i);
 			if (StringUtils.equalsIgnoreCase(condition, "tenant_id")) {
-				sql.append("tenant_id").append(" = ").append("NVL(?, '").append(NamespaceUtil.getNamespaceDefaultId())
+				sql.append("tenant_id").append(" = ").append("NVL(?, '").append(DEFAULT_NAMESPACE_ID)
 						.append("')");
 			}
 			else {
@@ -161,7 +166,7 @@ public abstract class AbstractOceanbaseMapper extends AbstractMapper {
 		for (int i = 0; i < where.size(); i++) {
 			String condition = where.get(i);
 			if (StringUtils.equalsIgnoreCase(condition, "tenant_id")) {
-				sql.append("tenant_id").append(" = ").append("NVL(?, '").append(NamespaceUtil.getNamespaceDefaultId())
+				sql.append("tenant_id").append(" = ").append("NVL(?, '").append(DEFAULT_NAMESPACE_ID)
 						.append("')");
 			}
 			else {

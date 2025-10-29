@@ -50,7 +50,7 @@ public class ConfigInfoAggrMapperByOceanbase extends AbstractOceanbaseMapper
 
 		String sqlBuilder =
 				"SELECT data_id,group_id,tenant_id,datum_id,app_name,content FROM config_info_aggr WHERE data_id= ? AND "
-						+ " group_id= ? " + " AND tenant_id = NVL(?, '"+ NamespaceUtil.getNamespaceDefaultId() +"') " + " ORDER BY datum_id ";
+						+ " group_id= ? " + " AND tenant_id = NVL(?, '"+ DEFAULT_NAMESPACE_ID +"') " + " ORDER BY datum_id ";
 		String sql = getDatabaseDialect().getLimitPageSqlWithOffset(sqlBuilder, startRow, pageSize);
 		return new MapperResult(sql, sqlArgs);
 	}
@@ -78,7 +78,7 @@ public class ConfigInfoAggrMapperByOceanbase extends AbstractOceanbaseMapper
 		}
 
 		String sql =
-				"DELETE FROM config_info_aggr WHERE data_id = ? AND group_id = ? AND tenant_id = NVL(?, '"+NamespaceUtil.getNamespaceDefaultId()+"') AND datum_id IN ("
+				"DELETE FROM config_info_aggr WHERE data_id = ? AND group_id = ? AND tenant_id = NVL(?, '"+DEFAULT_NAMESPACE_ID+"') AND datum_id IN ("
 						+ placeholderString + ")";
 
 		return new MapperResult(sql, paramList);
@@ -95,7 +95,7 @@ public class ConfigInfoAggrMapperByOceanbase extends AbstractOceanbaseMapper
 		List<Object> paramList = CollectionUtils.list(dataId, group, tenantTmp);
 
 		StringBuilder sql = new StringBuilder(
-				"SELECT count(*) FROM config_info_aggr WHERE data_id = ? AND group_id = ? AND tenant_id = NVL(?, '"+NamespaceUtil.getNamespaceDefaultId()+"') AND datum_id");
+				"SELECT count(*) FROM config_info_aggr WHERE data_id = ? AND group_id = ? AND tenant_id = NVL(?, '"+DEFAULT_NAMESPACE_ID+"') AND datum_id");
 		if (isIn) {
 			sql.append(" IN (");
 		} else {
@@ -120,7 +120,7 @@ public class ConfigInfoAggrMapperByOceanbase extends AbstractOceanbaseMapper
 		String tenantId = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
 
 		String sql = "SELECT data_id,group_id,tenant_id,datum_id,app_name,content FROM "
-				+ "config_info_aggr WHERE data_id = ? AND group_id = ? AND tenant_id = NVL(?, '"+NamespaceUtil.getNamespaceDefaultId()+"') ORDER BY datum_id";
+				+ "config_info_aggr WHERE data_id = ? AND group_id = ? AND tenant_id = NVL(?, '"+DEFAULT_NAMESPACE_ID+"') ORDER BY datum_id";
 		List<Object> paramList = CollectionUtils.list(dataId, groupId, tenantId);
 
 		return new MapperResult(sql, paramList);

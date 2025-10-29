@@ -16,8 +16,6 @@
 
 package com.alibaba.nacos.plugin.datasource.dialect;
 
-import com.alibaba.nacos.common.utils.NamespaceUtil;
-import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.enums.TrustedOceanbaseFunctionEnum;
 
 /**
@@ -25,12 +23,6 @@ import com.alibaba.nacos.plugin.datasource.enums.TrustedOceanbaseFunctionEnum;
  * @author OceanBase Plugin Team
  */
 public class OceanbaseDatabaseDialect extends AbstractDatabaseDialect {
-
-	private static final String DEFAULT_NAMESPACE_ID = "PUBLIC";
-
-	static {
-		NamespaceUtil.namespaceDefaultId = DEFAULT_NAMESPACE_ID;
-	}
 
     @Override
     public String getType() {

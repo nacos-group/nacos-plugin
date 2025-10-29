@@ -53,7 +53,7 @@ public class ConfigInfoBetaMapperByOceanbase extends AbstractOceanbaseMapper
 	@Override
 	public MapperResult updateConfigInfo4BetaCas(MapperContext context) {
 		final String sql = "UPDATE config_info_beta SET content = ?,md5 = ?,beta_ips = ?,src_ip = ?,src_user = ?,gmt_modified = ?,app_name = ? "
-				+ "WHERE data_id = ? AND group_id = ? AND tenant_id = NVL(?, '"+ NamespaceUtil.getNamespaceDefaultId() +"') AND (md5 = ? OR md5 is null OR md5 = '')";
+				+ "WHERE data_id = ? AND group_id = ? AND tenant_id = NVL(?, '"+ DEFAULT_NAMESPACE_ID +"') AND (md5 = ? OR md5 is null OR md5 = '')";
 
 		List<Object> paramList = new ArrayList<>();
 

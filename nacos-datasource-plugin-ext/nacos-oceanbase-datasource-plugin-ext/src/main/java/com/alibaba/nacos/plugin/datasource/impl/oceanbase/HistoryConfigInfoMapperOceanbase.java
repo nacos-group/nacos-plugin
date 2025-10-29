@@ -53,7 +53,7 @@ public class HistoryConfigInfoMapperOceanbase extends AbstractOceanbaseMapper
 
 		String sql =
 				"SELECT nid,data_id,group_id,tenant_id,app_name,src_ip,src_user,op_type,gmt_create,gmt_modified FROM his_config_info "
-						+ " WHERE data_id = ? AND group_id = ? AND  tenant_id = NVL(?, '"+ NamespaceUtil.getNamespaceDefaultId() +"') "
+						+ " WHERE data_id = ? AND group_id = ? AND  tenant_id = NVL(?, '"+ DEFAULT_NAMESPACE_ID +"') "
 						+ " ORDER BY nid DESC OFFSET " + context.getStartRow() + " ROWS FETCH NEXT " + context
 						.getPageSize() + " ROWS ONLY ";
 		return new MapperResult(sql, sqlArgs);

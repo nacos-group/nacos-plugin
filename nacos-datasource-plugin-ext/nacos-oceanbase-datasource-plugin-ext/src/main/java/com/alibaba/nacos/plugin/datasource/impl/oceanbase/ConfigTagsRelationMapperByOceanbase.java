@@ -51,7 +51,7 @@ public class ConfigTagsRelationMapperByOceanbase extends AbstractOceanbaseMapper
 		StringBuilder where = new StringBuilder(" WHERE ");
 		final String sqlCount = "SELECT count(*) FROM config_info  a LEFT JOIN config_tags_relation b ON a.id=b.id";
 
-		where.append(" a.tenant_id=NVL(?,'").append(NamespaceUtil.getNamespaceDefaultId()).append("') ");
+		where.append(" a.tenant_id=NVL(?,'").append(DEFAULT_NAMESPACE_ID).append("') ");
 
 		if (StringUtils.isNotBlank(dataId)) {
 			where.append(" AND a.data_id=? ");
@@ -94,7 +94,7 @@ public class ConfigTagsRelationMapperByOceanbase extends AbstractOceanbaseMapper
 		final String sqlCount = "SELECT count(*) FROM config_info  a LEFT JOIN config_tags_relation b ON a.id=b.id ";
 
 		if (StringUtils.isBlank(tenantId)) {
-			where.append(" a.tenant_id ='").append(NamespaceUtil.getNamespaceDefaultId()).append("' ");
+			where.append(" a.tenant_id ='").append(DEFAULT_NAMESPACE_ID).append("' ");
 		}else {
 			where.append(" a.tenant_id LIKE ? ");
 			paramList.add(tenantId);
@@ -144,7 +144,7 @@ public class ConfigTagsRelationMapperByOceanbase extends AbstractOceanbaseMapper
 		final String sql = "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content FROM config_info  a LEFT JOIN "
 				+ "config_tags_relation b ON a.id=b.id";
 
-		where.append(" a.tenant_id=NVL(?, '").append(NamespaceUtil.getNamespaceDefaultId()).append("') ");
+		where.append(" a.tenant_id=NVL(?, '").append(DEFAULT_NAMESPACE_ID).append("') ");
 		paramList.add(tenant);
 
 		if (StringUtils.isNotBlank(dataId)) {
@@ -194,7 +194,7 @@ public class ConfigTagsRelationMapperByOceanbase extends AbstractOceanbaseMapper
 				+ "FROM config_info a LEFT JOIN config_tags_relation b ON a.id=b.id ";
 
 		if (StringUtils.isBlank(tenant)) {
-			where.append(" a.tenant_id = '").append(NamespaceUtil.getNamespaceDefaultId()).append("' ");
+			where.append(" a.tenant_id = '").append(DEFAULT_NAMESPACE_ID).append("' ");
 		} else {
 			where.append(" a.tenant_id LIKE ? ");
 			paramList.add(tenant);
