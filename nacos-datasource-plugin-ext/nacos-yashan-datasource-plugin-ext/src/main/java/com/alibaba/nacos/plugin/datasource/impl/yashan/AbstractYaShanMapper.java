@@ -38,7 +38,7 @@ public abstract class AbstractYaShanMapper extends AbstractMapper {
 
 	@Override
 	public String getDataSource() {
-		return DatabaseTypeConstant.YASHAN;
+		return DatabaseTypeConstant.YASDB;
 	}
 
 	@Override

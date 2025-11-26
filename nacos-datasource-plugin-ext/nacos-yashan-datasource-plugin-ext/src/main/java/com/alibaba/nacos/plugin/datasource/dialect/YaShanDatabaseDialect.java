@@ -34,7 +34,7 @@ public class YaShanDatabaseDialect extends AbstractDatabaseDialect {
 
 	@Override
 	public String getType() {
-		return DatabaseTypeConstant.YASHAN;
+		return DatabaseTypeConstant.YASDB;
 	}
 	
 	@Override
