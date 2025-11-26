@@ -37,6 +37,6 @@ public class DatabaseTypeConstant {
 
     public static final String KINGBASE = "kingbase";
 
-    public static final String YASHAN = "yashan";
+    public static final String YASHAN = "yasdb";
 
 }
