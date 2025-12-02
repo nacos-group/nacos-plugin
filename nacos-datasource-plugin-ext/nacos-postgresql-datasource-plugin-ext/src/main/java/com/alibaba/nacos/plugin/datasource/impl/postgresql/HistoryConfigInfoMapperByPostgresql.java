@@ -35,5 +35,11 @@ public class HistoryConfigInfoMapperByPostgresql extends HistoryConfigInfoMapper
     public String getDataSource() {
         return DatabaseTypeConstant.POSTGRESQL;
     }
+
+    @Override
+    public MapperResult removeConfigHistory(MapperContext context) {
+        String sql = "DELETE FROM his_config_info WHERE gmt_modified < ?";
+        return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.START_TIME)));
+    }
     
 }
