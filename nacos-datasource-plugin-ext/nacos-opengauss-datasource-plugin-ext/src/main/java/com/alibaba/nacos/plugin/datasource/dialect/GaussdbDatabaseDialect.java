@@ -27,7 +27,7 @@ public class GaussdbDatabaseDialect extends AbstractDatabaseDialect {
 
     @Override
     public String getType() {
-        return DatabaseTypeConstant.GUASSDB;
+        return DatabaseTypeConstant.GAUSSDB;
     }
     
     @Override

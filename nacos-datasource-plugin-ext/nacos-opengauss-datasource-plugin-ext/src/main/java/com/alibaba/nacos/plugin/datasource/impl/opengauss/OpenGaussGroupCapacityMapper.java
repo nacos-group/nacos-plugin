@@ -16,13 +16,9 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.opengauss;
 
-import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.impl.base.BaseGroupCapacityMapper;
 import com.alibaba.nacos.plugin.datasource.mapper.GroupCapacityMapper;
-import com.alibaba.nacos.plugin.datasource.model.MapperContext;
-import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
 /**
  * The base implementation of GroupCapacityMapper.
@@ -33,6 +29,6 @@ public class OpenGaussGroupCapacityMapper extends BaseGroupCapacityMapper implem
 
     @Override
     public String getDataSource() {
-        return DatabaseTypeConstant.GUASSDB;
+        return DatabaseTypeConstant.GAUSSDB;
     }
 }

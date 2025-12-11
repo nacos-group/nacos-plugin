@@ -25,7 +25,7 @@ public class DatabaseTypeConstant {
 
     public static final String POSTGRESQL = "postgresql";
 
-    public static final String GUASSDB = "gaussdb";
+    public static final String GAUSSDB = "gaussdb";
 
     public static final String MYSQL = "mysql";
 

@@ -41,7 +41,7 @@ public abstract class AbstractMapperByGaussdb extends AbstractMapper {
 
     @Override
     public String getDataSource() {
-        return DatabaseTypeConstant.GUASSDB;
+        return DatabaseTypeConstant.GAUSSDB;
     }
 
     @Override
