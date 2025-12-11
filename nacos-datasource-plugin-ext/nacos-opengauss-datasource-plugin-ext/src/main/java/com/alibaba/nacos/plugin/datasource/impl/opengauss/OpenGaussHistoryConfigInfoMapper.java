@@ -18,6 +18,7 @@ package com.alibaba.nacos.plugin.datasource.impl.opengauss;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseHisConfigInfoMapper;
 import com.alibaba.nacos.plugin.datasource.impl.mysql.HistoryConfigInfoMapperByMySql;
 
 /**
@@ -25,7 +26,7 @@ import com.alibaba.nacos.plugin.datasource.impl.mysql.HistoryConfigInfoMapperByM
  *
  * @author Xiao Yong
  **/
-public class OpenGaussHistoryConfigInfoMapper extends HistoryConfigInfoMapperByMySql {
+public class OpenGaussHistoryConfigInfoMapper extends BaseHisConfigInfoMapper {
 
     @Override
     public String getDataSource() {

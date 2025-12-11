@@ -18,6 +18,7 @@ package com.alibaba.nacos.plugin.datasource.impl.kingbase;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseHisConfigInfoMapper;
 import com.alibaba.nacos.plugin.datasource.impl.mysql.HistoryConfigInfoMapperByMySql;
 
 /**
@@ -25,7 +26,7 @@ import com.alibaba.nacos.plugin.datasource.impl.mysql.HistoryConfigInfoMapperByM
  *
  * @author leon
  **/
-public class HistoryConfigInfoMapperByKingbase extends HistoryConfigInfoMapperByMySql {
+public class HistoryConfigInfoMapperByKingbase extends BaseHisConfigInfoMapper {
 
     @Override
     public String getDataSource() {
