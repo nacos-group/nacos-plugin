@@ -20,6 +20,7 @@
         <module>nacos-dm-datasource-plugin-ext</module>
         <module>nacos-mssql-datasource-plugin-ext</module>
         <module>nacos-kingbase-datasource-plugin-ext</module>
+        <module>nacos-oceanbase-datasource-plugin-ext</module>
         <module>nacos-yashan-datasource-plugin-ext</module>
     </modules>
 
