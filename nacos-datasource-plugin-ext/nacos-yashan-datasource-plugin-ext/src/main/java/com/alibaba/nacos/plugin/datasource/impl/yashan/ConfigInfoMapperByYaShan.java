@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.nacos.plugin.datasource.impl.oracle;
+package com.alibaba.nacos.plugin.datasource.impl.yashan;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 /***
  * @author onewe
  */
-public class ConfigInfoMapperByOracle extends AbstractOracleMapper
+public class ConfigInfoMapperByYaShan extends AbstractYaShanMapper
 		implements ConfigInfoMapper {
 
 	private String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize) {
@@ -255,7 +255,7 @@ public class ConfigInfoMapperByOracle extends AbstractOracleMapper
 		paramList.add(context.getWhereParameter(FieldConstant.MD5));
 
 		String sqlBuilder = "UPDATE config_info SET "
-				+ "content=?, md5 = ?, src_ip=?,src_user=?,gmt_modified=CURRENT_TIMESTAMP, app_name=?,c_desc=?,c_use=?,effect=?,type=?,c_schema=? "
+				+ "content=?, md5 = ?, src_ip=?,src_user=?,gmt_modified=NOW(), app_name=?,c_desc=?,c_use=?,effect=?,type=?,c_schema=? "
 				+ "WHERE data_id=? AND group_id=? " + " AND tenant_id=NVL(?, '"
 				+ NamespaceUtil.getNamespaceDefaultId() + "') "
 				+ " AND (md5=? OR md5 IS NULL OR md5='')";
@@ -508,13 +508,12 @@ public class ConfigInfoMapperByOracle extends AbstractOracleMapper
 		final String group = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
 		final String appName = (String) context.getWhereParameter(FieldConstant.APP_NAME);
 		final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
-		final String sqlFetchRows = "SELECT id,data_id,group_id,tenant_id,app_name,content,encrypted_data_key FROM config_info";
+		final String sqlFetchRows = "SELECT id,data_id,group_id,tenant_id,app_name,content,encrypted_data_key,type FROM config_info";
 		StringBuilder where = new StringBuilder(" WHERE ");
 		List<Object> paramList = new ArrayList<>();
 
 		if (StringUtils.isBlank(tenant)) {
-			where.append(" tenant_id='").append(NamespaceUtil.getNamespaceDefaultId())
-					.append("' ");
+			where.append(" tenant_id IS NULL OR tenant_id=''");
 		}
 		else {
 			where.append(" tenant_id LIKE ? ");
