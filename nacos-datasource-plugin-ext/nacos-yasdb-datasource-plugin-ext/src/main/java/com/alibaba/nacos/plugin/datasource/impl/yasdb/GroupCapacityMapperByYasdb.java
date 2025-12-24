@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.nacos.plugin.datasource.impl.yashan;
+package com.alibaba.nacos.plugin.datasource.impl.yasdb;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.common.utils.NamespaceUtil;
@@ -29,7 +29,7 @@ import java.util.List;
 /***
  * @author onewe
  */
-public class GroupCapacityMapperByYaShan extends AbstractYaShanMapper
+public class GroupCapacityMapperByYasdb extends AbstractYasdbMapper
 		implements GroupCapacityMapper {
 
 	@Override

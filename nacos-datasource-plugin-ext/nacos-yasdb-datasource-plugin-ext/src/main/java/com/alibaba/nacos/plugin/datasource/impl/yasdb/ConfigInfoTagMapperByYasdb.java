@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.nacos.plugin.datasource.impl.yashan;
+package com.alibaba.nacos.plugin.datasource.impl.yasdb;
 
 import java.util.Collections;
 
@@ -27,7 +27,7 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 /***
  * @author onewe
  */
-public class ConfigInfoTagMapperByYaShan extends AbstractYaShanMapper
+public class ConfigInfoTagMapperByYasdb extends AbstractYasdbMapper
 		implements ConfigInfoTagMapper {
 	
 

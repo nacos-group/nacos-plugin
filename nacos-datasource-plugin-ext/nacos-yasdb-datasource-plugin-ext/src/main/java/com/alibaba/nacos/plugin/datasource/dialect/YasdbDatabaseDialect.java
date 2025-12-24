@@ -18,13 +18,13 @@ package com.alibaba.nacos.plugin.datasource.dialect;
 
 import com.alibaba.nacos.common.utils.NamespaceUtil;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.enums.TrustedYaShanFunctionEnum;
+import com.alibaba.nacos.plugin.datasource.enums.TrustedYasdbFunctionEnum;
 
 /***
- * yashan datasource dialect.
+ * yasdb datasource dialect.
  * @author onewe
  */
-public class YaShanDatabaseDialect extends AbstractDatabaseDialect {
+public class YasdbDatabaseDialect extends AbstractDatabaseDialect {
 	
 	private static final String DEFAULT_NAMESPACE_ID = "PUBLIC";
 	
@@ -60,6 +60,6 @@ public class YaShanDatabaseDialect extends AbstractDatabaseDialect {
 
 	@Override
 	public String getFunction(String functionName) {
-		return TrustedYaShanFunctionEnum.getFunctionByName(functionName);
+		return TrustedYasdbFunctionEnum.getFunctionByName(functionName);
 	}
 }
