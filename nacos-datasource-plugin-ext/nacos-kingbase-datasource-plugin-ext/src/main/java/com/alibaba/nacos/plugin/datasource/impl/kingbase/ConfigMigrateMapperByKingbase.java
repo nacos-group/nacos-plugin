@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 1999-2024 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,17 @@
 package com.alibaba.nacos.plugin.datasource.impl.kingbase;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigMigrateMapper;
 
 /**
  * The kingbase implementation of ConfigInfoAggrMapper.
  *
  * @author leon
- **/
-public class TenantInfoMapperByKingbase extends AbstractMapperByKingbase implements TenantInfoMapper {
+ */
+public class ConfigMigrateMapperByKingbase extends AbstractMapperByKingbase implements ConfigMigrateMapper {
 
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.KINGBASE;
     }
-
 }
