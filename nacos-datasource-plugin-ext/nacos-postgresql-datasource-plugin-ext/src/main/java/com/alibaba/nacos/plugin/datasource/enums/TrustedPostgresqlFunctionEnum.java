@@ -20,36 +20,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The TrustedSqlFunctionEnum enum class is used to enumerate and manage a list of trusted built-in SQL functions.
- * By using this enum, you can verify whether a given SQL function is part of the trusted functions list
- * to avoid potential SQL injection risks.
+ * The TrustedSqlFunctionEnum enum class is used to enumerate and manage a list of trusted built-in SQL functions. By
+ * using this enum, you can verify whether a given SQL function is part of the trusted functions list to avoid potential
+ * SQL injection risks.
  *
- * @author blake.qiu
+ * @author caoyanan
  */
-public enum TrustedPostgresqFunctionEnum {
-
+public enum TrustedPostgresqlFunctionEnum {
+    
     /**
      * NOW().
      */
     NOW("NOW()", "NOW()");
-
-    private static final Map<String, TrustedPostgresqFunctionEnum> LOOKUP_MAP = new HashMap<>();
-
+    
+    private static final Map<String, TrustedPostgresqlFunctionEnum> LOOKUP_MAP = new HashMap<>();
+    
     static {
-        for (TrustedPostgresqFunctionEnum entry : TrustedPostgresqFunctionEnum.values()) {
+        for (TrustedPostgresqlFunctionEnum entry : TrustedPostgresqlFunctionEnum.values()) {
             LOOKUP_MAP.put(entry.functionName, entry);
         }
     }
-
+    
     private final String functionName;
-
+    
     private final String function;
-
-    TrustedPostgresqFunctionEnum(String functionName, String function) {
+    
+    TrustedPostgresqlFunctionEnum(String functionName, String function) {
         this.functionName = functionName;
         this.function = function;
     }
-
+    
     /**
      * Get the function name.
      *
@@ -57,7 +57,7 @@ public enum TrustedPostgresqFunctionEnum {
      * @return function
      */
     public static String getFunctionByName(String functionName) {
-        TrustedPostgresqFunctionEnum entry = LOOKUP_MAP.get(functionName);
+        TrustedPostgresqlFunctionEnum entry = LOOKUP_MAP.get(functionName);
         if (entry != null) {
             return entry.function;
         }

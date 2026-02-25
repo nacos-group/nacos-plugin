@@ -16,14 +16,13 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.postgresql;
 
-import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigMigrateMapper;
 
 /**
- * The postgresql implementation of TenantInfoMapper.
+ * The postgresql implementation of ConfigMigrateMapper.
  *
- * @author Long Yu
  * @author Ken
  **/
-public class TenantInfoMapperByPostgresql extends AbstractMapperByPostgresql implements TenantInfoMapper {
+public class ConfigMigrateMapperByPostgresql extends AbstractMapperByPostgresql implements ConfigMigrateMapper {
 
 }

@@ -17,19 +17,35 @@
 package com.alibaba.nacos.plugin.datasource.impl.postgresql;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
+import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
+import com.alibaba.nacos.plugin.datasource.enums.TrustedPostgresqlFunctionEnum;
+import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
 
 /**
- * The postgresql implementation of ConfigInfoAggrMapper.
  *
- * @author Long Yu
+ * @author Ken
  **/
-
-public class ConfigInfoAggrMapperByPostgresql extends BaseConfigInfoAggrMapper {
+public abstract class AbstractMapperByPostgresql extends AbstractMapper {
+    
+    private final DatabaseDialect databaseDialect;
+    
+    public DatabaseDialect getDatabaseDialect() {
+        return databaseDialect;
+    }
+    
+    public AbstractMapperByPostgresql() {
+        databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
+    }
     
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.POSTGRESQL;
+    }
+    
+    @Override
+    public String getFunction(String functionName) {
+        return TrustedPostgresqlFunctionEnum.getFunctionByName(functionName);
     }
     
 }

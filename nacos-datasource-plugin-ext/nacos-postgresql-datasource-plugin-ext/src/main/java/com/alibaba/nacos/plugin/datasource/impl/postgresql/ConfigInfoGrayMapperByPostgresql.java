@@ -17,25 +17,31 @@
 package com.alibaba.nacos.plugin.datasource.impl.postgresql;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
-import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoTagMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoGrayMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
 /**
- * The postgresql implementation of ConfigInfoTagMapper.
+ * The postgresql implementation of ConfigInfoGrayMapper.
  *
- * @author hyx
  * @author Ken
  **/
-public class ConfigInfoTagMapperByPostgresql extends AbstractMapperByPostgresql implements ConfigInfoTagMapper {
+public class ConfigInfoGrayMapperByPostgresql extends AbstractMapperByPostgresql implements ConfigInfoGrayMapper {
     
+    private String getLimitPageSqlWithMark(String sql) {
+        return getDatabaseDialect().getLimitPageSqlWithMark(sql);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MapperResult findAllConfigInfoTagForDumpAllFetchRows(MapperContext context) {
+    public MapperResult findAllConfigInfoGrayForDumpAllFetchRows(MapperContext context) {
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();
-        String innerSql = getDatabaseDialect().getLimitPageSqlWithMark("SELECT id FROM config_info_tag  ORDER BY id ");
-        String sql = " SELECT t.id,data_id,group_id,tenant_id,tag_id,app_name,content,md5,gmt_modified " + " FROM (  "
-                + innerSql + "  ) " + "g, config_info_tag t  WHERE g.id = t.id  ";
+        String sqlInner = getLimitPageSqlWithMark("SELECT id FROM config_info_gray  ORDER BY id ");
+        String sql = " SELECT t.id,data_id,group_id,tenant_id,gray_name,app_name,content,md5,gmt_modified " + " FROM ( "
+                + sqlInner + "  )  g," + " config_info_gray t WHERE g.id = t.id ";
         return new MapperResult(sql, CollectionUtils.list(startRow, pageSize));
     }
 }

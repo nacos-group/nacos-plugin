@@ -16,20 +16,35 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.postgresql;
 
-import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoBetaMapper;
+import com.alibaba.nacos.common.utils.CollectionUtils;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoBetaMapper;
+import com.alibaba.nacos.plugin.datasource.model.MapperContext;
+import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
 /**
  * The postgresql implementation of ConfigInfoBetaMapper.
  *
  * @author Long Yu
+ * @author Ken
  **/
-
-public class ConfigInfoBetaMapperByPostgresql extends BaseConfigInfoBetaMapper {
+public class ConfigInfoBetaMapperByPostgresql extends AbstractMapperByPostgresql implements ConfigInfoBetaMapper {
     
+    private String getLimitPageSqlWithMark(String sql) {
+        return getDatabaseDialect().getLimitPageSqlWithMark(sql);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getDataSource() {
-        return DatabaseTypeConstant.POSTGRESQL;
+    public MapperResult findAllConfigInfoBetaForDumpAllFetchRows(MapperContext context) {
+        int startRow = context.getStartRow();
+        int pageSize = context.getPageSize();
+        String sqlInner = getLimitPageSqlWithMark("SELECT id FROM config_info_beta  ORDER BY id ");
+        String sql =
+                " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified,beta_ips,encrypted_data_key "
+                        + " FROM ( " + sqlInner + "  )" + "  g, config_info_beta t WHERE g.id = t.id ";
+        return new MapperResult(sql, CollectionUtils.list(startRow, pageSize));
     }
     
 }
