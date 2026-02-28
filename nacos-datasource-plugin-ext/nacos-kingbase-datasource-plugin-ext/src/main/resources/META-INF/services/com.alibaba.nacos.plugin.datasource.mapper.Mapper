@@ -14,14 +14,14 @@
 # limitations under the License.
 #
 
-com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigInfoAggrMapperByKingbase
+#com.alibaba.nacos.plugin.datasource.impl.kingbase.AbstractMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigInfoBetaMapperByKingbase
+com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigInfoGrayMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigInfoMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigInfoTagMapperByKingbase
+com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigMigrateMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigTagsRelationMapperByKingbase
-com.alibaba.nacos.plugin.datasource.impl.kingbase.HistoryConfigInfoMapperByKingbase
-com.alibaba.nacos.plugin.datasource.impl.kingbase.TenantInfoMapperByKingbase
-com.alibaba.nacos.plugin.datasource.impl.kingbase.TenantCapacityMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.GroupCapacityMapperByKingbase
-
-
+com.alibaba.nacos.plugin.datasource.impl.kingbase.HistoryConfigInfoMapperByKingbase
+com.alibaba.nacos.plugin.datasource.impl.kingbase.TenantCapacityMapperByKingbase
+com.alibaba.nacos.plugin.datasource.impl.kingbase.TenantInfoMapperByKingbase

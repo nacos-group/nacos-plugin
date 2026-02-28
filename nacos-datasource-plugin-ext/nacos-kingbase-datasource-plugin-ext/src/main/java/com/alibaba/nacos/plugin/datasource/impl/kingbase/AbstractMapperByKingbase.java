@@ -16,21 +16,18 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.kingbase;
 
-import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
+import com.alibaba.nacos.plugin.datasource.enums.kingbase.TrustedKingbaseFunctionEnum;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
 
 /**
- * The kingbase implementation of ConfigInfoAggrMapper.
- *
- * @author leon
- **/
-
-public class ConfigInfoAggrMapperByKingbase extends BaseConfigInfoAggrMapper {
+ * @author 619008336
+ * @description The abstract Kingbase mapper contains CRUD methods.
+ * @date 2026/01/12
+ */
+public abstract class AbstractMapperByKingbase extends AbstractMapper {
 
     @Override
-    public String getDataSource() {
-        return DatabaseTypeConstant.KINGBASE;
+    public String getFunction(String functionName) {
+        return TrustedKingbaseFunctionEnum.getFunctionByName(functionName);
     }
-
 }
