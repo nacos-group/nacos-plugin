@@ -43,5 +43,10 @@ public class BaseTenantCapacityMapper extends TenantCapacityMapperByMySql {
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.ID),
                 context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
     }
+    @Override
+    public String getFunction(String functionName) {
+        return databaseDialect.getFunction(functionName);
+    }
+
 
 }

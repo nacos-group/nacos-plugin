@@ -59,6 +59,11 @@ public class BaseConfigInfoBetaMapper extends ConfigInfoBetaMapperByMySql {
                         + " FROM ( " + sqlInner + "  )" + "  g, config_info_beta t WHERE g.id = t.id ";
         return new MapperResult(sql, Collections.emptyList());
     }
+
+    @Override
+    public String getFunction(String functionName) {
+        return databaseDialect.getFunction(functionName);
+    }
     
     
 }

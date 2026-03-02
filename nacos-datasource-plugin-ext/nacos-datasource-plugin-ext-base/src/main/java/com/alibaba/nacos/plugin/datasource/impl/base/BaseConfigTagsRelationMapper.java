@@ -144,5 +144,10 @@ public class BaseConfigTagsRelationMapper extends ConfigTagsRelationMapperByMySq
         String sql = getLimitPageSqlWithOffset(sqlFetchRows + where, startRow, pageSize);
         return new MapperResult(sql, paramList);
     }
+
+    @Override
+    public String getFunction(String functionName) {
+        return databaseDialect.getFunction(functionName);
+    }
     
 }

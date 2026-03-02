@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.impl.postgresql;
+package com.alibaba.nacos.plugin.datasource.impl.kingbase;
 
-import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
+import com.alibaba.nacos.plugin.datasource.enums.kingbase.TrustedKingbaseFunctionEnum;
+import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
 
 /**
- * The postgresql implementation of ConfigInfoAggrMapper.
- *
- * @author Long Yu
- **/
+ * @author 619008336
+ * @description The abstract Kingbase mapper contains CRUD methods.
+ * @date 2026/01/12
+ */
+public abstract class AbstractMapperByKingbase extends AbstractMapper {
 
-public class ConfigInfoAggrMapperByPostgresql extends BaseConfigInfoAggrMapper {
-    
     @Override
-    public String getDataSource() {
-        return DatabaseTypeConstant.POSTGRESQL;
+    public String getFunction(String functionName) {
+        return TrustedKingbaseFunctionEnum.getFunctionByName(functionName);
     }
-    
 }
