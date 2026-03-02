@@ -146,7 +146,6 @@ nacos-plugin/
 
 如有问题或建议，欢迎通过以下方式联系：
 
-- 开发者邮箱：644968328@qq.com
 - GitHub Issues: https://github.com/nacos-group/nacos-plugin/issues
 
 ## 七、许可证
