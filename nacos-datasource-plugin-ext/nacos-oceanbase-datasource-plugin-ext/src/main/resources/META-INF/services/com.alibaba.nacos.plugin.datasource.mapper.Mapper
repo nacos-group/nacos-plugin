@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigInfoAggrMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigInfoBetaMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigInfoMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigInfoTagMapperByOceanbase
