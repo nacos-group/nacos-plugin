@@ -17,15 +17,14 @@
 package com.alibaba.nacos.plugin.datasource.impl.kingbase;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
 
 /**
  * The kingbase implementation of ConfigInfoAggrMapper.
  *
  * @author leon
  **/
-public class TenantInfoMapperByKingbase extends BaseTenantInfoMapper {
+public class TenantInfoMapperByKingbase extends AbstractMapperByKingbase implements TenantInfoMapper {
 
     @Override
     public String getDataSource() {

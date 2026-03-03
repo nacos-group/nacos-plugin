@@ -18,38 +18,29 @@ package com.alibaba.nacos.plugin.datasource.impl.kingbase;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.impl.mysql.AbstractMapperByMysql;
-import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoBetaMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoGrayMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 /**
- * The kingbase implementation of ConfigInfoBetaMapper.
- *
- * @author leon
- **/
+ * @author 619008336
+ * @description The Kingbase implementation of ConfigInfoGrayMapper.
+ * @date 2026/01/12
+ */
 
-public class ConfigInfoBetaMapperByKingbase extends AbstractMapperByMysql implements ConfigInfoBetaMapper {
+public class ConfigInfoGrayMapperByKingbase extends AbstractMapperByMysql implements ConfigInfoGrayMapper {
 
     @Override
-    public MapperResult findAllConfigInfoBetaForDumpAllFetchRows(MapperContext context) {
-        int startRow = context.getStartRow();
-        int pageSize = context.getPageSize();
-        String sql = " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified,beta_ips,encrypted_data_key "
-                + " FROM ( SELECT id FROM config_info_beta  ORDER BY id LIMIT " + startRow + "," + pageSize + " )"
-                + "  g, config_info_beta t WHERE g.id = t.id ";
-        List<Object> paramList = new ArrayList<>();
-        paramList.add(startRow);
-        paramList.add(pageSize);
-
-        return new MapperResult(sql, paramList);
+    public MapperResult findAllConfigInfoGrayForDumpAllFetchRows(MapperContext context) {
+        String sql = " SELECT id,data_id,group_id,tenant_id,gray_name,gray_rule,app_name,content,md5,gmt_modified "
+                + " FROM  config_info_gray  ORDER BY id LIMIT " + context.getStartRow() + "," + context.getPageSize();
+        return new MapperResult(sql, Collections.emptyList());
     }
 
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.KINGBASE;
     }
-
 }

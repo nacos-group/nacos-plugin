@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 1999-2024 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.impl.postgresql;
+package com.alibaba.nacos.plugin.datasource.impl.kingbase;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigMigrateMapper;
 
 /**
- * The postgresql implementation of ConfigInfoAggrMapper.
+ * The kingbase implementation of ConfigInfoAggrMapper.
  *
- * @author Long Yu
- **/
+ * @author leon
+ */
+public class ConfigMigrateMapperByKingbase extends AbstractMapperByKingbase implements ConfigMigrateMapper {
 
-public class ConfigInfoAggrMapperByPostgresql extends BaseConfigInfoAggrMapper {
-    
     @Override
     public String getDataSource() {
-        return DatabaseTypeConstant.POSTGRESQL;
+        return DatabaseTypeConstant.KINGBASE;
     }
-    
 }
