@@ -19,7 +19,7 @@ package com.alibaba.nacos.plugin.datasource.dialect;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 
 /**
- * PostgreSQL database dialect.
+ * Gaussdb database dialect.
  * @author Long Yu
  */
 public class GaussdbDatabaseDialect extends AbstractDatabaseDialect {
@@ -48,5 +48,10 @@ public class GaussdbDatabaseDialect extends AbstractDatabaseDialect {
     public String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize){
         return sql + "  OFFSET " + startOffset + " LIMIT " + pageSize;
     }
-
+    
+    @Override
+    public String getFunction(String functionName) {
+        return functionName;
+    }
+    
 }

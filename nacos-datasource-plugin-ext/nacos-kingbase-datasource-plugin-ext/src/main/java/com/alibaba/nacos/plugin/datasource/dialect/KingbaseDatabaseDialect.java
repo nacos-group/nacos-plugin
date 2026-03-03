@@ -14,4 +14,9 @@ public class KingbaseDatabaseDialect extends AbstractDatabaseDialect {
     public String getType() {
         return DatabaseTypeConstant.KINGBASE;
     }
+    
+    @Override
+    public String getFunction(String functionName) {
+        return functionName;
+    }
 }
