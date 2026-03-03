@@ -80,12 +80,12 @@ public class ConfigTagsRelationMapperByKingbase extends AbstractMapperByKingbase
 
         // 使用子查询分离筛选逻辑和标签聚合逻辑
         final String sql = "SELECT c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.type,c.encrypted_data_key,c.c_desc,"
-                + "GROUP_CONCAT(DISTINCT d.tag_name SEPARATOR ',') as config_tags "
+                + "STRING_AGG(DISTINCT d.tag_name, ',') as config_tags "
                 + "FROM ("
                 + "SELECT DISTINCT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content,a.md5,a.type,a.encrypted_data_key,a.c_desc "
                 + "FROM config_info a LEFT JOIN config_tags_relation b ON a.id=b.id"
                 + innerWhere
-                + "LIMIT " + context.getStartRow() + "," + context.getPageSize()
+                + "LIMIT " + context.getPageSize() + " OFFSET " + context.getStartRow()
                 + ") c LEFT JOIN config_tags_relation d ON c.id=d.id "
                 + "GROUP BY c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.type,c.encrypted_data_key,c.c_desc";
 
@@ -140,7 +140,7 @@ public class ConfigTagsRelationMapperByKingbase extends AbstractMapperByKingbase
 
         // 构建外层查询：获取筛选出的配置的完整标签信息
         final String sql = "SELECT c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.encrypted_data_key,c.type,c.c_desc,"
-                + "GROUP_CONCAT(DISTINCT d.tag_name SEPARATOR ',') as config_tags "
+                + "STRING_AGG(DISTINCT d.tag_name, ',') as config_tags "
                 + "FROM (" + innerResult.getSql() + ") c "
                 + "LEFT JOIN config_tags_relation d ON c.id=d.id "
                 + "GROUP BY c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.encrypted_data_key,c.type,c.c_desc";

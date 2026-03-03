@@ -216,7 +216,7 @@ public class ConfigInfoMapperByKingbase extends AbstractMapperByKingbase impleme
 
         // 外层查询：对分页后的结果进行标签关联
         final String sql = "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content,a.md5,a.type,a.encrypted_data_key,a.c_desc,"
-                + "GROUP_CONCAT(b.tag_name SEPARATOR ',') as config_tags "
+                + "STRING_AGG(DISTINCT b.tag_name, ',') as config_tags "
                 + "FROM (" + innerSql + ") a LEFT JOIN config_tags_relation b ON a.id=b.id "
                 + "GROUP BY a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content,a.md5,a.type,a.encrypted_data_key,a.c_desc";
 
@@ -280,7 +280,7 @@ public class ConfigInfoMapperByKingbase extends AbstractMapperByKingbase impleme
 
         // 外层查询：对分页后的结果进行标签关联
         final String sql = "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content,a.md5,a.encrypted_data_key,a.type,a.c_desc,"
-                + "GROUP_CONCAT(b.tag_name SEPARATOR ',') as config_tags "
+                + "STRING_AGG(DISTINCT b.tag_name, ',') as config_tags "
                 + "FROM (" + innerSql + ") a LEFT JOIN config_tags_relation b ON a.id=b.id "
                 + "GROUP BY a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content,a.md5,a.encrypted_data_key,a.type,a.c_desc";
 
