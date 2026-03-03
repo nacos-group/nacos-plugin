@@ -7,13 +7,17 @@ A collection of Nacos plug-ins that provide pluggable plug-in capabilities for N
 
 本插件项目与 Nacos 版本的对应关系如下：
 
-| 插件 Tag 版本 | 支持的 Nacos 版本 |
-|-------------|----------------|
-| 2.2.x       | Nacos 2.2.x |
-| 2.3.x       | Nacos 2.3.x |
-| 3.1.x       | Nacos 3.0.x ~ 3.1.x |
+| 插件 Tag 版本 | 支持的 Nacos 版本        |
+|-----------|---------------------|
+| 2.2.x     | Nacos 2.2.x         |
+| 2.3.x     | Nacos 2.3.x         |
+| 2.4.x     | Nacos 2.4.x         |
+| 2.5.x     | Nacos 2.5.x         |
+| 3.1.x     | Nacos 3.0.x ~ 3.1.x |
 
 **注意**：请选择与您使用的 Nacos 版本相匹配的插件版本进行安装。
+
+> 3.1.x 对kingbase的数据库插件做了较大的改动，用户若从2.x版本升级到3.x版本时，请先阅读[kingbase插件的README](nacos-datasource-plugin-ext/nacos-kingbase-datasource-plugin-ext/README.md)，并在测试环境中确认无误后再进行生产环境的升级。
 
 ## 二、安装说明
 
