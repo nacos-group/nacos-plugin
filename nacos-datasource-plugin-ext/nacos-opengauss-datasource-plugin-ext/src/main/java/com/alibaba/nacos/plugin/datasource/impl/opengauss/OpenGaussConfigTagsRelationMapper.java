@@ -20,22 +20,29 @@ package com.alibaba.nacos.plugin.datasource.impl.opengauss;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.nacos.common.utils.ArrayUtils;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
 import com.alibaba.nacos.plugin.datasource.mapper.ConfigTagsRelationMapper;
-import com.alibaba.nacos.plugin.datasource.mapper.ext.WhereBuilder;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
 /**
  * The postgresql implementation of ConfigTagsRelationMapper.
  *
- * @author  chen zhida
+ * @author Long Yu
  **/
 public class OpenGaussConfigTagsRelationMapper extends AbstractMapperByGaussdb implements ConfigTagsRelationMapper {
-
+    
+    public String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize) {
+        return getDatabaseDialect().getLimitPageSqlWithOffset(sql, startOffset, pageSize);
+    }
+    
+    @Override
+    public String getTableName() {
+        return TableConstant.CONFIG_TAGS_RELATION;
+    }
+    
     @Override
     public MapperResult findConfigInfo4PageFetchRows(MapperContext context) {
         final String tenant = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
@@ -44,16 +51,14 @@ public class OpenGaussConfigTagsRelationMapper extends AbstractMapperByGaussdb i
         final String appName = (String) context.getWhereParameter(FieldConstant.APP_NAME);
         final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
         final String[] tagArr = (String[]) context.getWhereParameter(FieldConstant.TAG_ARR);
-
         List<Object> paramList = new ArrayList<>();
         StringBuilder where = new StringBuilder(" WHERE ");
         final String sql =
                 "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content FROM config_info  a LEFT JOIN "
                         + "config_tags_relation b ON a.id=b.id";
-
+        
         where.append(" a.tenant_id=? ");
         paramList.add(tenant);
-
         if (StringUtils.isNotBlank(dataId)) {
             where.append(" AND a.data_id=? ");
             paramList.add(dataId);
@@ -70,6 +75,7 @@ public class OpenGaussConfigTagsRelationMapper extends AbstractMapperByGaussdb i
             where.append(" AND a.content LIKE ? ");
             paramList.add(content);
         }
+        
         where.append(" AND b.tag_name IN (");
         for (int i = 0; i < tagArr.length; i++) {
             if (i != 0) {
@@ -79,10 +85,12 @@ public class OpenGaussConfigTagsRelationMapper extends AbstractMapperByGaussdb i
             paramList.add(tagArr[i]);
         }
         where.append(") ");
-        return new MapperResult(sql + where + " LIMIT " + context.getStartRow() + "," + context.getPageSize(),
-                paramList);
+        int startRow = context.getStartRow();
+        int pageSize = context.getPageSize();
+        String resultSql = getLimitPageSqlWithOffset(sql + where, startRow, pageSize);
+        return new MapperResult(resultSql, paramList);
     }
-
+    
     @Override
     public MapperResult findConfigInfoLike4PageFetchRows(MapperContext context) {
         final String tenant = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
@@ -91,43 +99,42 @@ public class OpenGaussConfigTagsRelationMapper extends AbstractMapperByGaussdb i
         final String appName = (String) context.getWhereParameter(FieldConstant.APP_NAME);
         final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
         final String[] tagArr = (String[]) context.getWhereParameter(FieldConstant.TAG_ARR);
-        final String[] types = (String[]) context.getWhereParameter(FieldConstant.TYPE);
-
-        WhereBuilder where = new WhereBuilder(
-                "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content,a.type "
-                        + "FROM config_info a LEFT JOIN config_tags_relation b ON a.id=b.id");
-
-        where.like("a.tenant_id", tenant);
-
-        if (StringUtils.isNotBlank(dataId)) {
-            where.and().like("a.data_id", dataId);
+        List<Object> paramList = new ArrayList<>();
+        StringBuilder where = new StringBuilder(" WHERE ");
+        final String sqlFetchRows = "SELECT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content "
+                + "FROM config_info a LEFT JOIN config_tags_relation b ON a.id=b.id ";
+        
+        where.append(" a.tenant_id LIKE ? ");
+        paramList.add(tenant);
+        if (!StringUtils.isBlank(dataId)) {
+            where.append(" AND a.data_id LIKE ? ");
+            paramList.add(dataId);
         }
-        if (StringUtils.isNotBlank(group)) {
-            where.and().like("a.group_id", group);
+        if (!StringUtils.isBlank(group)) {
+            where.append(" AND a.group_id LIKE ? ");
+            paramList.add(group);
         }
-        if (StringUtils.isNotBlank(appName)) {
-            where.and().eq("a.app_name", appName);
+        if (!StringUtils.isBlank(appName)) {
+            where.append(" AND a.app_name = ? ");
+            paramList.add(appName);
         }
-        if (StringUtils.isNotBlank(content)) {
-            where.and().like("a.content", content);
+        if (!StringUtils.isBlank(content)) {
+            where.append(" AND a.content LIKE ? ");
+            paramList.add(content);
         }
-        if (!ArrayUtils.isEmpty(tagArr)) {
-            where.and().startParentheses();
-            for (int i = 0; i < tagArr.length; i++) {
-                if (i != 0) {
-                    where.or();
-                }
-                where.like("b.tag_name", tagArr[i]);
+        where.append(" AND b.tag_name IN (");
+        for (int i = 0; i < tagArr.length; i++) {
+            if (i != 0) {
+                where.append(", ");
             }
-            where.endParentheses();
+            where.append('?');
+            paramList.add(tagArr[i]);
         }
-        if (!ArrayUtils.isEmpty(types)) {
-            where.and().in("a.type", types);
-        }
-
-        where.limit(context.getStartRow(), context.getPageSize());
-
-        return where.build();
+        where.append(") ");
+        int startRow = context.getStartRow();
+        int pageSize = context.getPageSize();
+        String sql = getLimitPageSqlWithOffset(sqlFetchRows + where, startRow, pageSize);
+        return new MapperResult(sql, paramList);
     }
     
 }

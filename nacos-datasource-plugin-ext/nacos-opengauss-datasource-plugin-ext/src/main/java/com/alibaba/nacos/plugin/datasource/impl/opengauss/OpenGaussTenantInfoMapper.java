@@ -21,7 +21,7 @@ import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
 /**
  * The base implementation of TenantInfo.
  *
- * @author  chen zhida
+ * @author Long Yu
  **/
 public class OpenGaussTenantInfoMapper extends AbstractMapperByGaussdb implements TenantInfoMapper {
 

@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.impl.kingbase;
+package com.alibaba.nacos.plugin.datasource.impl.dm;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoAggrMapper;
 
 /**
- * The kingbase implementation of ConfigInfoAggrMapper.
+ * The dameng implementation of ConfigInfoAggrMapper.
  *
- * @author leon
+ * @author Xiao Yong
  **/
-public class TenantInfoMapperByKingbase extends BaseTenantInfoMapper {
+
+public class ConfigInfoAggrMapperByDaMeng extends BaseConfigInfoAggrMapper {
 
     @Override
     public String getDataSource() {
-        return DatabaseTypeConstant.KINGBASE;
+        return DatabaseTypeConstant.DM;
     }
 
+    @Override
+    public String[] getPrimaryKeyGeneratedKeys() {
+        return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
 }

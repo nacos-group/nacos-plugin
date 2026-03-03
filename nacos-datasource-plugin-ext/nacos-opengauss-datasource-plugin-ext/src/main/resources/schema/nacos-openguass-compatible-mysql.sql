@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-
-create database com_oracle_nacos dbcompatibility = 'A';
+create database com_mysql_nacos dbcompatibility = 'B';
 CREATE SCHEMA nacos;
 
 -- ----------------------------
@@ -23,23 +22,23 @@ CREATE SCHEMA nacos;
 -- ----------------------------
 DROP TABLE IF EXISTS "config_info";
 CREATE TABLE "config_info" (
-  "id" bigserial NOT NULL,
-  "data_id" varchar(255)  NOT NULL,
-  "group_id" varchar(255) NOT NULL,
-  "content" text  NOT NULL,
-  "md5" varchar(32) ,
-  "gmt_create" timestamp(6) NOT NULL,
-  "gmt_modified" timestamp(6) NOT NULL,
-  "src_user" text ,
-  "src_ip" varchar(20) ,
-  "app_name" varchar(128) ,
-  "tenant_id" varchar(128) NOT NULL,
-  "c_desc" varchar(256) ,
-  "c_use" varchar(64) ,
-  "effect" varchar(64) ,
-  "type" varchar(64) ,
-  "c_schema" text ,
-  "encrypted_data_key" text  NOT NULL
+                               "id" bigserial NOT NULL,
+                               "data_id" varchar(255)  NOT NULL,
+                               "group_id" varchar(255) ,
+                               "content" text  NOT NULL,
+                               "md5" varchar(32) ,
+                               "gmt_create" timestamp(6) NOT NULL,
+                               "gmt_modified" timestamp(6) NOT NULL,
+                               "src_user" text ,
+                               "src_ip" varchar(20) ,
+                               "app_name" varchar(128) ,
+                               "tenant_id" varchar(128) ,
+                               "c_desc" varchar(256) ,
+                               "c_use" varchar(64) ,
+                               "effect" varchar(64) ,
+                               "type" varchar(64) ,
+                               "c_schema" text ,
+                               "encrypted_data_key" text  NOT NULL
 )
 ;
 
@@ -61,14 +60,14 @@ COMMENT ON TABLE "config_info" IS 'config_info';
 -- ----------------------------
 DROP TABLE IF EXISTS "config_info_aggr";
 CREATE TABLE "config_info_aggr" (
-  "id" bigserial NOT NULL,
-  "data_id" varchar(255)  NOT NULL,
-  "group_id" varchar(255)  NOT NULL,
-  "datum_id" varchar(255)  NOT NULL,
-  "content" text  NOT NULL,
-  "gmt_modified" timestamp(6) NOT NULL,
-  "app_name" varchar(128) ,
-  "tenant_id" varchar(128) NOT NULL
+                                    "id" bigserial NOT NULL,
+                                    "data_id" varchar(255)  NOT NULL,
+                                    "group_id" varchar(255)  NOT NULL,
+                                    "datum_id" varchar(255)  NOT NULL,
+                                    "content" text  NOT NULL,
+                                    "gmt_modified" timestamp(6) NOT NULL,
+                                    "app_name" varchar(128) ,
+                                    "tenant_id" varchar(128)
 )
 ;
 COMMENT ON COLUMN "config_info_aggr"."id" IS 'id';
@@ -91,19 +90,19 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS "config_info_beta";
 CREATE TABLE "config_info_beta" (
-  "id" bigserial NOT NULL,
-  "data_id" varchar(255)  NOT NULL,
-  "group_id" varchar(128)  NOT NULL,
-  "app_name" varchar(128) ,
-  "content" text  NOT NULL,
-  "beta_ips" varchar(1024) ,
-  "md5" varchar(32) ,
-  "gmt_create" timestamp(6) NOT NULL,
-  "gmt_modified" timestamp(6) NOT NULL,
-  "src_user" text ,
-  "src_ip" varchar(20) ,
-  "tenant_id" varchar(128) NOT NULL,
-  "encrypted_data_key" text  NOT NULL
+                                    "id" bigserial NOT NULL,
+                                    "data_id" varchar(255)  NOT NULL,
+                                    "group_id" varchar(128)  NOT NULL,
+                                    "app_name" varchar(128) ,
+                                    "content" text  NOT NULL,
+                                    "beta_ips" varchar(1024) ,
+                                    "md5" varchar(32) ,
+                                    "gmt_create" timestamp(6) NOT NULL,
+                                    "gmt_modified" timestamp(6) NOT NULL,
+                                    "src_user" text ,
+                                    "src_ip" varchar(20) ,
+                                    "tenant_id" varchar(128) ,
+                                    "encrypted_data_key" text  NOT NULL
 )
 ;
 COMMENT ON COLUMN "config_info_beta"."id" IS 'id';
@@ -132,18 +131,18 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS "config_info_tag";
 CREATE TABLE "config_info_tag" (
-  "id" bigserial NOT NULL,
-  "data_id" varchar(255)  NOT NULL,
-  "group_id" varchar(128)  NOT NULL,
-  "tenant_id" varchar(128) NOT NULL,
-  "tag_id" varchar(128)  NOT NULL,
-  "app_name" varchar(128) ,
-  "content" text  NOT NULL,
-  "md5" varchar(32) ,
-  "gmt_create" timestamp(6) NOT NULL,
-  "gmt_modified" timestamp(6) NOT NULL,
-  "src_user" text ,
-  "src_ip" varchar(20) 
+                                   "id" bigserial NOT NULL,
+                                   "data_id" varchar(255)  NOT NULL,
+                                   "group_id" varchar(128)  NOT NULL,
+                                   "tenant_id" varchar(128) ,
+                                   "tag_id" varchar(128)  NOT NULL,
+                                   "app_name" varchar(128) ,
+                                   "content" text  NOT NULL,
+                                   "md5" varchar(32) ,
+                                   "gmt_create" timestamp(6) NOT NULL,
+                                   "gmt_modified" timestamp(6) NOT NULL,
+                                   "src_user" text ,
+                                   "src_ip" varchar(20)
 )
 ;
 COMMENT ON COLUMN "config_info_tag"."id" IS 'id';
@@ -171,13 +170,13 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS "config_tags_relation";
 CREATE TABLE "config_tags_relation" (
-  "id" bigserial NOT NULL,
-  "tag_name" varchar(128)  NOT NULL,
-  "tag_type" varchar(64) ,
-  "data_id" varchar(255)  NOT NULL,
-  "group_id" varchar(128)  NOT NULL,
-  "tenant_id" varchar(128) NOT NULL,
-  "nid" bigserial NOT NULL
+                                        "id" bigserial NOT NULL,
+                                        "tag_name" varchar(128)  NOT NULL,
+                                        "tag_type" varchar(64) ,
+                                        "data_id" varchar(255)  NOT NULL,
+                                        "group_id" varchar(128)  NOT NULL,
+                                        "tenant_id" varchar(128) ,
+                                        "nid" bigserial NOT NULL
 )
 ;
 COMMENT ON COLUMN "config_tags_relation"."id" IS 'id';
@@ -199,16 +198,16 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS "group_capacity";
 CREATE TABLE "group_capacity" (
-  "id" bigserial NOT NULL,
-  "group_id" varchar(128)  NOT NULL,
-  "quota" int4 NOT NULL,
-  "usage" int4 NOT NULL,
-  "max_size" int4 NOT NULL,
-  "max_aggr_count" int4 NOT NULL,
-  "max_aggr_size" int4 NOT NULL,
-  "max_history_count" int4 NOT NULL,
-  "gmt_create" timestamp(6) NOT NULL,
-  "gmt_modified" timestamp(6) NOT NULL
+                                  "id" bigserial NOT NULL,
+                                  "group_id" varchar(128)  NOT NULL,
+                                  "quota" int4 NOT NULL,
+                                  "usage" int4 NOT NULL,
+                                  "max_size" int4 NOT NULL,
+                                  "max_aggr_count" int4 NOT NULL,
+                                  "max_aggr_size" int4 NOT NULL,
+                                  "max_history_count" int4 NOT NULL,
+                                  "gmt_create" timestamp(6) NOT NULL,
+                                  "gmt_modified" timestamp(6) NOT NULL
 )
 ;
 COMMENT ON COLUMN "group_capacity"."id" IS '主键ID';
@@ -234,20 +233,20 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS "his_config_info";
 CREATE TABLE "his_config_info" (
-  "id" int8 NOT NULL,
-  "nid" bigserial NOT NULL,
-  "data_id" varchar(255)  NOT NULL,
-  "group_id" varchar(128)  NOT NULL,
-  "app_name" varchar(128) ,
-  "content" text  NOT NULL,
-  "md5" varchar(32) ,
-  "gmt_create" timestamp(6) NOT NULL  DEFAULT '2010-05-05 00:00:00',
-  "gmt_modified" timestamp(6) NOT NULL,
-  "src_user" text ,
-  "src_ip" varchar(20) ,
-  "op_type" char(10) ,
-  "tenant_id" varchar(128) NOT NULL,
-  "encrypted_data_key" text  NOT NULL
+                                   "id" int8 NOT NULL,
+                                   "nid" bigserial NOT NULL,
+                                   "data_id" varchar(255)  NOT NULL,
+                                   "group_id" varchar(128)  NOT NULL,
+                                   "app_name" varchar(128) ,
+                                   "content" text  NOT NULL,
+                                   "md5" varchar(32) ,
+                                   "gmt_create" timestamp(6) NOT NULL  DEFAULT '2010-05-05 00:00:00',
+                                   "gmt_modified" timestamp(6) NOT NULL,
+                                   "src_user" text ,
+                                   "src_ip" varchar(20) ,
+                                   "op_type" char(10) ,
+                                   "tenant_id" varchar(128) ,
+                                   "encrypted_data_key" text  NOT NULL
 )
 ;
 COMMENT ON COLUMN "his_config_info"."app_name" IS 'app_name';
@@ -261,9 +260,9 @@ COMMENT ON TABLE "his_config_info" IS '多租户改造';
 -- ----------------------------
 DROP TABLE IF EXISTS "permissions";
 CREATE TABLE "permissions" (
-  "role" varchar(50)  NOT NULL,
-  "resource" varchar(512)  NOT NULL,
-  "action" varchar(8)  NOT NULL
+                               "role" varchar(50)  NOT NULL,
+                               "resource" varchar(512)  NOT NULL,
+                               "action" varchar(8)  NOT NULL
 )
 ;
 
@@ -278,8 +277,8 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS "roles";
 CREATE TABLE "roles" (
-  "username" varchar(50)  NOT NULL,
-  "role" varchar(50)  NOT NULL
+                         "username" varchar(50)  NOT NULL,
+                         "role" varchar(50)  NOT NULL
 )
 ;
 
@@ -295,16 +294,16 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS "tenant_capacity";
 CREATE TABLE "tenant_capacity" (
-  "id" bigserial NOT NULL,
-  "tenant_id" varchar(128)  NOT NULL,
-  "quota" int4 NOT NULL,
-  "usage" int4 NOT NULL,
-  "max_size" int4 NOT NULL,
-  "max_aggr_count" int4 NOT NULL,
-  "max_aggr_size" int4 NOT NULL,
-  "max_history_count" int4 NOT NULL,
-  "gmt_create" timestamp(6) NOT NULL,
-  "gmt_modified" timestamp(6) NOT NULL
+                                   "id" bigserial NOT NULL,
+                                   "tenant_id" varchar(128)  NOT NULL,
+                                   "quota" int4 NOT NULL,
+                                   "usage" int4 NOT NULL,
+                                   "max_size" int4 NOT NULL,
+                                   "max_aggr_count" int4 NOT NULL,
+                                   "max_aggr_size" int4 NOT NULL,
+                                   "max_history_count" int4 NOT NULL,
+                                   "gmt_create" timestamp(6) NOT NULL,
+                                   "gmt_modified" timestamp(6) NOT NULL
 )
 ;
 COMMENT ON COLUMN "tenant_capacity"."id" IS '主键ID';
@@ -330,14 +329,14 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS "tenant_info";
 CREATE TABLE "tenant_info" (
-  "id" bigserial NOT NULL,
-  "kp" varchar(128)  NOT NULL,
-  "tenant_id" varchar(128) NOT NULL,
-  "tenant_name" varchar(128) ,
-  "tenant_desc" varchar(256) ,
-  "create_source" varchar(32) ,
-  "gmt_create" int8 NOT NULL,
-  "gmt_modified" int8 NOT NULL
+                               "id" bigserial NOT NULL,
+                               "kp" varchar(128)  NOT NULL,
+                               "tenant_id" varchar(128) ,
+                               "tenant_name" varchar(128) ,
+                               "tenant_desc" varchar(256) ,
+                               "create_source" varchar(32) ,
+                               "gmt_create" int8 NOT NULL,
+                               "gmt_modified" int8 NOT NULL
 )
 ;
 COMMENT ON COLUMN "tenant_info"."id" IS 'id';
@@ -361,9 +360,9 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS "users";
 CREATE TABLE "users" (
-  "username" varchar(50)  NOT NULL,
-  "password" varchar(500)  NOT NULL,
-  "enabled" boolean NOT NULL
+                         "username" varchar(50)  NOT NULL,
+                         "password" varchar(500)  NOT NULL,
+                         "enabled" boolean NOT NULL
 )
 ;
 
@@ -418,13 +417,13 @@ ALTER TABLE "config_info_tag" ADD CONSTRAINT "config_info_tag_pkey" PRIMARY KEY 
 -- Indexes structure for table config_tags_relation
 -- ----------------------------
 CREATE INDEX "idx_tenant_id" ON "config_tags_relation" USING btree (
-  "tenant_id"
-);
+    "tenant_id"
+    );
 CREATE UNIQUE INDEX "uk_configtagrelation_configidtag" ON "config_tags_relation" USING btree (
-  "id",
-  "tag_name",
-  "tag_type"
-);
+    "id",
+    "tag_name",
+    "tag_type"
+    );
 
 -- ----------------------------
 -- Primary Key structure for table config_tags_relation
@@ -435,8 +434,8 @@ ALTER TABLE "config_tags_relation" ADD CONSTRAINT "config_tags_relation_pkey" PR
 -- Indexes structure for table group_capacity
 -- ----------------------------
 CREATE UNIQUE INDEX "uk_group_id" ON "group_capacity" USING btree (
-  "group_id"
-);
+    "group_id"
+    );
 
 -- ----------------------------
 -- Primary Key structure for table group_capacity
@@ -447,14 +446,14 @@ ALTER TABLE "group_capacity" ADD CONSTRAINT "group_capacity_pkey" PRIMARY KEY ("
 -- Indexes structure for table his_config_info
 -- ----------------------------
 CREATE INDEX "idx_did" ON "his_config_info" USING btree (
-  "data_id"
-);
+    "data_id"
+    );
 CREATE INDEX "idx_gmt_create" ON "his_config_info" USING btree (
-  "gmt_create"
-);
+    "gmt_create"
+    );
 CREATE INDEX "idx_gmt_modified" ON "his_config_info" USING btree (
-  "gmt_modified"
-);
+    "gmt_modified"
+    );
 
 -- ----------------------------
 -- Primary Key structure for table his_config_info
@@ -465,25 +464,25 @@ ALTER TABLE "his_config_info" ADD CONSTRAINT "his_config_info_pkey" PRIMARY KEY 
 -- Indexes structure for table permissions
 -- ----------------------------
 CREATE UNIQUE INDEX "uk_role_permission" ON "permissions" USING btree (
-  "role",
-  "resource",
-  "action"
-);
+    "role",
+    "resource",
+    "action"
+    );
 
 -- ----------------------------
 -- Indexes structure for table roles
 -- ----------------------------
 CREATE UNIQUE INDEX "uk_username_role" ON "roles" USING btree (
-  "username",
-  "role"
-);
+    "username",
+    "role"
+    );
 
 -- ----------------------------
 -- Indexes structure for table tenant_capacity
 -- ----------------------------
 CREATE UNIQUE INDEX "uk_tenant_id" ON "tenant_capacity" USING btree (
-  "tenant_id"
-);
+    "tenant_id"
+    );
 
 -- ----------------------------
 -- Primary Key structure for table tenant_capacity
@@ -494,6 +493,6 @@ ALTER TABLE "tenant_capacity" ADD CONSTRAINT "tenant_capacity_pkey" PRIMARY KEY 
 -- Indexes structure for table tenant_info
 -- ----------------------------
 CREATE UNIQUE INDEX "uk_tenant_info_kptenantid" ON "tenant_info" USING btree (
-  "kp",
-  "tenant_id"
-);
+    "kp",
+    "tenant_id"
+    );

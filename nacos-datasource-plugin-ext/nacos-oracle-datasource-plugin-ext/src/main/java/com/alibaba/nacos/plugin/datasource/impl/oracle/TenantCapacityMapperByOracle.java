@@ -23,7 +23,6 @@ import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /***
@@ -102,12 +101,5 @@ public class TenantCapacityMapperByOracle extends AbstractOracleMapper
 				"INSERT INTO tenant_capacity (tenant_id, quota, usage, max_size, max_aggr_count, max_aggr_size, "
 						+ "gmt_create, gmt_modified) SELECT ?, ?, count(*), ?, ?, ?, ?, ? FROM config_info WHERE tenant_id=NVL(?, '"+NamespaceUtil.getNamespaceDefaultId()+"')",
 				paramList);
-	}
-	
-	@Override
-	public MapperResult select(MapperContext context) {
-		String sql = "SELECT id, quota, `usage`, max_size, max_aggr_count, max_aggr_size, tenant_id FROM tenant_capacity "
-				+ "WHERE tenant_id = ?";
-		return new MapperResult(sql, Collections.singletonList(context.getWhereParameter(FieldConstant.TENANT_ID)));
 	}
 }

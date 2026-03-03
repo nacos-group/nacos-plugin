@@ -25,13 +25,14 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 /**
  * The postgresql implementation of HistoryConfigInfoMapper.
  *
- * @author  chen zhida
+ * @author Long Yu
  **/
 public class OpenGaussHistoryConfigInfoMapper extends AbstractMapperByGaussdb implements HistoryConfigInfoMapper {
-
+    
     @Override
     public MapperResult removeConfigHistory(MapperContext context) {
-        String sql = "DELETE FROM his_config_info WHERE gmt_modified < ? LIMIT ?";
+        String sql = "WITH temp_table as (SELECT id FROM his_config_info WHERE gmt_modified < ? LIMIT ? ) "
+                + "DELETE FROM his_config_info WHERE id in (SELECT id FROM temp_table) ";
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.START_TIME),
                 context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
     }
@@ -39,11 +40,11 @@ public class OpenGaussHistoryConfigInfoMapper extends AbstractMapperByGaussdb im
     @Override
     public MapperResult pageFindConfigHistoryFetchRows(MapperContext context) {
         String sql =
-                "SELECT nid,data_id,group_id,tenant_id,app_name,src_ip,src_user,op_type,ext_info,publish_type,gray_name,gmt_create,gmt_modified "
-                        + "FROM his_config_info " + "WHERE data_id = ? AND group_id = ? AND tenant_id = ? ORDER BY nid DESC  LIMIT "
-                        + context.getStartRow() + "," + context.getPageSize();
+            "SELECT nid,data_id,group_id,tenant_id,app_name,src_ip,src_user,op_type,gmt_create,gmt_modified FROM his_config_info "
+                + "WHERE data_id = ? AND group_id = ? AND tenant_id = ? ORDER BY nid DESC  LIMIT "
+                + context.getStartRow() + "," + context.getPageSize();
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.DATA_ID),
-                context.getWhereParameter(FieldConstant.GROUP_ID), context.getWhereParameter(FieldConstant.TENANT_ID)));
+            context.getWhereParameter(FieldConstant.GROUP_ID), context.getWhereParameter(FieldConstant.TENANT_ID)));
     }
     
 }
