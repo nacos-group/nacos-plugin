@@ -9,7 +9,7 @@ A collection of Nacos plug-ins that provide pluggable plug-in capabilities for N
 
 | 插件 Tag 版本 | 支持的 Nacos 版本 |
 |-------------|----------------|
-| 2.2.x       | Nacos 2.1.x ~ 2.2.x |
+| 2.2.x       | Nacos 2.2.x |
 | 2.3.x       | Nacos 2.3.x |
 | 3.1.x       | Nacos 3.0.x ~ 3.1.x |
 
