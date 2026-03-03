@@ -1,6 +1,7 @@
 package com.alibaba.nacos.plugin.datasource.dialect;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.enums.TrustedKingbaseFunctionEnum;
 
 /**
  * kingbase database dialect.
@@ -16,7 +17,7 @@ public class KingbaseDatabaseDialect extends AbstractDatabaseDialect {
     }
 
     @Override
-    public String getFunction(String s) {
-        return "";
+    public String getFunction(String functionName) {
+        return TrustedKingbaseFunctionEnum.getFunctionByName(functionName);
     }
 }
