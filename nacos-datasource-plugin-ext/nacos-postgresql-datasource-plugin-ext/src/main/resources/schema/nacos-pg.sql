@@ -167,7 +167,7 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS "config_tags_relation";
 CREATE TABLE "config_tags_relation" (
-  "id" bigserial NOT NULL,
+  "id" bigint NOT NULL,
   "tag_name" varchar(128)  NOT NULL,
   "tag_type" varchar(64) ,
   "data_id" varchar(255)  NOT NULL,
