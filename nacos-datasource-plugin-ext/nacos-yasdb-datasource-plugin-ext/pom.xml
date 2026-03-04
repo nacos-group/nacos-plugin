@@ -9,12 +9,12 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>nacos-yashan-datasource-plugin-ext</artifactId>
+  <artifactId>nacos-yasdb-datasource-plugin-ext</artifactId>
 
   <properties>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <jdbc.yashandb.version>1.9.3</jdbc.yashandb.version>
+    <jdbc.yasdb.version>1.9.3</jdbc.yasdb.version>
   </properties>
 
   <dependencies>

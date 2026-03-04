@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.nacos.plugin.datasource.impl.yashan;
+package com.alibaba.nacos.plugin.datasource.impl.yasdb;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 /***
  * @author onewe
  */
-public class ConfigInfoMapperByYaShan extends AbstractYaShanMapper
+public class ConfigInfoMapperByYasdb extends AbstractYasdbMapper
 		implements ConfigInfoMapper {
 
 	private String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize) {

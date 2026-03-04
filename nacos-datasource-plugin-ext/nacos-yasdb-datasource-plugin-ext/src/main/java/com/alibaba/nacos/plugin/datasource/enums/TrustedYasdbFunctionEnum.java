@@ -27,17 +27,17 @@ import java.util.Map;
  *
  * @author blake.qiu
  */
-public enum TrustedYaShanFunctionEnum {
+public enum TrustedYasdbFunctionEnum {
 
     /**
      * NOW().
      */
     NOW("NOW()", "NOW()");
 
-    private static final Map<String, TrustedYaShanFunctionEnum> LOOKUP_MAP = new HashMap<>();
+    private static final Map<String, TrustedYasdbFunctionEnum> LOOKUP_MAP = new HashMap<>();
 
     static {
-        for (TrustedYaShanFunctionEnum entry : TrustedYaShanFunctionEnum.values()) {
+        for (TrustedYasdbFunctionEnum entry : TrustedYasdbFunctionEnum.values()) {
             LOOKUP_MAP.put(entry.functionName, entry);
         }
     }
@@ -46,7 +46,7 @@ public enum TrustedYaShanFunctionEnum {
 
     private final String function;
 
-    TrustedYaShanFunctionEnum(String functionName, String function) {
+    TrustedYasdbFunctionEnum(String functionName, String function) {
         this.functionName = functionName;
         this.function = function;
     }
@@ -58,7 +58,7 @@ public enum TrustedYaShanFunctionEnum {
      * @return function
      */
     public static String getFunctionByName(String functionName) {
-        TrustedYaShanFunctionEnum entry = LOOKUP_MAP.get(functionName);
+        TrustedYasdbFunctionEnum entry = LOOKUP_MAP.get(functionName);
         if (entry != null) {
             return entry.function;
         }

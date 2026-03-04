@@ -15,6 +15,6 @@
 #
 #
 
-com.alibaba.nacos.plugin.datasource.dialect.YaShanDatabaseDialect
+com.alibaba.nacos.plugin.datasource.dialect.YasdbDatabaseDialect
 
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.nacos.plugin.datasource.impl.yashan;
+package com.alibaba.nacos.plugin.datasource.impl.yasdb;
 
 import java.util.List;
 
@@ -27,11 +27,11 @@ import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
 /**
  * @author onewe
  */
-public abstract class AbstractYaShanMapper extends AbstractMapper {
+public abstract class AbstractYasdbMapper extends AbstractMapper {
 
 	private final DatabaseDialect databaseDialect;
 
-	public AbstractYaShanMapper() {
+	public AbstractYasdbMapper() {
 		databaseDialect = DatabaseDialectManager.getInstance()
 				.getDialect(getDataSource());
 	}
