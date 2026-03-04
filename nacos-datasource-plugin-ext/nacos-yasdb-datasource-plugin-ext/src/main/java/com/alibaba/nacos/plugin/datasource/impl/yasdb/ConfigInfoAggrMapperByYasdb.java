@@ -21,7 +21,7 @@ import java.util.List;
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.common.utils.NamespaceUtil;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoAggrMapper;
+//import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoAggrMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -29,10 +29,10 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
  * @author onewe
  */
 public class ConfigInfoAggrMapperByYasdb extends AbstractYasdbMapper
-		implements ConfigInfoAggrMapper {
+		{
 	
 
-	@Override
+	//@Override
 	public MapperResult findConfigInfoAggrByPageFetchRows(MapperContext context) {
 		int startRow = context.getStartRow();
 		int pageSize = context.getPageSize();
@@ -51,9 +51,12 @@ public class ConfigInfoAggrMapperByYasdb extends AbstractYasdbMapper
 		String sql = getDatabaseDialect().getLimitPageSqlWithOffset(sqlBuilder, startRow, pageSize);
 		return new MapperResult(sql, sqlArgs);
 	}
-	
-	
+
 	@Override
+	public String getTableName() {
+		return "config_info_aggr";
+	}
+	//@Override
 	public MapperResult batchRemoveAggr(MapperContext context) {
 		final List<String> datumList = (List<String>) context.getWhereParameter(FieldConstant.DATUM_ID);
 		final String dataId = (String) context.getWhereParameter(FieldConstant.DATA_ID);
@@ -81,7 +84,7 @@ public class ConfigInfoAggrMapperByYasdb extends AbstractYasdbMapper
 		return new MapperResult(sql, paramList);
 	}
 	
-	@Override
+	//@Override
 	public MapperResult aggrConfigInfoCount(MapperContext context) {
 		final List<String> datumIds = (List<String>) context.getWhereParameter(FieldConstant.DATUM_ID);
 		final Boolean isIn = (Boolean) context.getWhereParameter(FieldConstant.IS_IN);
@@ -110,7 +113,7 @@ public class ConfigInfoAggrMapperByYasdb extends AbstractYasdbMapper
 		return new MapperResult(sql.toString(), paramList);
 	}
 	
-	@Override
+	//@Override
 	public MapperResult findConfigInfoAggrIsOrdered(MapperContext context) {
 		String dataId = (String) context.getWhereParameter(FieldConstant.DATA_ID);
 		String groupId = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
