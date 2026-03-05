@@ -23,5 +23,4 @@ com.alibaba.nacos.plugin.datasource.impl.yasdb.HistoryConfigInfoMapperYasdb
 com.alibaba.nacos.plugin.datasource.impl.yasdb.TenantCapacityMapperByYasdb
 com.alibaba.nacos.plugin.datasource.impl.yasdb.TenantInfoMapperByYasdb
 com.alibaba.nacos.plugin.datasource.impl.yasdb.GroupCapacityMapperByYasdb
-
-
+com.alibaba.nacos.plugin.datasource.impl.yasdb.ConfigInfoGrayMapperByYasdb
