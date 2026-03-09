@@ -14,31 +14,22 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.constants;
+package com.alibaba.nacos.plugin.datasource.impl.xugu;
+
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigTagsRelationMapper;
 
 /**
- * DatabaseType Constant.
+ * The xuguDB implementation of ConfigTagsRelationMapperByXugu.
  *
- * @author Long Yu
+ * @author jowee
  **/
-public class DatabaseTypeConstant {
 
-    public static final String POSTGRESQL = "postgresql";
+public class ConfigTagsRelationMapperByXugu extends BaseConfigTagsRelationMapper {
 
-    public static final String GUASSDB = "gaussdb";
-
-    public static final String MYSQL = "mysql";
-
-    public static final String ORACLE = "oracle";
-  
-    public static final String DM = "dm";
-
-    public static final String SQLSERVER = "sqlserver";
-
-    public static final String KINGBASE = "kingbase";
-
-    public static final String YASDB = "yasdb";
-
-    public static final String XUGU = "xugu";
+    @Override
+    public String getDataSource() {
+        return DatabaseTypeConstant.XUGU;
+    }
 
 }
