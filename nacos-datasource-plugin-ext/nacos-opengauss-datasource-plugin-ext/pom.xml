@@ -16,7 +16,6 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <jdbc.postgresql.version>42.2.19</jdbc.postgresql.version>
-        <alibaba-nacos.version>3.0.3</alibaba-nacos.version>
     </properties>
     
     

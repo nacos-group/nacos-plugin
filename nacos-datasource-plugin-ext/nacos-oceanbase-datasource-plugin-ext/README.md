@@ -90,7 +90,7 @@ ${nacos.home}/plugins/
 ```bash
 # 使用 Nacos 提供的 Oracle 初始化脚本
 # 注意：需要使用 Oracle 语法的 SQL 脚本
-mysql -h <oceanbase-host> -P <port> -u <username> -p < nacos-oracle.sql
+obclient -h <oceanbase-host> -P <port> -u <username> -p < nacos-oracle.sql
 ```
 
 **重要提示**：
