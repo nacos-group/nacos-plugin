@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 1999-2024 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@
 package com.alibaba.nacos.plugin.datasource.impl.postgresql;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigMigrateMapper;
 
 /**
- * The PostgreSQL implementation of TenantInfoMapper.
+ * The PostgreSQL implementation of ConfigMigrateMapper.
  *
- * @author Long Yu
  * @author lingGao
- **/
-public class TenantInfoMapperByPostgresql extends AbstractMapperByPostgresql implements TenantInfoMapper {
+ */
+public class ConfigMigrateMapperByPostgresql extends AbstractMapperByPostgresql implements ConfigMigrateMapper {
 
     @Override
     public String getDataSource() {
