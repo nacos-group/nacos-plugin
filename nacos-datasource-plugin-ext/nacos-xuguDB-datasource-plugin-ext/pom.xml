@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.alibaba.nacos</groupId>
         <artifactId>nacos-datasource-plugin-ext</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>nacos-xuguDB-datasource-plugin-ext</artifactId>
