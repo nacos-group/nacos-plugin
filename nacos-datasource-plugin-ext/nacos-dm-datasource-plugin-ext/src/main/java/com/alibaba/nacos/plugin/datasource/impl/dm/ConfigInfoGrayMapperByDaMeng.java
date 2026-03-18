@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.alibaba.nacos.plugin.datasource.impl.postgresql;
+package com.alibaba.nacos.plugin.datasource.impl.dm;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
@@ -25,11 +25,11 @@ import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoGrayMapper;
  * @author zxywithal
  **/
 
-public class ConfigInfoGrayMapperByPostgresql extends BaseConfigInfoGrayMapper {
+public class ConfigInfoGrayMapperByDaMeng extends BaseConfigInfoGrayMapper {
     
     @Override
     public String getDataSource() {
-        return DatabaseTypeConstant.POSTGRESQL;
+        return DatabaseTypeConstant.DM;
     }
     
 }
