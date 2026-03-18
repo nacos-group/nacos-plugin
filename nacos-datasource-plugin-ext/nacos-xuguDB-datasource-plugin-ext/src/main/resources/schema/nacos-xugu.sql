@@ -40,6 +40,32 @@ CREATE TABLE `config_info`
     CONSTRAINT `uk_configinfo_datagrouptenant` UNIQUE (`data_id`, `group_id`, `tenant_id`)
 )COMMENT 'config_info';
 
+
+/******************************************/
+/*   表名称 = config_info_gray             */
+/******************************************/
+CREATE TABLE `config_info_gray` (
+    `id` bigint AUTO_INCREMENT NOT NULL COMMENT 'id',
+    `data_id` varchar(255) NOT NULL COMMENT 'data_id',
+    `group_id` varchar(128) NOT NULL COMMENT 'group_id',
+    `content` varchar NOT NULL COMMENT 'content',
+    `md5` varchar(32) DEFAULT NULL COMMENT 'md5',
+    `src_user` text COMMENT 'src_user',
+    `src_ip` varchar(100) DEFAULT NULL COMMENT 'src_ip',
+    `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'gmt_create',
+    `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'gmt_modified',
+    `app_name` varchar(128) DEFAULT NULL COMMENT 'app_name',
+    `tenant_id` varchar(128) DEFAULT '' COMMENT 'tenant_id',
+    `gray_name` varchar(128) NOT NULL COMMENT 'gray_name',
+    `gray_rule` varchar NOT NULL COMMENT 'gray_rule',
+    `encrypted_data_key` varchar(256) NOT NULL DEFAULT '' COMMENT 'encrypted_data_key',
+    PRIMARY KEY (`id`),
+    CONSTRAINT `uk_configinfogray_datagrouptenantgray` UNIQUE (`data_id`,`group_id`,`tenant_id`,`gray_name`)
+)COMMENT 'config_info_gray';
+CREATE INDEX `idx_dataid_gmt_modified` on `config_info_gray` (`data_id`,`gmt_modified`);
+CREATE INDEX `idx_gmt_modified` on `config_info_gray` (`gmt_modified`);
+
+
 /******************************************/
 /*   表名称 = config_info_aggr             */
 /******************************************/
