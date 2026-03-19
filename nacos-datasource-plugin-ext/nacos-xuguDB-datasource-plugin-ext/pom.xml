@@ -14,16 +14,9 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <xugu-jdbc.version>12.3.5</xugu-jdbc.version>
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>com.xugudb</groupId>
-            <artifactId>xugu-jdbc</artifactId>
-            <version>${xugu-jdbc.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
