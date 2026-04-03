@@ -14,7 +14,8 @@
 # limitations under the License.
 #
 
-
+com.alibaba.nacos.plugin.datasource.impl.opengauss.OpenGaussAiResourceMapper
+com.alibaba.nacos.plugin.datasource.impl.opengauss.OpenGaussAiResourceVersionMapper
 com.alibaba.nacos.plugin.datasource.impl.opengauss.OpenGaussConfigInfoBetaMapper
 com.alibaba.nacos.plugin.datasource.impl.opengauss.OpenGaussConfigInfoMapper
 com.alibaba.nacos.plugin.datasource.impl.opengauss.OpenGaussConfigInfoTagMapper

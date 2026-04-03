@@ -1,3 +1,19 @@
+/*
+ * Copyright 1999-2026 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /******************************************/
 /*   表名称 = config_info                  */
 /******************************************/
@@ -167,3 +183,117 @@ CREATE TABLE permissions (
                              action VARCHAR(8) NOT NULL,
                              CONSTRAINT uk_permissions_role_permission UNIQUE (role, resource, action)
 );
+
+/*******************************************/
+/*   表名称 = pipeline_execution since 3.2.0*/
+/*******************************************/
+CREATE TABLE "pipeline_execution" (
+    "execution_id"  varchar(64)  NOT NULL,
+    "resource_type" varchar(32)  NOT NULL,
+    "resource_name" varchar(256) NOT NULL,
+    "namespace_id"  varchar(128) DEFAULT NULL,
+    "version"       varchar(64)  DEFAULT NULL,
+    "status"        varchar(32)  NOT NULL,
+    "pipeline"      text         NOT NULL,
+    "create_time"   bigint       NOT NULL,
+    "update_time"   bigint       NOT NULL,
+    PRIMARY KEY ("execution_id")
+);
+
+COMMENT ON TABLE "pipeline_execution" IS 'AI资源发布审核Pipeline执行记录';
+
+COMMENT ON COLUMN "pipeline_execution"."execution_id"  IS '执行ID';
+COMMENT ON COLUMN "pipeline_execution"."resource_type" IS '资源类型';
+COMMENT ON COLUMN "pipeline_execution"."resource_name" IS '资源名称';
+COMMENT ON COLUMN "pipeline_execution"."namespace_id"  IS '命名空间ID';
+COMMENT ON COLUMN "pipeline_execution"."version"       IS '版本';
+COMMENT ON COLUMN "pipeline_execution"."status"        IS '执行状态';
+COMMENT ON COLUMN "pipeline_execution"."pipeline"      IS 'pipeline节点结果JSON';
+COMMENT ON COLUMN "pipeline_execution"."create_time"   IS '创建时间';
+COMMENT ON COLUMN "pipeline_execution"."update_time"   IS '修改时间';
+
+/*******************************************/
+/*   表名称 = ai_resource since 3.2.0*/
+/*******************************************/
+CREATE TABLE "ai_resource" (
+    "id"            BIGSERIAL PRIMARY KEY,
+    "gmt_create"    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "gmt_modified"  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "name"          varchar(256) NOT NULL,
+    "type"          varchar(32) NOT NULL,
+    "c_desc"        varchar(2048) DEFAULT NULL,
+    "status"        varchar(32) DEFAULT NULL,
+    "namespace_id"  varchar(128) NOT NULL DEFAULT '',
+    "biz_tags"      varchar(1024) DEFAULT NULL,
+    "ext"           text DEFAULT NULL,
+    "c_from"        varchar(256) NOT NULL DEFAULT 'local',
+    "version_info"  text DEFAULT NULL,
+    "meta_version"  bigint NOT NULL DEFAULT 1,
+    "scope"         varchar(16) NOT NULL DEFAULT 'PRIVATE',
+    "owner"         varchar(128) NOT NULL DEFAULT '',
+    "download_count" bigint NOT NULL DEFAULT 0,
+    CONSTRAINT "uk_ai_resource_ns_name_type" UNIQUE ("namespace_id", "name", "type", "c_from")
+);
+
+COMMENT ON TABLE "ai_resource" IS 'AI资源元数据表';
+
+COMMENT ON COLUMN "ai_resource"."id" IS 'id';
+COMMENT ON COLUMN "ai_resource"."gmt_create" IS '创建时间';
+COMMENT ON COLUMN "ai_resource"."gmt_modified" IS '修改时间';
+COMMENT ON COLUMN "ai_resource"."name" IS '资源名称';
+COMMENT ON COLUMN "ai_resource"."type" IS '资源类型';
+COMMENT ON COLUMN "ai_resource"."c_desc" IS '资源描述';
+COMMENT ON COLUMN "ai_resource"."status" IS '资源状态';
+COMMENT ON COLUMN "ai_resource"."namespace_id" IS '命名空间ID';
+COMMENT ON COLUMN "ai_resource"."biz_tags" IS '业务标签';
+COMMENT ON COLUMN "ai_resource"."ext" IS '扩展信息(JSON)';
+COMMENT ON COLUMN "ai_resource"."c_from" IS '来源标识(导入/同步来源)';
+COMMENT ON COLUMN "ai_resource"."version_info" IS '版本信息(JSON)';
+COMMENT ON COLUMN "ai_resource"."meta_version" IS '元数据版本(乐观锁)';
+COMMENT ON COLUMN "ai_resource"."scope" IS '可见性: PUBLIC/PRIVATE';
+COMMENT ON COLUMN "ai_resource"."owner" IS '创建者用户名';
+COMMENT ON COLUMN "ai_resource"."download_count" IS '下载次数';
+
+CREATE INDEX "idx_ai_resource_name" ON "ai_resource" ("name");
+CREATE INDEX "idx_ai_resource_type" ON "ai_resource" ("type");
+CREATE INDEX "idx_ai_resource_gmt_modified" ON "ai_resource" ("gmt_modified");
+
+/*******************************************/
+/*   表名称 = ai_resource_version since 3.2.0*/
+/*******************************************/
+CREATE TABLE "ai_resource_version" (
+    "id"                    BIGSERIAL PRIMARY KEY,
+    "gmt_create"            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "gmt_modified"          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "type"                  varchar(32) NOT NULL,
+    "author"                varchar(128) DEFAULT NULL,
+    "name"                  varchar(256) NOT NULL,
+    "c_desc"                varchar(2048) DEFAULT NULL,
+    "status"                varchar(32) NOT NULL,
+    "version"               varchar(64) NOT NULL,
+    "namespace_id"          varchar(128) NOT NULL DEFAULT '',
+    "storage"               text DEFAULT NULL,
+    "publish_pipeline_info" text DEFAULT NULL,
+    "download_count"        bigint NOT NULL DEFAULT 0,
+    CONSTRAINT "uk_ai_resource_ver_ns_name_type_ver" UNIQUE ("namespace_id", "name", "type", "version")
+);
+
+COMMENT ON TABLE "ai_resource_version" IS 'AI资源版本表';
+
+COMMENT ON COLUMN "ai_resource_version"."id" IS 'id';
+COMMENT ON COLUMN "ai_resource_version"."gmt_create" IS '创建时间';
+COMMENT ON COLUMN "ai_resource_version"."gmt_modified" IS '修改时间';
+COMMENT ON COLUMN "ai_resource_version"."type" IS '资源类型';
+COMMENT ON COLUMN "ai_resource_version"."author" IS '作者';
+COMMENT ON COLUMN "ai_resource_version"."name" IS '资源名称';
+COMMENT ON COLUMN "ai_resource_version"."c_desc" IS '版本描述';
+COMMENT ON COLUMN "ai_resource_version"."status" IS '版本状态';
+COMMENT ON COLUMN "ai_resource_version"."version" IS '版本号';
+COMMENT ON COLUMN "ai_resource_version"."namespace_id" IS '命名空间ID';
+COMMENT ON COLUMN "ai_resource_version"."storage" IS '存储信息(JSON)';
+COMMENT ON COLUMN "ai_resource_version"."publish_pipeline_info" IS '发布流水线信息(JSON)';
+COMMENT ON COLUMN "ai_resource_version"."download_count" IS '下载次数';
+
+CREATE INDEX "idx_ai_resource_ver_name" ON "ai_resource_version" ("name");
+CREATE INDEX "idx_ai_resource_ver_status" ON "ai_resource_version" ("status");
+CREATE INDEX "idx_ai_resource_ver_gmt_modified" ON "ai_resource_version" ("gmt_modified");
