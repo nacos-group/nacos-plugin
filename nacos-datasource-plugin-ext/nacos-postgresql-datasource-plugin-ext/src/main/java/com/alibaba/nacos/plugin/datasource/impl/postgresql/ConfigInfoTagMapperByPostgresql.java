@@ -16,7 +16,6 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.postgresql;
 
-import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoTagMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
@@ -39,8 +38,4 @@ public class ConfigInfoTagMapperByPostgresql extends AbstractMapperByPostgresql 
         return new MapperResult(sql, Collections.emptyList());
     }
 
-    @Override
-    public String getDataSource() {
-        return DatabaseTypeConstant.POSTGRESQL;
-    }
 }

@@ -16,7 +16,6 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.postgresql;
 
-import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.mapper.ConfigMigrateMapper;
 
 /**
@@ -26,8 +25,4 @@ import com.alibaba.nacos.plugin.datasource.mapper.ConfigMigrateMapper;
  */
 public class ConfigMigrateMapperByPostgresql extends AbstractMapperByPostgresql implements ConfigMigrateMapper {
 
-    @Override
-    public String getDataSource() {
-        return DatabaseTypeConstant.POSTGRESQL;
-    }
 }
