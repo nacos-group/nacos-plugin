@@ -24,5 +24,6 @@ com.alibaba.nacos.plugin.datasource.impl.xugu.GroupCapacityMapperByXugu
 com.alibaba.nacos.plugin.datasource.impl.xugu.HistoryConfigInfoMapperByXugu
 com.alibaba.nacos.plugin.datasource.impl.xugu.TenantCapacityMapperByXugu
 com.alibaba.nacos.plugin.datasource.impl.xugu.TenantInfoMapperByXugu
-
+com.alibaba.nacos.plugin.datasource.impl.xugu.AiResourceMapperByXugu
+com.alibaba.nacos.plugin.datasource.impl.xugu.AiResourceVersionMapperByXugu
 

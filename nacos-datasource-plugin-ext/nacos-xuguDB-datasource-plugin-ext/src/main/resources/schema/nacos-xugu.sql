@@ -184,7 +184,7 @@ CREATE TABLE `his_config_info`
     `encrypted_data_key` varchar(1024) NOT NULL DEFAULT '' COMMENT '密钥',
     `publish_type` varchar(50)  DEFAULT 'formal' COMMENT 'publish type gray or formal',
     `gray_name` varchar(50)  DEFAULT NULL COMMENT 'gray name',
-    `ext_info`  longtext DEFAULT NULL COMMENT 'ext info',
+    `ext_info`  varchar DEFAULT NULL COMMENT 'ext info',
     PRIMARY KEY (`nid`)
 )COMMENT '多租户改造';
 create index `idx_did` on `his_config_info` (`data_id`);
@@ -249,8 +249,70 @@ CREATE TABLE `permissions`
 );
 CREATE UNIQUE INDEX uk_role_permission on `permissions` (`role`, `resource`, `action`) indextype is btree;
 
-INSERT INTO users (username, password, enabled)
-VALUES ('nacos', '$2a$10$EuWPZHzz32dJN7jexM34MOeYirDdFAZm2kuWj7VEOJhhZkDrxfvUu', TRUE);
+/********************************************/
+/*   表名称 = pipeline_execution since 3.2.0 */
+/********************************************/
+CREATE TABLE `pipeline_execution` (
+    `execution_id`  varchar(64)  NOT NULL COMMENT '执行ID',
+    `resource_type` varchar(32)  NOT NULL COMMENT '资源类型',
+    `resource_name` varchar(256) NOT NULL COMMENT '资源名称',
+    `namespace_id`  varchar(128) DEFAULT NULL COMMENT '命名空间ID',
+    `version`       varchar(64)  DEFAULT NULL COMMENT '版本',
+    `status`        varchar(32)  NOT NULL COMMENT '执行状态',
+    `pipeline`      varchar     NOT NULL COMMENT 'pipeline节点结果JSON',
+    `create_time`   bigint   NOT NULL COMMENT '创建时间',
+    `update_time`   bigint   NOT NULL COMMENT '修改时间',
+    PRIMARY KEY (`execution_id`)
+)COMMENT 'AI资源发布审核Pipeline执行记录';
 
-INSERT INTO roles (username, role)
-VALUES ('nacos', 'ROLE_ADMIN');
+/******************************************/
+/*   表名称 = ai_resource since 3.2.0      */
+/******************************************/
+CREATE TABLE `ai_resource` (
+    `id` bigint AUTO_INCREMENT NOT NULL  COMMENT 'id',
+    `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `name` varchar(256) NOT NULL COMMENT '资源名称',
+    `type` varchar(32) NOT NULL COMMENT '资源类型',
+    `c_desc` varchar(2048) DEFAULT NULL COMMENT '资源描述',
+    `status` varchar(32) DEFAULT NULL COMMENT '资源状态',
+    `namespace_id` varchar(128) NOT NULL DEFAULT '' COMMENT '命名空间ID',
+    `biz_tags` varchar(1024) DEFAULT NULL COMMENT '业务标签',
+    `ext` varchar DEFAULT NULL COMMENT '扩展信息(JSON)',
+    `c_from` varchar(256) NOT NULL DEFAULT 'local' COMMENT '来源标识(导入/同步来源)',
+    `version_info` varchar DEFAULT NULL COMMENT '版本信息(JSON)',
+    `meta_version` bigint NOT NULL DEFAULT 1 COMMENT '元数据版本(乐观锁)',
+    `scope` varchar(16) NOT NULL DEFAULT 'PRIVATE' COMMENT '可见性: PUBLIC/PRIVATE',
+    `owner` varchar(128) NOT NULL DEFAULT '' COMMENT '创建者用户名',
+    `download_count` bigint NOT NULL DEFAULT 0 COMMENT '下载次数',
+    PRIMARY KEY (`id`),
+    CONSTRAINT `uk_ai_resource_ns_name_type` UNIQUE (`namespace_id`,`name`,`type`,`c_from`)
+) COMMENT 'AI资源元数据表';
+
+create index `idx_ai_resource_name` on `ai_resource` (`name`);
+create index `idx_ai_resource_type` on `ai_resource` (`type`);
+create index `idx_ai_resource_gmt_modified` on `ai_resource` (`gmt_modified`);
+
+/*********************************************/
+/*   表名称 = ai_resource_version since 3.2.0 */
+/*********************************************/
+CREATE TABLE `ai_resource_version` (
+    `id` bigint AUTO_INCREMENT NOT NULL  COMMENT 'id',
+    `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `type` varchar(32) NOT NULL COMMENT '资源类型',
+    `author` varchar(128) DEFAULT NULL COMMENT '作者',
+    `name` varchar(256) NOT NULL COMMENT '资源名称',
+    `c_desc` varchar(2048) DEFAULT NULL COMMENT '版本描述',
+    `status` varchar(32) NOT NULL COMMENT '版本状态',
+    `version` varchar(64) NOT NULL COMMENT '版本号',
+    `namespace_id` varchar(128) NOT NULL DEFAULT '' COMMENT '命名空间ID',
+    `storage` varchar DEFAULT NULL COMMENT '存储信息(JSON)',
+    `publish_pipeline_info` varchar DEFAULT NULL COMMENT '发布流水线信息(JSON)',
+    `download_count` bigint NOT NULL DEFAULT 0 COMMENT '下载次数',
+    PRIMARY KEY (`id`),
+    CONSTRAINT `uk_ai_resource_ver_ns_name_type_ver` UNIQUE (`namespace_id`,`name`,`type`,`version`)
+) COMMENT 'AI资源版本表';
+create index `idx_ai_resource_ver_name` on `ai_resource_version` (`name`);
+create index `idx_ai_resource_ver_status` on `ai_resource_version` (`status`);
+create index `idx_ai_resource_ver_gmt_modified` on `ai_resource_version` (`gmt_modified`);

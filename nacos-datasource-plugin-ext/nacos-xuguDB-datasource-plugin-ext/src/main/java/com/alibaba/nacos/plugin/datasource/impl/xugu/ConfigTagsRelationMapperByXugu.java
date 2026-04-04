@@ -16,8 +16,18 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.xugu;
 
+import com.alibaba.nacos.common.constant.Symbols;
+import com.alibaba.nacos.common.utils.ArrayUtils;
+import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigTagsRelationMapper;
+import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigTagsRelationMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ext.WhereBuilder;
+import com.alibaba.nacos.plugin.datasource.model.MapperContext;
+import com.alibaba.nacos.plugin.datasource.model.MapperResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The xuguDB implementation of ConfigTagsRelationMapperByXugu.
@@ -25,11 +35,117 @@ import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigTagsRelationMappe
  * @author jowee
  **/
 
-public class ConfigTagsRelationMapperByXugu extends BaseConfigTagsRelationMapper {
-
+public class ConfigTagsRelationMapperByXugu extends AbstractMapperByXugu implements ConfigTagsRelationMapper {
+    
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.XUGU;
     }
-
+    
+    @Override
+    public MapperResult findConfigInfo4PageFetchRows(MapperContext context) {
+        final String tenant = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
+        final String dataId = (String) context.getWhereParameter(FieldConstant.DATA_ID);
+        final String group = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
+        final String appName = (String) context.getWhereParameter(FieldConstant.APP_NAME);
+        final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
+        final String[] tagArr = (String[]) context.getWhereParameter(FieldConstant.TAG_ARR);
+        
+        List<Object> paramList = new ArrayList<>();
+        
+        StringBuilder innerWhere = new StringBuilder(" WHERE ");
+        innerWhere.append(" a.tenant_id=? ");
+        paramList.add(tenant);
+        
+        if (StringUtils.isNotBlank(dataId)) {
+            innerWhere.append(" AND a.data_id=? ");
+            paramList.add(dataId);
+        }
+        if (StringUtils.isNotBlank(group)) {
+            innerWhere.append(" AND a.group_id=? ");
+            paramList.add(group);
+        }
+        if (StringUtils.isNotBlank(appName)) {
+            innerWhere.append(" AND a.app_name=? ");
+            paramList.add(appName);
+        }
+        if (!StringUtils.isBlank(content)) {
+            innerWhere.append(" AND a.content LIKE ? ");
+            paramList.add(content);
+        }
+        innerWhere.append(" AND b.tag_name IN (");
+        for (int i = 0; i < tagArr.length; i++) {
+            if (i != 0) {
+                innerWhere.append(", ");
+            }
+            innerWhere.append('?');
+            paramList.add(tagArr[i]);
+        }
+        innerWhere.append(") ");
+        
+        final String sql =
+                "SELECT c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.type,c.encrypted_data_key,c.c_desc,"
+                        + "GROUP_CONCAT(DISTINCT d.tag_name SEPARATOR ',') as config_tags " + "FROM ("
+                        + "SELECT DISTINCT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content,a.md5,a.type,a.encrypted_data_key,a.c_desc "
+                        + "FROM config_info a LEFT JOIN config_tags_relation b ON a.id=b.id" + innerWhere
+                        + "ORDER BY a.id LIMIT " + context.getStartRow() + "," + context.getPageSize()
+                        + ") c LEFT JOIN config_tags_relation d ON c.id=d.id "
+                        + "GROUP BY c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.type,c.encrypted_data_key,c.c_desc";
+        
+        return new MapperResult(sql, paramList);
+    }
+    
+    @Override
+    public MapperResult findConfigInfoLike4PageFetchRows(MapperContext context) {
+        final String tenant = (String) context.getWhereParameter(FieldConstant.TENANT_ID);
+        final String dataId = (String) context.getWhereParameter(FieldConstant.DATA_ID);
+        final String group = (String) context.getWhereParameter(FieldConstant.GROUP_ID);
+        final String appName = (String) context.getWhereParameter(FieldConstant.APP_NAME);
+        final String content = (String) context.getWhereParameter(FieldConstant.CONTENT);
+        final String[] tagArr = (String[]) context.getWhereParameter(FieldConstant.TAG_ARR);
+        final String[] types = (String[]) context.getWhereParameter(FieldConstant.TYPE);
+        
+        WhereBuilder innerWhere = new WhereBuilder(
+                "SELECT DISTINCT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content,a.md5,a.encrypted_data_key,a.type,a.c_desc "
+                        + "FROM config_info a LEFT JOIN config_tags_relation b ON a.id=b.id");
+        
+        innerWhere.like("a.tenant_id", tenant);
+        
+        if (StringUtils.isNotBlank(dataId)) {
+            innerWhere.and().like("a.data_id", dataId);
+        }
+        if (StringUtils.isNotBlank(group)) {
+            innerWhere.and().like("a.group_id", group);
+        }
+        if (StringUtils.isNotBlank(appName)) {
+            innerWhere.and().eq("a.app_name", appName);
+        }
+        if (StringUtils.isNotBlank(content)) {
+            innerWhere.and().like("a.content", content);
+        }
+        if (!ArrayUtils.isEmpty(tagArr)) {
+            innerWhere.and().startParentheses();
+            for (int i = 0; i < tagArr.length; i++) {
+                if (i != 0) {
+                    innerWhere.or();
+                }
+                innerWhere.like("b.tag_name", tagArr[i]);
+            }
+            innerWhere.endParentheses();
+        }
+        if (!ArrayUtils.isEmpty(types)) {
+            innerWhere.and().in("a.type", types);
+        }
+        
+        MapperResult innerResult = innerWhere.build();
+        
+        final String sql =
+                "SELECT c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.encrypted_data_key,c.type,c.c_desc,"
+                        + "GROUP_CONCAT(DISTINCT d.tag_name SEPARATOR ',') as config_tags " + "FROM ("
+                        + innerResult.getSql() + " ORDER BY a.id LIMIT " + context.getStartRow() + Symbols.COMMA
+                        + context.getPageSize() + ") c " + "LEFT JOIN config_tags_relation d ON c.id=d.id "
+                        + "GROUP BY c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.encrypted_data_key,c.type,c.c_desc";
+        
+        return new MapperResult(sql, innerResult.getParamList());
+    }
 }
