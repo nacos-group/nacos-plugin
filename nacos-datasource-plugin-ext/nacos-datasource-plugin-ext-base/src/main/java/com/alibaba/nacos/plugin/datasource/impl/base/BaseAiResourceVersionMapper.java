@@ -66,7 +66,7 @@ public abstract class BaseAiResourceVersionMapper extends AbstractMapper impleme
         }
         
         MapperResult built = where.build();
-        String sql = built.getSql() + " ORDER BY gmt_modified DESC LIMIT ?,?";
+        String sql = getLimitPageSqlWithOffset(built.getSql() + " ORDER BY gmt_modified DESC ", context.getStartRow(),context.getPageSize());
         List<Object> params = new ArrayList<>(built.getParamList());
         params.add(context.getStartRow());
         params.add(context.getPageSize());

@@ -39,17 +39,18 @@ public abstract class BaseHistoryConfigInfoMapper extends AbstractMapper impleme
     
     @Override
     public MapperResult removeConfigHistory(MapperContext context) {
-        String sql = "DELETE FROM his_config_info WHERE gmt_modified < ? LIMIT ?";
+        String sql = getLimitTopSqlWithMark("DELETE FROM his_config_info WHERE gmt_modified < ? ");
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.GMT_MODIFIED),
                         context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
     }
     
     @Override
     public MapperResult pageFindConfigHistoryFetchRows(MapperContext context) {
-        String sql = "SELECT nid,data_id,group_id,tenant_id,app_name,src_ip,src_user,op_type,gmt_create,gmt_modified "
-                + " FROM his_config_info "
-                + " WHERE data_id = ? AND group_id = ? AND tenant_id = ? ORDER BY nid DESC limit "
-                + context.getStartRow() + "," + context.getPageSize();
+        String sql = getLimitPageSqlWithOffset(
+                "SELECT nid,data_id,group_id,tenant_id,app_name,src_ip,src_user,op_type,gmt_create,gmt_modified "
+                        + " FROM his_config_info "
+                        + " WHERE data_id = ? AND group_id = ? AND tenant_id = ? ORDER BY nid DESC ",
+                context.getStartRow(), context.getPageSize());
         
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.DATA_ID),
                 context.getWhereParameter(FieldConstant.GROUP_ID), context.getWhereParameter(FieldConstant.TENANT_ID)));
@@ -62,6 +63,10 @@ public abstract class BaseHistoryConfigInfoMapper extends AbstractMapper impleme
     
     public String getLimitPageSqlWithOffset(String sql, int startRow, int pageSize) {
         return databaseDialect.getLimitPageSqlWithOffset(sql, startRow, pageSize);
+    }
+    
+    public String getLimitTopSqlWithMark(String sql) {
+        return databaseDialect.getLimitTopSqlWithMark(sql);
     }
     
     @Override

@@ -49,7 +49,8 @@ public abstract class BaseAiResourceMapper extends AbstractMapper implements AiR
         where.eq("namespace_id", context.getWhereParameter(FieldConstant.NAMESPACE_ID));
         
         MapperResult build = where.build();
-        String sql = build.getSql() + resolveOrderByClause(context) + " LIMIT ?,?";
+        String sql = getLimitPageSqlWithOffset(build.getSql() + resolveOrderByClause(context), context.getStartRow(),
+                context.getPageSize());
         List<Object> params = new ArrayList<>(build.getParamList());
         params.add(context.getStartRow());
         params.add(context.getPageSize());

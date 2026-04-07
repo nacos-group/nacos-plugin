@@ -40,9 +40,9 @@ public abstract class BaseConfigInfoGrayMapper extends AbstractMapper implements
     
     @Override
     public MapperResult findAllConfigInfoGrayForDumpAllFetchRows(MapperContext context) {
-        String sql = "SELECT id,data_id,group_id,tenant_id,gray_name,app_name,content,md5,gmt_modified "
-                        +" from config_info_gray ORDER BY id LIMIT " + context.getStartRow() + "," +context.getPageSize();
-        
+        // 使用数据库方言对应的 limit 实现语法上的差异
+        String sql = getLimitPageSqlWithOffset("SELECT id,data_id,group_id,tenant_id,gray_name,app_name,content,md5,gmt_modified "
+                        +" from config_info_gray ORDER BY id ", context.getStartRow(), context.getPageSize());
         return new MapperResult(sql, Collections.emptyList());
     }
     
