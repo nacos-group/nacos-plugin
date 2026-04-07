@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 1999-2026 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,49 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.base;
 
-
+import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.constants.TableConstant;
 import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
 import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
 import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
-import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoBetaMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.AiResourceMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ext.WhereBuilder;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * The base implementation of ConfigInfoBetaMapper.
- *
- * @author Long Yu
- **/
-public abstract class BaseConfigInfoBetaMapper extends AbstractMapper implements ConfigInfoBetaMapper {
-    
+ * @author Ken
+ */
+public abstract class BaseAiResourceMapper extends AbstractMapper implements AiResourceMapper {
     private DatabaseDialect databaseDialect;
     
-    public BaseConfigInfoBetaMapper() {
+    public BaseAiResourceMapper() {
         databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
     }
     
     @Override
+    public MapperResult findAiResourceFetchRows(MapperContext context) {
+        WhereBuilder where = new WhereBuilder(
+                "select id,gmt_create,gmt_modified,name,type,c_desc,status,namespace_id,"
+                        + "biz_tags,ext,c_from,version_info,meta_version,scope,owner,download_count"
+                        + " from ai_resource");
+        
+        where.eq("namespace_id", context.getWhereParameter(FieldConstant.NAMESPACE_ID));
+        
+        MapperResult build = where.build();
+        String sql = build.getSql() + resolveOrderByClause(context) + " LIMIT ?,?";
+        List<Object> params = new ArrayList<>(build.getParamList());
+        params.add(context.getStartRow());
+        params.add(context.getPageSize());
+        return new MapperResult(sql, params);
+    }
+    
+    @Override
     public String getTableName() {
-        return TableConstant.CONFIG_INFO_BETA;
+        return TableConstant.AI_RESOURCE;
     }
     
     public String getLimitPageSqlWithOffset(String sql, int startRow, int pageSize) {
@@ -50,21 +66,8 @@ public abstract class BaseConfigInfoBetaMapper extends AbstractMapper implements
     }
     
     @Override
-    public MapperResult findAllConfigInfoBetaForDumpAllFetchRows(MapperContext context) {
-        int startRow = context.getStartRow();
-        int pageSize = context.getPageSize();
-        String sqlInner = getLimitPageSqlWithOffset("SELECT id FROM config_info_beta  ORDER BY id ", startRow,
-                pageSize);
-        String sql =
-                " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified,beta_ips,encrypted_data_key "
-                        + " FROM ( " + sqlInner + "  )" + "  g, config_info_beta t WHERE g.id = t.id ";
-        return new MapperResult(sql, Collections.emptyList());
-    }
-
-    @Override
     public String getFunction(String functionName) {
         return databaseDialect.getFunction(functionName);
     }
-    
     
 }
