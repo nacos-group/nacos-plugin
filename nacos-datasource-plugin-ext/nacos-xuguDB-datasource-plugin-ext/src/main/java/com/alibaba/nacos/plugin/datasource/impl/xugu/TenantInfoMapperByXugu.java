@@ -17,14 +17,14 @@
 package com.alibaba.nacos.plugin.datasource.impl.xugu;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
 
 /**
  * The xuguDB implementation of TenantInfoMapperByXugu.
  *
  * @author jowee
  **/
-public class TenantInfoMapperByXugu extends BaseTenantInfoMapper {
+public class TenantInfoMapperByXugu extends AbstractMapperByXugu implements TenantInfoMapper {
 
     @Override
     public String getDataSource() {

@@ -10,26 +10,20 @@
     </parent>
 
     <artifactId>nacos-xuguDB-datasource-plugin-ext</artifactId>
-
+    <version>3.2.0</version>
+    
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <alibaba-nacos.version>3.2.0</alibaba-nacos.version>
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-datasource-plugin-ext-base</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-
     </dependencies>
 </project>

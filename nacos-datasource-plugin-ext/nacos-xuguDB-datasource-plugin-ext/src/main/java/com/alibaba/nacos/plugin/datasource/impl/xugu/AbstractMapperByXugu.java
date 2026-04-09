@@ -16,6 +16,7 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.xugu;
 
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.emums.TrustedXuguFunctionEnum;
 import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
 
@@ -25,7 +26,12 @@ import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
  * @author Ken
  */
 public abstract class AbstractMapperByXugu extends AbstractMapper {
-
+    
+    @Override
+    public String getDataSource() {
+        return DatabaseTypeConstant.XUGU;
+    }
+    
     @Override
     public String getFunction(String functionName) {
         return TrustedXuguFunctionEnum.getFunctionByName(functionName);
