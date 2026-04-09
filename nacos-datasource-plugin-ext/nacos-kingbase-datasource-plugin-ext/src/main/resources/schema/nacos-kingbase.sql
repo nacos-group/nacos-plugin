@@ -346,6 +346,50 @@ CREATE UNIQUE INDEX "uk_username_role" ON "roles" USING btree ("username","role"
 CREATE UNIQUE INDEX "uk_role_permission" ON "permissions" USING btree ("role","resource","action");
 
 -- ----------------------------
+-- Table structure for config_info_gray
+-- ----------------------------
+DROP TABLE IF EXISTS "config_info_gray";
+CREATE TABLE "config_info_gray" (
+  "id" bigserial NOT NULL,
+  "data_id" varchar(255) NOT NULL,
+  "group_id" varchar(128) NOT NULL,
+  "content" text NOT NULL,
+  "md5" varchar(32),
+  "src_user" text,
+  "src_ip" varchar(100),
+  "gmt_create" timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "gmt_modified" timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "app_name" varchar(128),
+  "tenant_id" varchar(128) DEFAULT '',
+  "gray_name" varchar(128) NOT NULL,
+  "gray_rule" text NOT NULL,
+  "encrypted_data_key" varchar(256) NOT NULL DEFAULT ''
+);
+
+COMMENT ON COLUMN "config_info_gray"."id" IS 'id';
+COMMENT ON COLUMN "config_info_gray"."data_id" IS 'data_id';
+COMMENT ON COLUMN "config_info_gray"."group_id" IS 'group_id';
+COMMENT ON COLUMN "config_info_gray"."content" IS 'content';
+COMMENT ON COLUMN "config_info_gray"."md5" IS 'md5';
+COMMENT ON COLUMN "config_info_gray"."src_user" IS 'source user';
+COMMENT ON COLUMN "config_info_gray"."src_ip" IS 'source ip';
+COMMENT ON COLUMN "config_info_gray"."gmt_create" IS '创建时间';
+COMMENT ON COLUMN "config_info_gray"."gmt_modified" IS '修改时间';
+COMMENT ON COLUMN "config_info_gray"."app_name" IS 'app_name';
+COMMENT ON COLUMN "config_info_gray"."tenant_id" IS '租户字段';
+COMMENT ON COLUMN "config_info_gray"."gray_name" IS '灰度名称';
+COMMENT ON COLUMN "config_info_gray"."gray_rule" IS '灰度规则';
+COMMENT ON COLUMN "config_info_gray"."encrypted_data_key" IS '秘钥';
+COMMENT ON TABLE "config_info_gray" IS 'config_info_gray';
+
+-- 创建索引
+CREATE UNIQUE INDEX "uk_configinfogray_datagrouptenantgray" ON "config_info_gray" USING btree ("data_id", "group_id", "tenant_id", "gray_name");
+CREATE INDEX "idx_dataid_gmt_modified_gray" ON "config_info_gray" USING btree ("data_id", "gmt_modified");
+CREATE INDEX "idx_gmt_modified_gray" ON "config_info_gray" USING btree ("gmt_modified");
+
+ALTER TABLE "config_info_gray" ADD CONSTRAINT "config_info_gray_pkey" PRIMARY KEY ("id");
+
+-- ----------------------------
 --    表名称 = pipeline_execution since 3.2.0
 -- ----------------------------
 CREATE TABLE "pipeline_execution" (
