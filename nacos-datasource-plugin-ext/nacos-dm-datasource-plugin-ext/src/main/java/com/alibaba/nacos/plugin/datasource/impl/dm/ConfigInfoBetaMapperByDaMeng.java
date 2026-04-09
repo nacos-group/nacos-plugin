@@ -18,7 +18,14 @@ package com.alibaba.nacos.plugin.datasource.impl.dm;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
+import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
 import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoBetaMapper;
+import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoBetaMapper;
+import com.alibaba.nacos.plugin.datasource.model.MapperContext;
+import com.alibaba.nacos.plugin.datasource.model.MapperResult;
+
+import java.util.Collections;
 
 /**
  * The dameng implementation of ConfigInfoBetaMapper.
@@ -26,8 +33,24 @@ import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoBetaMapper;
  * @author Xiao Yong
  **/
 
-public class ConfigInfoBetaMapperByDaMeng extends BaseConfigInfoBetaMapper {
-
+public class ConfigInfoBetaMapperByDaMeng extends AbstractMapperByDaMeng implements ConfigInfoBetaMapper {
+    
+    @Override
+    public MapperResult findAllConfigInfoBetaForDumpAllFetchRows(MapperContext context) {
+        int startRow = context.getStartRow();
+        int pageSize = context.getPageSize();
+        String sqlInner = getLimitPageSqlWithOffset("SELECT id FROM config_info_beta  ORDER BY id ", startRow,
+                pageSize);
+        String sql =
+                " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified,beta_ips,encrypted_data_key "
+                        + " FROM ( " + sqlInner + "  )" + "  g, config_info_beta t WHERE g.id = t.id ";
+        return new MapperResult(sql, Collections.emptyList());
+    }
+    
+    private String getLimitPageSqlWithOffset(String sql, int offset, int limit) {
+        return getDialect().getLimitPageSqlWithOffset(sql,offset,limit);
+    }
+    
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.DM;
@@ -37,4 +60,5 @@ public class ConfigInfoBetaMapperByDaMeng extends BaseConfigInfoBetaMapper {
     public String[] getPrimaryKeyGeneratedKeys() {
         return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
     }
+    
 }

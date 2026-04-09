@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2022 Alibaba Group Holding Ltd.
+ * Copyright 1999-2026 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,31 +17,35 @@
 package com.alibaba.nacos.plugin.datasource.impl.dm;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoTagMapper;
-import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoTagMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.AiResourceMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ext.WhereBuilder;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * The dameng implementation of ConfigInfoTagMapper.
- *
- * @author hyx
- **/
-
-public class ConfigInfoTagMapperByDaMeng extends AbstractMapperByDaMeng implements ConfigInfoTagMapper {
-
+ * @author Ken
+ */
+public class AiResourceMapperByDaMeng extends AbstractMapperByDaMeng implements AiResourceMapper {
+    
     @Override
-    public MapperResult findAllConfigInfoTagForDumpAllFetchRows(MapperContext context) {
-        int startRow = context.getStartRow();
-        int pageSize = context.getPageSize();
-        String innerSql = getLimitPageSqlWithOffset("SELECT id FROM config_info_tag  ORDER BY id ", startRow, pageSize);
+    public MapperResult findAiResourceFetchRows(MapperContext context) {
+        WhereBuilder where = new WhereBuilder("select id,gmt_create,gmt_modified,name,type,c_desc,status,namespace_id,"
+                + "biz_tags,ext,c_from,version_info,meta_version,scope,owner,download_count from ai_resource");
         
-        String sql = " SELECT t.id,data_id,group_id,tenant_id,tag_id,app_name,content,md5,gmt_modified " + " FROM (  "
-                + innerSql + "  ) " + "g, config_info_tag t  WHERE g.id = t.id  ";
-        return new MapperResult(sql, Collections.emptyList());
+        where.eq("namespace_id", context.getWhereParameter(FieldConstant.NAMESPACE_ID));
+        
+        MapperResult build = where.build();
+        String sql = getLimitPageSqlWithOffset(build.getSql() + resolveOrderByClause(context), context.getStartRow(),
+                context.getPageSize());
+        List<Object> params = new ArrayList<>(build.getParamList());
+        params.add(context.getStartRow());
+        params.add(context.getPageSize());
+        return new MapperResult(sql, params);
     }
     
     private String getLimitPageSqlWithOffset(String sql, int offset, int limit) {
@@ -52,10 +56,9 @@ public class ConfigInfoTagMapperByDaMeng extends AbstractMapperByDaMeng implemen
     public String getDataSource() {
         return DatabaseTypeConstant.DM;
     }
-
+    
     @Override
     public String[] getPrimaryKeyGeneratedKeys() {
         return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
     }
-    
 }

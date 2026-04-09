@@ -16,17 +16,40 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.dm;
 
+import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
-import com.alibaba.nacos.plugin.datasource.impl.mysql.HistoryConfigInfoMapperByMySql;
+import com.alibaba.nacos.plugin.datasource.mapper.HistoryConfigInfoMapper;
+import com.alibaba.nacos.plugin.datasource.model.MapperContext;
+import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
 /**
  * The dameng implementation of HistoryConfigInfoMapper.
  *
  * @author Xiao Yong
  **/
-public class HistoryConfigInfoMapperByDaMeng extends HistoryConfigInfoMapperByMySql {
-
+public class HistoryConfigInfoMapperByDaMeng extends AbstractMapperByDaMeng implements HistoryConfigInfoMapper {
+    
+    @Override
+    public MapperResult removeConfigHistory(MapperContext context) {
+        String sql = getLimitTopSqlWithMark("DELETE FROM his_config_info WHERE gmt_modified < ? ");
+        return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.GMT_MODIFIED),
+                        context.getWhereParameter(FieldConstant.LIMIT_SIZE)));
+    }
+    
+    @Override
+    public MapperResult pageFindConfigHistoryFetchRows(MapperContext context) {
+        String sql = getLimitPageSqlWithOffset(
+                "SELECT nid,data_id,group_id,tenant_id,app_name,src_ip,src_user,op_type,gmt_create,gmt_modified "
+                        + " FROM his_config_info "
+                        + " WHERE data_id = ? AND group_id = ? AND tenant_id = ? ORDER BY nid DESC ",
+                context.getStartRow(), context.getPageSize());
+        
+        return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.DATA_ID),
+                context.getWhereParameter(FieldConstant.GROUP_ID), context.getWhereParameter(FieldConstant.TENANT_ID)));
+    }
+    
     @Override
     public String getDataSource() {
         return DatabaseTypeConstant.DM;
@@ -35,5 +58,13 @@ public class HistoryConfigInfoMapperByDaMeng extends HistoryConfigInfoMapperByMy
     @Override
     public String[] getPrimaryKeyGeneratedKeys() {
         return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
+    
+    private String getLimitPageSqlWithOffset(String sql, int offset, int limit) {
+        return getDialect().getLimitPageSqlWithOffset(sql,offset,limit);
+    }
+    
+    private String getLimitTopSqlWithMark(String sql) {
+        return getDialect().getLimitTopSqlWithMark(sql);
     }
 }
