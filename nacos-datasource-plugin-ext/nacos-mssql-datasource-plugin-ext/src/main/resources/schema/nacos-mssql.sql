@@ -197,3 +197,87 @@ BEGIN
     SET nid = id
     WHERE id IN (SELECT id FROM inserted)
 END
+
+-- --------------------------------------
+--      表 = config_info_gray since 2.5.0
+-- --------------------------------------
+CREATE TABLE config_info_gray (
+    id bigint NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    data_id varchar(255) NOT NULL,
+    group_id varchar(128) NOT NULL,
+    content nvarchar(max) NOT NULL,
+    md5 varchar(32) DEFAULT NULL,
+    src_user nvarchar(max),
+    src_ip varchar(100) DEFAULT NULL,
+    gmt_create datetime NOT NULL DEFAULT GETDATE(),
+    gmt_modified datetime NOT NULL DEFAULT GETDATE(),
+    app_name varchar(128) DEFAULT NULL,
+    tenant_id varchar(128) DEFAULT '',
+    gray_name varchar(128) NOT NULL,
+    gray_rule nvarchar(max) NOT NULL,
+    encrypted_data_key varchar(256) NOT NULL DEFAULT '',
+    UNIQUE (data_id,group_id,tenant_id,gray_name),
+    INDEX idx_dataid_gmt_modified (data_id, gmt_modified),
+    INDEX idx_gmt_modified_gray(gmt_modified)
+);
+
+-- ----------------------------------------
+--      表 = pipeline_execution since 3.2.0
+-- ----------------------------------------
+CREATE TABLE pipeline_execution (
+    execution_id varchar(64) NOT NULL PRIMARY KEY,
+    resource_type varchar(32) NOT NULL,
+    resource_name varchar(256) NOT NULL,
+    namespace_id varchar(128) DEFAULT NULL,
+    version varchar(64) DEFAULT NULL,
+    status varchar(32) NOT NULL,
+    pipeline nvarchar(max) NOT NULL,
+    create_time bigint NOT NULL,
+    update_time bigint NOT NULL
+);
+
+-- ----------------------------------------
+--      表 = pipeline_execution since 3.2.0
+-- ----------------------------------------
+CREATE TABLE ai_resource (
+    id bigint IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    gmt_create datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    gmt_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    name nvarchar(256) NOT NULL,
+    type nvarchar(32) NOT NULL,
+    c_desc nvarchar(2048) DEFAULT NULL,
+    status nvarchar(32) DEFAULT NULL,
+    namespace_id nvarchar(128) NOT NULL DEFAULT '',
+    biz_tags nvarchar(1024) DEFAULT NULL,
+    ext nvarchar(max) DEFAULT NULL,
+    c_from nvarchar(256) NOT NULL DEFAULT 'local',
+    version_info nvarchar(max) DEFAULT NULL,
+    meta_version bigint NOT NULL DEFAULT 1,
+    scope nvarchar(16) NOT NULL DEFAULT 'PRIVATE',
+    owner nvarchar(128) NOT NULL DEFAULT '',
+    download_count bigint NOT NULL DEFAULT 0,
+    UNIQUE (namespace_id, name, type, c_from),
+    INDEX idx_ai_resource_name (name),
+    INDEX idx_ai_resource_type (type),
+    INDEX idx_ai_resource_gmt_modified (gmt_modified)
+);
+
+CREATE TABLE ai_resource_version (
+    id bigint IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    gmt_create datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    gmt_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    type nvarchar(32) NOT NULL,
+    author nvarchar(128) DEFAULT NULL,
+    name nvarchar(256) NOT NULL,
+    c_desc nvarchar(2048) DEFAULT NULL,
+    status nvarchar(32) NOT NULL,
+    version nvarchar(64) NOT NULL,
+    namespace_id nvarchar(128) NOT NULL DEFAULT '',
+    storage nvarchar(max) DEFAULT NULL,
+    publish_pipeline_info nvarchar(max) DEFAULT NULL,
+    download_count bigint NOT NULL DEFAULT 0,
+    UNIQUE (namespace_id, name, type, version),
+    INDEX idx_ai_resource_ver_name (name),
+    INDEX idx_ai_resource_ver_status (status),
+    INDEX idx_ai_resource_ver_gmt_modified (gmt_modified)
+);

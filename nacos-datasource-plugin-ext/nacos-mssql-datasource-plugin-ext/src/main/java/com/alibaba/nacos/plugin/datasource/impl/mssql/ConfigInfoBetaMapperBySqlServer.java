@@ -17,7 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.impl.mssql;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoBetaMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoBetaMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -30,7 +30,7 @@ import java.util.List;
  * @author QY Li
  **/
 
-public class ConfigInfoBetaMapperBySqlServer extends BaseConfigInfoBetaMapper {
+public class ConfigInfoBetaMapperBySqlServer extends AbstractMapperBySqlServer implements ConfigInfoBetaMapper {
 
     @Override
     public MapperResult findAllConfigInfoBetaForDumpAllFetchRows(MapperContext context) {

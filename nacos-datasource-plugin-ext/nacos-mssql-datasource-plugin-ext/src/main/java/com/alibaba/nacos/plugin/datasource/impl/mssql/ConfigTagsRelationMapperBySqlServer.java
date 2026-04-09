@@ -19,7 +19,7 @@ package com.alibaba.nacos.plugin.datasource.impl.mssql;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigTagsRelationMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigTagsRelationMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author QY Li
  **/
-public class ConfigTagsRelationMapperBySqlServer extends BaseConfigTagsRelationMapper {
+public class ConfigTagsRelationMapperBySqlServer extends AbstractMapperBySqlServer implements ConfigTagsRelationMapper {
     
     @Override
     public MapperResult findConfigInfo4PageFetchRows(MapperContext context) {

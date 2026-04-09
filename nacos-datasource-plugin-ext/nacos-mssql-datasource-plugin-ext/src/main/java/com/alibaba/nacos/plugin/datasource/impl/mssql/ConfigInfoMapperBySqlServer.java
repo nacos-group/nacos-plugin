@@ -22,7 +22,7 @@ import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.datasource.constants.ContextConstant;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -37,7 +37,7 @@ import java.util.List;
  * @author QY Li
  **/
 
-public class ConfigInfoMapperBySqlServer extends BaseConfigInfoMapper {
+public class ConfigInfoMapperBySqlServer extends AbstractMapperBySqlServer implements ConfigInfoMapper {
     
     @Override
     public MapperResult findConfigInfoByAppFetchRows(MapperContext context) {

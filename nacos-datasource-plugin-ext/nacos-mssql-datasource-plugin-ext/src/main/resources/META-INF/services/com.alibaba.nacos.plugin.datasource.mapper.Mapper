@@ -22,5 +22,8 @@ com.alibaba.nacos.plugin.datasource.impl.mssql.HistoryConfigInfoMapperBySqlServe
 com.alibaba.nacos.plugin.datasource.impl.mssql.TenantInfoMapperBySqlServer
 com.alibaba.nacos.plugin.datasource.impl.mssql.TenantCapacityMapperBySqlServer
 com.alibaba.nacos.plugin.datasource.impl.mssql.GroupCapacityMapperBySqlServer
-
+com.alibaba.nacos.plugin.datasource.impl.mssql.ConfigInfoGrayMapperBySqlServer
+com.alibaba.nacos.plugin.datasource.impl.mssql.ConfigMigrateMapperBySqlServer
+com.alibaba.nacos.plugin.datasource.impl.mssql.AiResourceMapperBySqlServer
+com.alibaba.nacos.plugin.datasource.impl.mssql.AiResourceVersionMapperBySqlServer
 
