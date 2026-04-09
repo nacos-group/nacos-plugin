@@ -16,7 +16,10 @@
 
 package com.alibaba.nacos.plugin.datasource.impl.kingbase;
 
+import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
+import com.alibaba.nacos.plugin.datasource.dialect.DatabaseDialect;
 import com.alibaba.nacos.plugin.datasource.enums.kingbase.TrustedKingbaseFunctionEnum;
+import com.alibaba.nacos.plugin.datasource.manager.DatabaseDialectManager;
 import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
 
 /**
@@ -25,7 +28,25 @@ import com.alibaba.nacos.plugin.datasource.mapper.AbstractMapper;
  * @date 2026/01/12
  */
 public abstract class AbstractMapperByKingbase extends AbstractMapper {
-
+    
+    private volatile DatabaseDialect databaseDialect;
+    
+    public DatabaseDialect getDatabaseDialect() {
+        if (databaseDialect == null) {
+            synchronized (this) {
+                if (databaseDialect == null) {
+                    databaseDialect = DatabaseDialectManager.getInstance().getDialect(getDataSource());
+                }
+            }
+        }
+        return databaseDialect;
+    }
+    
+    @Override
+    public String getDataSource() {
+        return DatabaseTypeConstant.KINGBASE;
+    }
+    
     @Override
     public String getFunction(String functionName) {
         return TrustedKingbaseFunctionEnum.getFunctionByName(functionName);

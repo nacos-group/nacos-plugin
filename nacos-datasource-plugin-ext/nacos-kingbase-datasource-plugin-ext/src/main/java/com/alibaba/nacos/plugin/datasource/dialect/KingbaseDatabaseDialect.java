@@ -20,4 +20,19 @@ public class KingbaseDatabaseDialect extends AbstractDatabaseDialect {
     public String getFunction(String functionName) {
         return TrustedKingbaseFunctionEnum.getFunctionByName(functionName);
     }
+    
+    @Override
+    public String getLimitPageSqlWithMark(String sql) {
+        return sql + "  LIMIT ? OFFSET ? ";
+    }
+
+    @Override
+    public String getLimitPageSql(String sql, int pageNo, int pageSize) {
+        return sql + " LIMIT " + pageSize + "  OFFSET " + getPagePrevNum(pageNo, pageSize);
+    }
+
+    @Override
+    public String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize) {
+        return sql + " LIMIT " + pageSize + "  OFFSET " + startOffset;
+    }
 }
