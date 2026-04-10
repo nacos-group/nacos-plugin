@@ -22,5 +22,9 @@ com.alibaba.nacos.plugin.datasource.impl.oceanbase.HistoryConfigInfoMapperOceanb
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.TenantCapacityMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.TenantInfoMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.GroupCapacityMapperByOceanbase
+com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigInfoGrayMapperByOceanbase
+com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigMigrateMapperByOceanbase
+com.alibaba.nacos.plugin.datasource.impl.oceanbase.AiResourceMapperByOceanbase
+com.alibaba.nacos.plugin.datasource.impl.oceanbase.AiResourceVersionByOceanbase
 
 
