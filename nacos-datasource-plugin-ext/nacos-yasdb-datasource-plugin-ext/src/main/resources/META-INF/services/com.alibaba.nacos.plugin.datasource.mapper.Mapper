@@ -14,9 +14,13 @@
 # limitations under the License.
 #
 
+com.alibaba.nacos.plugin.datasource.impl.yasdb.AiResourceMapperByYasdb
+com.alibaba.nacos.plugin.datasource.impl.yasdb.AiResourceVersionMapperByYasdb
 com.alibaba.nacos.plugin.datasource.impl.yasdb.ConfigInfoBetaMapperByYasdb
+com.alibaba.nacos.plugin.datasource.impl.yasdb.ConfigInfoGrayMapperByYasdb
 com.alibaba.nacos.plugin.datasource.impl.yasdb.ConfigInfoMapperByYasdb
 com.alibaba.nacos.plugin.datasource.impl.yasdb.ConfigInfoTagMapperByYasdb
+com.alibaba.nacos.plugin.datasource.impl.yasdb.ConfigMigrateMapperByYasdb
 com.alibaba.nacos.plugin.datasource.impl.yasdb.ConfigTagsRelationMapperByYasdb
 com.alibaba.nacos.plugin.datasource.impl.yasdb.HistoryConfigInfoMapperYasdb
 com.alibaba.nacos.plugin.datasource.impl.yasdb.TenantCapacityMapperByYasdb
