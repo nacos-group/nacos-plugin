@@ -17,7 +17,6 @@
 package com.alibaba.nacos.plugin.datasource.impl.kingbase;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.mysql.AbstractMapperByMysql;
 import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoGrayMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
@@ -30,7 +29,7 @@ import java.util.Collections;
  * @date 2026/01/12
  */
 
-public class ConfigInfoGrayMapperByKingbase extends AbstractMapperByMysql implements ConfigInfoGrayMapper {
+public class ConfigInfoGrayMapperByKingbase extends AbstractMapperByKingbase implements ConfigInfoGrayMapper {
 
     @Override
     public MapperResult findAllConfigInfoGrayForDumpAllFetchRows(MapperContext context) {

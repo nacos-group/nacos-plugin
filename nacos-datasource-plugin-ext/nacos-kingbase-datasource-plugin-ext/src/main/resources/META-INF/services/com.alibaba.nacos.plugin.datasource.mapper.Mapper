@@ -25,3 +25,5 @@ com.alibaba.nacos.plugin.datasource.impl.kingbase.GroupCapacityMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.HistoryConfigInfoMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.TenantCapacityMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.TenantInfoMapperByKingbase
+com.alibaba.nacos.plugin.datasource.impl.kingbase.AiResourceMapperByKingbase
+com.alibaba.nacos.plugin.datasource.impl.kingbase.AiResourceVersionMapperByKingbase
