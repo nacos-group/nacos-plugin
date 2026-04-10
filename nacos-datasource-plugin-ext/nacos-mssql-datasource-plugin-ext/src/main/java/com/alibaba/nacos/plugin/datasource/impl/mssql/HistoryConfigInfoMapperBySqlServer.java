@@ -19,7 +19,7 @@ package com.alibaba.nacos.plugin.datasource.impl.mssql;
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.FieldConstant;
-import com.alibaba.nacos.plugin.datasource.impl.mysql.HistoryConfigInfoMapperByMySql;
+import com.alibaba.nacos.plugin.datasource.mapper.HistoryConfigInfoMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -28,7 +28,7 @@ import com.alibaba.nacos.plugin.datasource.model.MapperResult;
  *
  * @author QY Li
  **/
-public class HistoryConfigInfoMapperBySqlServer extends HistoryConfigInfoMapperByMySql {
+public class HistoryConfigInfoMapperBySqlServer extends AbstractMapperBySqlServer implements HistoryConfigInfoMapper {
     
     @Override
     public MapperResult removeConfigHistory(MapperContext context) {

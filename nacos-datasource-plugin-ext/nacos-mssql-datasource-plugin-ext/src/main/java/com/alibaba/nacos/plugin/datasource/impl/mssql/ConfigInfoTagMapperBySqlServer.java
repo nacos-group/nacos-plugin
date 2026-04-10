@@ -17,7 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.impl.mssql;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseConfigInfoTagMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.ConfigInfoTagMapper;
 import com.alibaba.nacos.plugin.datasource.model.MapperContext;
 import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
@@ -29,7 +29,7 @@ import java.util.Collections;
  * @author QY Li
  **/
 
-public class ConfigInfoTagMapperBySqlServer extends BaseConfigInfoTagMapper {
+public class ConfigInfoTagMapperBySqlServer extends AbstractMapperBySqlServer implements ConfigInfoTagMapper {
     
     @Override
     public MapperResult findAllConfigInfoTagForDumpAllFetchRows(MapperContext context) {

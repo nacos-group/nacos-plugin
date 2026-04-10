@@ -17,14 +17,14 @@
 package com.alibaba.nacos.plugin.datasource.impl.mssql;
 
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
-import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantInfoMapper;
+import com.alibaba.nacos.plugin.datasource.mapper.TenantInfoMapper;
 
 /**
  * The SQL Server implementation of TenantInfoMapper.
  *
  * @author QY Li
  **/
-public class TenantInfoMapperBySqlServer extends BaseTenantInfoMapper {
+public class TenantInfoMapperBySqlServer extends AbstractMapperBySqlServer implements TenantInfoMapper {
 
     @Override
     public String getDataSource() {
