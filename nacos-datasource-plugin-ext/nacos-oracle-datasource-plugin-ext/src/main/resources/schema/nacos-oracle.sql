@@ -78,6 +78,73 @@ begin
 select config_info_id_seq.nextval into:new.id from dual;
 end;
 -- ----------------------------
+-- Table structure for config_info_gray
+-- ----------------------------
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE config_info_gray';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN
+            RAISE;
+        END IF;
+END;
+CREATE TABLE config_info_gray
+(
+    id                 int                      NOT NULL,
+    data_id            varchar2(255)            NOT NULL,
+    group_id           varchar2(128)            NOT NULL,
+    content            CLOB                     NOT NULL,
+    md5                varchar2(32),
+    src_user           CLOB,
+    src_ip             varchar2(100),
+    gmt_create         timestamp(6)             NOT NULL,
+    gmt_modified       timestamp(6)             NOT NULL,
+    app_name           varchar2(128),
+    tenant_id          varchar2(128) DEFAULT 'PUBLIC',
+    gray_name          varchar2(128)            NOT NULL,
+    gray_rule          CLOB                     NOT NULL,
+    encrypted_data_key varchar2(256) DEFAULT '' NOT NULL
+)
+;
+COMMENT ON COLUMN config_info_gray.id IS 'id';
+COMMENT ON COLUMN config_info_gray.data_id IS 'data_id';
+COMMENT ON COLUMN config_info_gray.group_id IS 'group_id';
+COMMENT ON COLUMN config_info_gray.content IS 'content';
+COMMENT ON COLUMN config_info_gray.md5 IS 'md5';
+COMMENT ON COLUMN config_info_gray.src_user IS 'src_user';
+COMMENT ON COLUMN config_info_gray.src_ip IS 'src_ip';
+COMMENT ON COLUMN config_info_gray.gmt_create IS 'gmt_create';
+COMMENT ON COLUMN config_info_gray.gmt_modified IS 'gmt_modified';
+COMMENT ON COLUMN config_info_gray.app_name IS 'app_name';
+COMMENT ON COLUMN config_info_gray.tenant_id IS 'tenant_id';
+COMMENT ON COLUMN config_info_gray.gray_name IS 'gray_name';
+COMMENT ON COLUMN config_info_gray.gray_rule IS 'gray_rule';
+COMMENT ON COLUMN config_info_gray.encrypted_data_key IS 'encrypted_data_key';
+COMMENT ON TABLE config_info_gray IS 'config_info_gray';
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE config_info_gray_id_seq';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN
+            RAISE;
+        END IF;
+END;
+create sequence config_info_gray_id_seq
+    minvalue 1
+    increment by 1
+    start with 1;
+
+create or replace trigger config_info_gray_id_inc
+    before insert
+    on config_info_gray
+    for each row
+begin
+    select config_info_gray_id_seq.nextval into :new.id from dual;
+end;
+
+
+-- ----------------------------
 -- Table structure for config_info_aggr
 -- ----------------------------
 BEGIN
@@ -127,11 +194,6 @@ before insert on config_info_aggr for each row
 begin
 select config_info_aggr_id_seq.nextval into:new.id from dual;
 end;
--- ----------------------------
--- Records of config_info_aggr
--- ----------------------------
-BEGIN;
-COMMIT;
 
 -- ----------------------------
 -- Table structure for config_info_beta
@@ -145,19 +207,19 @@ EXCEPTION
 END IF;
 END;
 CREATE TABLE config_info_beta (
-                                  id int NOT NULL,
-                                  data_id varchar2(255)  NOT NULL,
-                                  group_id varchar2(128)  NOT NULL,
-                                  app_name varchar2(128) ,
-                                  content CLOB  NOT NULL,
-                                  beta_ips varchar2(1024) ,
-                                  md5 varchar2(32) ,
-                                  gmt_create timestamp(6) NOT NULL,
-                                  gmt_modified timestamp(6) NOT NULL,
-                                  src_user CLOB ,
-                                  src_ip varchar2(20) ,
-                                  tenant_id varchar2(128) DEFAULT 'PUBLIC',
-                                  encrypted_data_key CLOB  NOT NULL
+        id int NOT NULL,
+        data_id varchar2(255)  NOT NULL,
+        group_id varchar2(128)  NOT NULL,
+        app_name varchar2(128),
+        content CLOB  NOT NULL,
+        beta_ips varchar2(1024),
+        md5 varchar2(32),
+        gmt_create timestamp(6) NOT NULL,
+        gmt_modified timestamp(6) NOT NULL,
+        src_user CLOB,
+        src_ip varchar2(20),
+        tenant_id varchar2(128) DEFAULT 'PUBLIC',
+        encrypted_data_key CLOB  NOT NULL
 )
 ;
 COMMENT ON COLUMN config_info_beta.id IS 'id';
@@ -406,12 +468,18 @@ CREATE TABLE his_config_info (
                                  src_ip varchar2(20) ,
                                  op_type char(10) ,
                                  tenant_id varchar2(128) DEFAULT 'PUBLIC',
-                                 encrypted_data_key CLOB  DEFAULT ''
+                                 encrypted_data_key CLOB  DEFAULT '',
+                                 publish_type varchar2(50) DEFAULT 'formal',
+                                 gray_name varchar2(50) DEFAULT NULL,
+                                 ext_info CLOB DEFAULT NULL
 )
 ;
 COMMENT ON COLUMN his_config_info.app_name IS 'app_name';
 COMMENT ON COLUMN his_config_info.tenant_id IS '租户字段';
 COMMENT ON COLUMN his_config_info.encrypted_data_key IS '秘钥';
+COMMENT ON COLUMN his_config_info.publish_type IS 'publish type gray or formal';
+COMMENT ON COLUMN his_config_info.gray_name IS 'gray name';
+COMMENT ON COLUMN his_config_info.ext_info IS 'ext info';
 COMMENT ON TABLE his_config_info IS '多租户改造';
 
 
@@ -446,7 +514,7 @@ END IF;
 END;
 CREATE TABLE permissions (
                              "ROLE" varchar2(50)  NOT NULL,
-                             "RESOURCE" varchar2(512)  NOT NULL,
+                             "RESOURCE" varchar2(128)  NOT NULL,
                              "ACTION" varchar2(8)  NOT NULL
 )
 ;
@@ -626,6 +694,135 @@ INSERT INTO users VALUES ('nacos', '$2a$10$EuWPZHzz32dJN7jexM34MOeYirDdFAZm2kuWj
 COMMIT;
 
 -- ----------------------------
+-- Table structure for pipeline_execution
+-- ----------------------------
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE pipeline_execution';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN
+            RAISE;
+        END IF;
+END;
+CREATE TABLE pipeline_execution(
+        execution_id varchar2(64) NOT NULL,
+        resource_type varchar2(32) NOT NULL,
+        resource_name varchar2(256) NOT NULL,
+        namespace_id varchar2(128) DEFAULT NULL,
+        version varchar2(64) DEFAULT NULL,
+        status varchar2(32) NOT NULL,
+        pipeline CLOB NOT NULL,
+        create_time int NOT NULL,
+        update_time int NOT NULL
+);
+COMMENT ON TABLE pipeline_execution IS 'AI资源发布审核Pipeline执行记录';
+
+-- ----------------------------
+-- Table structure for ai_resource
+-- ----------------------------
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE ai_resource';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN
+            RAISE;
+        END IF;
+END;
+CREATE TABLE ai_resource(
+        id int NOT NULL,
+        gmt_create timestamp(6) NOT NULL,
+        gmt_modified timestamp(6) NOT NULL,
+        name varchar2(256) NOT NULL,
+        type varchar2(32) NOT NULL,
+        c_desc varchar2(2048) DEFAULT NULL,
+        status varchar2(32) DEFAULT NULL,
+        namespace_id varchar2(128) DEFAULT 'PUBLIC' NOT NULL,
+        biz_tags varchar2(1024) DEFAULT NULL,
+        ext CLOB DEFAULT NULL,
+        c_from varchar2(256) DEFAULT 'local' NOT NULL,
+        version_info CLOB DEFAULT NULL,
+        meta_version int DEFAULT 1 NOT NULL,
+        scope varchar2(16) DEFAULT 'PRIVATE' NOT NULL,
+        owner varchar2(128) DEFAULT '' NOT NULL,
+        download_count int DEFAULT 0 NOT NULL
+);
+COMMENT ON TABLE ai_resource IS 'AI资源元数据表';
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE ai_resource_id_seq';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN
+            RAISE;
+        END IF;
+END;
+create
+sequence ai_resource_id_seq
+    minvalue 1
+    increment by 1
+    start
+with 1;
+
+create or
+replace trigger ai_resource_id_inc
+before
+insert on ai_resource for each row
+begin
+    select ai_resource_id_seq.nextval into :new.id from dual;
+end;
+
+-- ----------------------------
+-- Table structure for ai_resource_version
+-- ----------------------------
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE ai_resource_version';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN
+            RAISE;
+        END IF;
+END;
+CREATE TABLE ai_resource_version(
+        id int NOT NULL,
+        gmt_create timestamp(6) NOT NULL,
+        gmt_modified timestamp(6) NOT NULL,
+        type varchar2(32) NOT NULL,
+        author varchar2(128) DEFAULT NULL,
+        name varchar2(256) NOT NULL,
+        c_desc varchar2(2048) DEFAULT NULL,
+        status varchar2(32) NOT NULL,
+        version varchar2(64) NOT NULL,
+        namespace_id varchar2(128) DEFAULT 'PUBLIC' NOT NULL,
+        storage CLOB DEFAULT NULL,
+        publish_pipeline_info CLOB DEFAULT NULL,
+        download_count int DEFAULT 0 NOT NULL
+);
+COMMENT ON TABLE ai_resource_version IS 'AI资源版本表';
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE ai_resource_version_id_seq';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN
+            RAISE;
+        END IF;
+END;
+create
+sequence ai_resource_version_id_seq
+    minvalue 1
+    increment by 1
+    start
+with 1;
+
+create or
+replace trigger ai_resource_version_id_inc
+before
+insert on ai_resource_version for each row
+begin
+    select ai_resource_version_id_seq.nextval into :new.id from dual;
+end;
+
+-- ----------------------------
 -- Indexes structure for table config_info
 -- ----------------------------
 CREATE UNIQUE INDEX uk_configinfo_datagrouptenant ON config_info (data_id,group_id,tenant_id);
@@ -634,6 +831,18 @@ CREATE UNIQUE INDEX uk_configinfo_datagrouptenant ON config_info (data_id,group_
 -- Primary Key structure for table config_info
 -- ----------------------------
 ALTER TABLE config_info ADD CONSTRAINT config_info_pkey PRIMARY KEY (id);
+
+-- ----------------------------
+-- Indexes structure for table config_info_gray
+-- ----------------------------
+CREATE UNIQUE INDEX uk_configinfogray_datagrouptenantgray ON config_info_gray (data_id,group_id,tenant_id,gray_name);
+CREATE INDEX idx_dataid_gmt_modified ON config_info_gray (data_id,gmt_modified);
+CREATE INDEX idx_gmt_modified_gray ON config_info_gray (gmt_modified);
+
+-- ----------------------------
+-- Primary Key structure for table config_info_gray
+-- ----------------------------
+ALTER TABLE config_info_gray ADD CONSTRAINT config_info_gray_pkey PRIMARY KEY (id);
 
 -- ----------------------------
 -- Indexes structure for table config_info_aggr
@@ -748,3 +957,42 @@ CREATE UNIQUE INDEX uk_tenant_info_kptenantid ON tenant_info (
   kp,
   tenant_id
 );
+CREATE INDEX idx_tenant_id_tenant_info ON tenant_info (
+  tenant_id
+);
+
+-- ----------------------------
+-- Primary Key structure for table users
+-- ----------------------------
+ALTER TABLE users ADD CONSTRAINT users_pkey PRIMARY KEY (username);
+
+-- ----------------------------
+-- Primary Key structure for table pipeline_execution
+-- ----------------------------
+ALTER TABLE pipeline_execution ADD CONSTRAINT pipeline_execution_pkey PRIMARY KEY (execution_id);
+
+-- ----------------------------
+-- Primary Key structure for table ai_resource
+-- ----------------------------
+ALTER TABLE ai_resource ADD CONSTRAINT ai_resource_pkey PRIMARY KEY (id);
+
+-- ----------------------------
+-- Indexes structure for table ai_resource
+-- ----------------------------
+CREATE UNIQUE INDEX uk_ai_resource_ns_name_type ON ai_resource (namespace_id,name,type,c_from);
+CREATE INDEX idx_ai_resource_name ON ai_resource (name);
+CREATE INDEX idx_ai_resource_type ON ai_resource (type);
+CREATE INDEX idx_ai_resource_gmt_modified ON ai_resource (gmt_modified);
+
+-- ----------------------------
+-- Primary Key structure for table ai_resource_version
+-- ----------------------------
+ALTER TABLE ai_resource_version ADD CONSTRAINT ai_resource_version_pkey PRIMARY KEY (id);
+
+-- ----------------------------
+-- Indexes structure for table ai_resource_version
+-- ----------------------------
+CREATE UNIQUE INDEX uk_ai_resource_ver_ns_name_type_ver ON ai_resource_version (namespace_id,name,type,version);
+CREATE INDEX idx_ai_resource_ver_name ON ai_resource_version (name);
+CREATE INDEX idx_ai_resource_ver_status ON ai_resource_version (status);
+CREATE INDEX idx_ai_resource_ver_gmt_modified ON ai_resource_version (gmt_modified);
