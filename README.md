@@ -53,6 +53,8 @@ cp <插件模块>/target/<插件名称>.jar <NACOS_HOME>/plugins/
 
 提供多种数据库适配插件，支持 Nacos 使用不同的数据库作为后端存储。
 
+`nacos-postgresql-datasource-plugin-ext`已由主仓库维护，查看[nacos-postgresql-datasource-plugin-ext](https://github.com/alibaba/nacos/tree/develop/plugin-default-impl/nacos-default-datasource-plugin/nacos-datasource-plugin-postgresql)
+
 **子插件列表**：
 - **nacos-datasource-plugin-ext-base**: 数据库插件基础抽象模块
 - **nacos-dm-datasource-plugin-ext**: 达梦数据库适配插件
@@ -61,7 +63,7 @@ cp <插件模块>/target/<插件名称>.jar <NACOS_HOME>/plugins/
 - **nacos-oceanbase-datasource-plugin-ext**: OceanBase 数据库适配插件
 - **nacos-opengauss-datasource-plugin-ext**: openGauss 数据库适配插件
 - **nacos-oracle-datasource-plugin-ext**: Oracle 数据库适配插件
-- **nacos-postgresql-datasource-plugin-ext**: PostgreSQL 数据库适配插件
+- **nacos-xuguDB-datasource-plugin-ext**: 虚谷数据库适配插件
 - **nacos-yashan-datasource-plugin-ext**: 崖山数据库适配插件
 
 详细说明请参考：[nacos-datasource-plugin-ext/README.md](nacos-datasource-plugin-ext/README.md)
@@ -116,7 +118,7 @@ nacos-plugin/
 │   ├── nacos-oceanbase-datasource-plugin-ext/
 │   ├── nacos-opengauss-datasource-plugin-ext/
 │   ├── nacos-oracle-datasource-plugin-ext/
-│   ├── nacos-postgresql-datasource-plugin-ext/
+│   ├── nacos-xuguDB-datasource-plugin-ext/
 │   └── nacos-yashan-datasource-plugin-ext/
 ├── nacos-encryption-plugin-ext/           # 加密插件集合
 │   └── nacos-aes-encryption-plugin/

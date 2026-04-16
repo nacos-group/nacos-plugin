@@ -40,16 +40,15 @@ public class AiResourceMapperByDaMeng extends AbstractMapperByDaMeng implements 
         where.eq("namespace_id", context.getWhereParameter(FieldConstant.NAMESPACE_ID));
         
         MapperResult build = where.build();
-        String sql = getLimitPageSqlWithOffset(build.getSql() + resolveOrderByClause(context), context.getStartRow(),
-                context.getPageSize());
+        String sql = getLimitPageSqlWithMark(build.getSql() + resolveOrderByClause(context));
         List<Object> params = new ArrayList<>(build.getParamList());
         params.add(context.getStartRow());
         params.add(context.getPageSize());
         return new MapperResult(sql, params);
     }
     
-    private String getLimitPageSqlWithOffset(String sql, int offset, int limit) {
-        return getDialect().getLimitPageSqlWithOffset(sql, offset, limit);
+    private String getLimitPageSqlWithMark(String sql) {
+        return getDialect().getLimitPageSqlWithMark(sql);
     }
     
     @Override
