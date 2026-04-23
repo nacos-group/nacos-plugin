@@ -79,7 +79,7 @@ public class OpenGaussConfigTagsRelationMapper extends AbstractMapperByGaussdb i
             paramList.add(tagArr[i]);
         }
         where.append(") ");
-        return new MapperResult(sql + where + " LIMIT " + context.getStartRow() + "," + context.getPageSize(),
+        return new MapperResult(sql + where + " LIMIT " + context.getPageSize() + " OFFSET " + context.getStartRow(),
                 paramList);
     }
 

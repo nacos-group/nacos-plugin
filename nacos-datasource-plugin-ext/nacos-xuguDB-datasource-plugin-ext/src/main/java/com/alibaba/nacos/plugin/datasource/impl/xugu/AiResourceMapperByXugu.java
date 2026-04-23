@@ -43,10 +43,10 @@ public class AiResourceMapperByXugu extends AbstractMapperByXugu implements AiRe
         appendExtraQueryCondition(where, context);
 
         MapperResult built = where.build();
-        String sql = built.getSql() + resolveOrderByClause(context) + " LIMIT ?,?";
+        String sql = built.getSql() + resolveOrderByClause(context) + " LIMIT ? OFFSET ?";
         List<Object> params = new ArrayList<>(built.getParamList());
-        params.add(context.getStartRow());
         params.add(context.getPageSize());
+        params.add(context.getStartRow());
         return new MapperResult(sql, params);
     }
 }
