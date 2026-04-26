@@ -21,6 +21,7 @@
         <module>nacos-mssql-datasource-plugin-ext</module>
         <module>nacos-kingbase-datasource-plugin-ext</module>
         <module>nacos-yasdb-datasource-plugin-ext</module>
+        <module>nacos-oceanbase-datasource-plugin-ext</module>
     </modules>
 
     <properties>
