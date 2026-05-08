@@ -15,7 +15,6 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <mssql-jdbc.version>12.6.0.jre8</mssql-jdbc.version>
-        <alibaba-nacos.version>3.2.0</alibaba-nacos.version>
     </properties>
 
     <dependencies>
