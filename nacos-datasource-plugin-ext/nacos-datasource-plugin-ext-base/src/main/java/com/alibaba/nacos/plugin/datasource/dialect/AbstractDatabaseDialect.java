@@ -42,17 +42,17 @@ public abstract class AbstractDatabaseDialect implements DatabaseDialect {
 
     @Override
     public String getLimitPageSqlWithMark(String sql) {
-        return sql + " LIMIT ?,? ";
+        return sql + " LIMIT ? OFFSET ? ";
     }
 
     @Override
     public String getLimitPageSql(String sql, int pageNo, int pageSize) {
-        return sql + "  LIMIT " + getPagePrevNum(pageNo, pageSize) + " , " + pageSize;
+        return sql + "  LIMIT " + pageSize + " OFFSET " + getPagePrevNum(pageNo, pageSize);
     }
     
     @Override
     public String getLimitPageSqlWithOffset(String sql, int startOffset, int pageSize){
-        return sql + "  LIMIT " + startOffset + " , " + pageSize;
+        return sql + "  LIMIT " + pageSize + " OFFSET " + startOffset;
     }
     
     @Override

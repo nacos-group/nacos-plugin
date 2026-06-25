@@ -88,7 +88,7 @@ public class ConfigTagsRelationMapperByXugu extends AbstractMapperByXugu impleme
                         + "GROUP_CONCAT(DISTINCT d.tag_name SEPARATOR ',') as config_tags " + "FROM ("
                         + "SELECT DISTINCT a.id,a.data_id,a.group_id,a.tenant_id,a.app_name,a.content,a.md5,a.type,a.encrypted_data_key,a.c_desc "
                         + "FROM config_info a LEFT JOIN config_tags_relation b ON a.id=b.id" + innerWhere
-                        + "ORDER BY a.id LIMIT " + context.getStartRow() + "," + context.getPageSize()
+                        + "ORDER BY a.id LIMIT " + context.getPageSize() + " OFFSET " + context.getStartRow()
                         + ") c LEFT JOIN config_tags_relation d ON c.id=d.id "
                         + "GROUP BY c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.type,c.encrypted_data_key,c.c_desc";
         
@@ -142,8 +142,8 @@ public class ConfigTagsRelationMapperByXugu extends AbstractMapperByXugu impleme
         final String sql =
                 "SELECT c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.encrypted_data_key,c.type,c.c_desc,"
                         + "GROUP_CONCAT(DISTINCT d.tag_name SEPARATOR ',') as config_tags " + "FROM ("
-                        + innerResult.getSql() + " ORDER BY a.id LIMIT " + context.getStartRow() + Symbols.COMMA
-                        + context.getPageSize() + ") c " + "LEFT JOIN config_tags_relation d ON c.id=d.id "
+                        + innerResult.getSql() + " ORDER BY a.id LIMIT " + context.getPageSize() + " OFFSET "
+                        + context.getStartRow() + ") c " + "LEFT JOIN config_tags_relation d ON c.id=d.id "
                         + "GROUP BY c.id,c.data_id,c.group_id,c.tenant_id,c.app_name,c.content,c.md5,c.encrypted_data_key,c.type,c.c_desc";
         
         return new MapperResult(sql, innerResult.getParamList());

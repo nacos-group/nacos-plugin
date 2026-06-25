@@ -43,7 +43,7 @@ public class OpenGaussConfigInfoBetaMapper extends AbstractMapperByGaussdb imple
         int startRow = context.getStartRow();
         int pageSize = context.getPageSize();
         String sql = " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5,gmt_modified,beta_ips,encrypted_data_key "
-                + " FROM ( SELECT id FROM config_info_beta  ORDER BY id LIMIT " + startRow + "," + pageSize + " )"
+                + " FROM ( SELECT id FROM config_info_beta  ORDER BY id LIMIT " + pageSize + " OFFSET " + startRow + " )"
                 + "  g, config_info_beta t WHERE g.id = t.id ";
         List<Object> paramList = new ArrayList<>();
         paramList.add(startRow);

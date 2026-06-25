@@ -53,10 +53,10 @@ public class AiResourceVersionMapperByXugu extends AbstractMapperByXugu implemen
         }
 
         MapperResult built = where.build();
-        String sql = built.getSql() + " ORDER BY gmt_modified DESC LIMIT ?,?";
+        String sql = built.getSql() + " ORDER BY gmt_modified DESC LIMIT ? OFFSET ?";
         List<Object> params = new ArrayList<>(built.getParamList());
-        params.add(context.getStartRow());
         params.add(context.getPageSize());
+        params.add(context.getStartRow());
         return new MapperResult(sql, params);
     }
 }
