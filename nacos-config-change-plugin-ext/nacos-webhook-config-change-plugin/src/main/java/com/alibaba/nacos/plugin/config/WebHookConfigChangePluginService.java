@@ -16,6 +16,9 @@
 
 package com.alibaba.nacos.plugin.config;
 
+import com.alibaba.nacos.api.plugin.ConfigItemDefinition;
+import com.alibaba.nacos.api.plugin.ConfigItemEffectMode;
+import com.alibaba.nacos.api.plugin.ConfigItemType;
 import com.alibaba.nacos.common.http.HttpClientBeanHolder;
 import com.alibaba.nacos.common.http.HttpRestResult;
 import com.alibaba.nacos.common.http.client.NacosRestTemplate;
@@ -36,6 +39,10 @@ import java.io.InterruptedIOException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -47,53 +54,97 @@ import java.util.concurrent.TimeUnit;
  * @author liyunfei
  **/
 public class WebHookConfigChangePluginService implements ConfigChangePluginService {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WebHookConfigChangePluginService.class);
-    
+
+    private static final String WEBHOOK_URL = "webhookUrl";
+
+    private static final String CONTENT_MAX_CAPACITY = "contentMaxCapacity";
+
+    private static final String LEGACY_WEBHOOK_URL = "url";
+
+    private static final String LEGACY_CONFIG_PREFIX = "nacos.core.config.plugin.webhook.";
+
+    private static final List<ConfigItemDefinition> CONFIG_DEFINITIONS = buildConfigDefinitions();
+
     private final NacosRestTemplate restTemplate = HttpClientBeanHolder.getNacosRestTemplate(LOGGER);
-    
+
     private final Set<Integer> retryResponseCodes = new CopyOnWriteArraySet<Integer>(
             Arrays.asList(HttpStatus.SC_INTERNAL_SERVER_ERROR, HttpStatus.SC_BAD_GATEWAY,
                     HttpStatus.SC_SERVICE_UNAVAILABLE, HttpStatus.SC_GATEWAY_TIMEOUT));
-    
+
     private static final int INCREASE_STEPS = 1000;
-    
+
     private static final int DEFAULT_MAX_CONTENT_CAPACITY = 10 * 1024;
-    
+
+    private volatile Map<String, String> currentConfig = Collections.emptyMap();
+
+    private static List<ConfigItemDefinition> buildConfigDefinitions() {
+        ConfigItemDefinition webhookUrl = new ConfigItemDefinition.Builder(WEBHOOK_URL,
+                "Webhook URL", ConfigItemType.STRING)
+                .description("Webhook endpoint used to notify config changes")
+                .aliases(Arrays.asList(LEGACY_WEBHOOK_URL, LEGACY_CONFIG_PREFIX + WEBHOOK_URL,
+                        LEGACY_CONFIG_PREFIX + LEGACY_WEBHOOK_URL))
+                .effectMode(ConfigItemEffectMode.RUNTIME).build();
+        ConfigItemDefinition contentMaxCapacity = new ConfigItemDefinition.Builder(
+                CONTENT_MAX_CAPACITY, "Content max capacity", ConfigItemType.NUMBER)
+                .description("Maximum content length in webhook payload")
+                .defaultValue(String.valueOf(DEFAULT_MAX_CONTENT_CAPACITY))
+                .aliases(Collections.singletonList(LEGACY_CONFIG_PREFIX + CONTENT_MAX_CAPACITY))
+                .effectMode(ConfigItemEffectMode.RUNTIME).build();
+        return Collections.unmodifiableList(Arrays.asList(webhookUrl, contentMaxCapacity));
+    }
+
+    @Override
+    public List<ConfigItemDefinition> getConfigDefinitions() {
+        return CONFIG_DEFINITIONS;
+    }
+
+    @Override
+    public void applyConfig(Map<String, String> config) {
+        currentConfig = null == config ? Collections.emptyMap() : new LinkedHashMap<>(config);
+    }
+
+    @Override
+    public Map<String, String> getCurrentConfig() {
+        return new LinkedHashMap<>(currentConfig);
+    }
+
     @Override
     public void execute(ConfigChangeRequest configChangeRequest, ConfigChangeResponse configChangeResponse) {
         final Properties properties = (Properties) configChangeRequest.getArg(ConfigChangeConstants.PLUGIN_PROPERTIES);
-        final String webhookUrl = properties.getProperty("webhookUrl");
+        final String webhookUrl = properties.getProperty(WEBHOOK_URL,
+                properties.getProperty(LEGACY_WEBHOOK_URL));
         ConfigChangeNotifyInfo configChangeNotifyInfo = new ConfigChangeNotifyInfo(
                 configChangeRequest.getRequestType().value(), true, (String) configChangeRequest.getArg("modifyTime"));
         wrapConfigChangeNotifyInfo(configChangeNotifyInfo, properties, configChangeRequest, configChangeResponse);
         ConfigChangePluginExecutor
                 .executeAsyncConfigChangePluginTask(new WebhookNotifySingleTask(webhookUrl, configChangeNotifyInfo));
     }
-    
+
     @Override
     public ConfigChangeExecuteTypes executeType() {
         return ConfigChangeExecuteTypes.EXECUTE_AFTER_TYPE;
     }
-    
+
     @Override
     public String getServiceType() {
         return "webhook";
     }
-    
+
     @Override
     public int getOrder() {
         return Integer.MAX_VALUE;
     }
-    
+
     @Override
     public ConfigChangePointCutTypes[] pointcutMethodNames() {
         return ConfigChangePointCutTypes.values();
     }
-    
+
     private ConfigChangeNotifyInfo wrapConfigChangeNotifyInfo(ConfigChangeNotifyInfo configChangeNotifyInfo,
             Properties properties, ConfigChangeRequest configChangeRequest, ConfigChangeResponse configChangeResponse) {
-        final Object contentMaxCapacity = properties.getProperty("contentMaxCapacity");
+        final Object contentMaxCapacity = properties.getProperty(CONTENT_MAX_CAPACITY);
         final String content = (String) configChangeRequest.getArg("content");
         int maxContent = DEFAULT_MAX_CONTENT_CAPACITY;
         if (contentMaxCapacity != null) {
@@ -103,6 +154,8 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
         if (content != null) {
             if (content.length() > maxContent) {
                 configChangeNotifyInfo.setContent(content.substring(0, maxContent));
+            } else {
+                configChangeNotifyInfo.setContent(content);
             }
         }
         // only diliver err msg so far
@@ -146,25 +199,24 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
         if (configChangeRequest.getArg("effect") != null) {
             configChangeNotifyInfo.setEffect((String) configChangeRequest.getArg("effect"));
         }
-        configChangeNotifyInfo.setContent(content);
         return configChangeNotifyInfo;
     }
-    
+
     private class WebhookNotifySingleTask implements Runnable {
-        
+
         private String pushUrl;
-        
+
         private ConfigChangeNotifyInfo configChangeNotifyInfo;
-        
+
         private int retry = 0;
-        
+
         private final int maxRetry = 6;
-        
+
         public WebhookNotifySingleTask(String pushUrl, ConfigChangeNotifyInfo configChangeNotifyInfo) {
             this.pushUrl = pushUrl;
             this.configChangeNotifyInfo = configChangeNotifyInfo;
         }
-        
+
         @Override
         public void run() {
             try {
@@ -193,14 +245,14 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
                 }
             }
         }
-        
+
         /**
          * Retry delay time.
          */
         private long getDelay() {
             return (long) retry * retry * INCREASE_STEPS;
         }
-        
+
         private void retryRequest() {
             retry++;
             if (retry > maxRetry) {
@@ -211,5 +263,5 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
             ConfigChangePluginExecutor.scheduleAsyncConfigChangePluginTask(this, getDelay(), TimeUnit.MILLISECONDS);
         }
     }
-    
+
 }

@@ -16,6 +16,9 @@
 
 package com.alibaba.nacos.plugin.config;
 
+import com.alibaba.nacos.api.plugin.ConfigItemDefinition;
+import com.alibaba.nacos.api.plugin.ConfigItemEffectMode;
+import com.alibaba.nacos.api.plugin.ConfigItemType;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.config.constants.ConfigChangeConstants;
 import com.alibaba.nacos.plugin.config.constants.ConfigChangeExecuteTypes;
@@ -50,13 +53,48 @@ import java.util.stream.Collectors;
  * @author liyunfei
  **/
 public class WhiteListConfigChangePluginService implements ConfigChangePluginService {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WhiteListConfigChangePluginService.class);
-    
+
+    private static final String SUFFIXES = "suffixes";
+
+    private static final String LEGACY_SUFFIXS = "suffixs";
+
+    private static final String LEGACY_SUFFIXS_FULL_KEY = "nacos.core.config.plugin.whitelist.suffixs";
+
+    private static final List<ConfigItemDefinition> CONFIG_DEFINITIONS = buildConfigDefinitions();
+
+    private volatile Map<String, String> currentConfig = Collections.emptyMap();
+
+    private static List<ConfigItemDefinition> buildConfigDefinitions() {
+        ConfigItemDefinition suffixes = new ConfigItemDefinition.Builder(SUFFIXES,
+                "Allowed suffixes", ConfigItemType.STRING)
+                .description("Comma-separated config file types allowed during import")
+                .defaultValue("").aliases(Arrays.asList(LEGACY_SUFFIXS, LEGACY_SUFFIXS_FULL_KEY))
+                .effectMode(ConfigItemEffectMode.RUNTIME).build();
+        return Collections.unmodifiableList(Collections.singletonList(suffixes));
+    }
+
+    @Override
+    public List<ConfigItemDefinition> getConfigDefinitions() {
+        return CONFIG_DEFINITIONS;
+    }
+
+    @Override
+    public void applyConfig(Map<String, String> config) {
+        currentConfig = null == config ? Collections.emptyMap() : new LinkedHashMap<>(config);
+    }
+
+    @Override
+    public Map<String, String> getCurrentConfig() {
+        return new LinkedHashMap<>(currentConfig);
+    }
+
     @Override
     public void execute(ConfigChangeRequest configChangeRequest, ConfigChangeResponse configChangeResponse) {
         final Properties properties = (Properties) configChangeRequest.getArg(ConfigChangeConstants.PLUGIN_PROPERTIES);
-        final String whiteListUrls = properties.getProperty("suffixs", "");
+        final String whiteListUrls = properties.getProperty(SUFFIXES,
+                properties.getProperty(LEGACY_SUFFIXS, ""));
         final String[] whiteLists = whiteListUrls.split("\\,");
         // is convenient to contains judge
         final Set<String> whiteList = Arrays.stream(whiteLists).collect(Collectors.toSet());
@@ -69,27 +107,27 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
             configChangeResponse.setMsg(e.getMessage());
         }
     }
-    
+
     @Override
     public ConfigChangeExecuteTypes executeType() {
         return ConfigChangeExecuteTypes.EXECUTE_BEFORE_TYPE;
     }
-    
+
     @Override
     public String getServiceType() {
         return "whitelist";
     }
-    
+
     @Override
     public int getOrder() {
         return 200;
     }
-    
+
     @Override
     public ConfigChangePointCutTypes[] pointcutMethodNames() {
         return new ConfigChangePointCutTypes[] {ConfigChangePointCutTypes.IMPORT_BY_HTTP};
     }
-    
+
     void filterFile(Object[] args, Set<String> whiteList) throws IOException {
         for (int index = 0; index < args.length; index++) {
             if (args[index] instanceof MultipartFile) {
@@ -102,14 +140,14 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
                 String metaData = unziped.getMetaDataItem().getItemData();
                 Map<String, Object> map = parseYamlString(metaData);
                 ArrayList<LinkedHashMap<String, String>> lists;
-                
+
                 try {
                     lists = (ArrayList<LinkedHashMap<String, String>>) map.get("metadata");
                 } catch (ClassCastException e) {
                     LOGGER.error("load import file meta data fail,can not execute the whitelist plugin service");
                     return;
                 }
-                
+
                 Map<String, String> dataIdTypeMap = new HashMap<>(8);
                 List<ZipUtils.ZipItem> itemList = new ArrayList<>();
                 lists.forEach(item0 -> {
@@ -129,7 +167,7 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
             }
         }
     }
-    
+
     /**
      * parse yaml string.
      *
@@ -140,13 +178,13 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
         yaml = yaml.replace("\\r", "");
         yaml = yaml.replace("\\n", LineSeparator.DEFAULT.toString());
         LinkedHashMap<String, Object> sourceMap = null;
-        
+
         try {
             sourceMap = new Yaml().loadAs(yaml, LinkedHashMap.class);
         } catch (Exception e) {
             LOGGER.error("parseYamlString fail", e);
         }
-        
+
         if (Objects.isNull(sourceMap)) {
             return Collections.EMPTY_MAP;
         }
@@ -154,7 +192,7 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
         fillAllPathMap(sourceMap, targetMap, "");
         return targetMap;
     }
-    
+
     private static void fillAllPathMap(Map<String, Object> sourceMap, Map<String, Object> targetMap, String prefix) {
         prefix = StringUtils.isEmpty(prefix) ? prefix : prefix + ".";
         for (Map.Entry<String, Object> entry : sourceMap.entrySet()) {
