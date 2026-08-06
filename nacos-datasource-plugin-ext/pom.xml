@@ -25,6 +25,7 @@
     </modules>
 
     <properties>
+        <alibaba-nacos.version>3.3.0-SNAPSHOT</alibaba-nacos.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
@@ -32,11 +33,18 @@
     <dependencies>
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-api</artifactId>
+            <version>${alibaba-nacos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-datasource-plugin</artifactId>
+            <version>${alibaba-nacos.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-common</artifactId>
+            <version>${alibaba-nacos.version}</version>
         </dependency>
     </dependencies>
 
