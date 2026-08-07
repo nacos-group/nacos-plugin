@@ -16,9 +16,13 @@
 
 package com.alibaba.nacos.plugin.encryption;
 
+import com.alibaba.nacos.plugin.encryption.spi.EncryptionPluginService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
+import java.util.Optional;
 
 /**
  * AesEncryptionPluginServiceTest.
@@ -48,7 +52,7 @@ public class AesEncryptionPluginServiceTest {
         String secretKey = aesEncryptionPluginService.generateSecretKey();
         String encrypt = aesEncryptionPluginService.encrypt(secretKey, CONTENT);
         String decrypt = aesEncryptionPluginService.decrypt(secretKey, encrypt);
-        Assert.assertNotNull(decrypt);
+        Assert.assertEquals(CONTENT, decrypt);
     }
 
     @Test
@@ -60,6 +64,25 @@ public class AesEncryptionPluginServiceTest {
     @Test
     public void testNamed() {
         String named = aesEncryptionPluginService.algorithmName();
-        Assert.assertEquals(named, "aes");
+        Assert.assertEquals(AesEncryptionPluginService.AES_NAME, named);
+    }
+
+    @Test
+    public void testUnifiedDiscovery() {
+        Optional<EncryptionPluginService> service = EncryptionPluginManager.instance()
+                .findEncryptionService(AesEncryptionPluginService.AES_NAME);
+        Assert.assertTrue(service.isPresent());
+        Assert.assertTrue(service.get() instanceof AesEncryptionPluginService);
+    }
+
+    @Test
+    public void testZeroConfigContract() {
+        Assert.assertFalse(aesEncryptionPluginService.isConfigurable());
+        Assert.assertTrue(aesEncryptionPluginService.getConfigDefinitions().isEmpty());
+        Assert.assertTrue(aesEncryptionPluginService.getCurrentConfig().isEmpty());
+
+        aesEncryptionPluginService.applyConfig(Collections.singletonMap("ignored", "value"));
+
+        Assert.assertTrue(aesEncryptionPluginService.getCurrentConfig().isEmpty());
     }
 }
