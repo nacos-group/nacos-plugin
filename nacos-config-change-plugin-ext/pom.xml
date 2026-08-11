@@ -19,7 +19,7 @@
     </modules>
 
     <properties>
-        <alibaba-nacos.version>3.3.0-SNAPSHOT</alibaba-nacos.version>
+        <alibaba-nacos.version>3.3.0-BETA</alibaba-nacos.version>
         <yaml.version>1.29</yaml.version>
     </properties>
 
