@@ -11,6 +11,11 @@
     
     <artifactId>nacos-trace-plugin-ext</artifactId>
     <packaging>pom</packaging>
+
+    <properties>
+        <alibaba-nacos.version>3.3.0-BETA</alibaba-nacos.version>
+    </properties>
+
     <modules>
         <module>nacos-trace-logging-plugin</module>
     </modules>
