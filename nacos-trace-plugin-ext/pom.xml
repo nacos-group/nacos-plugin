@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <alibaba-nacos.version>3.3.0-SNAPSHOT</alibaba-nacos.version>
+        <alibaba-nacos.version>3.3.0-BETA</alibaba-nacos.version>
     </properties>
 
     <modules>
