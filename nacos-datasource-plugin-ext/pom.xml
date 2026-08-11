@@ -25,7 +25,7 @@
     </modules>
 
     <properties>
-        <alibaba-nacos.version>3.3.0-SNAPSHOT</alibaba-nacos.version>
+        <alibaba-nacos.version>3.3.0-BETA</alibaba-nacos.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
