@@ -34,11 +34,11 @@ import java.util.Properties;
  * @author liyunfei
  **/
 public class WebHookConfigChangePluginServiceTest {
-
+    
     private static final int CONTENT_MAX_CAPACITY = 10 * 1024;
-
+    
     private static final String WEBHOOK_URL = "http://localhost:8080/webhook/send?token=***";
-
+    
     @Test
     public void testConfigDefinitions() {
         final WebHookConfigChangePluginService webHookConfigChangePluginService =
@@ -49,17 +49,21 @@ public class WebHookConfigChangePluginServiceTest {
                 webHookConfigChangePluginService.getConfigDefinitions();
         Assert.assertEquals(2, definitions.size());
         ConfigItemDefinition webhookUrl = definitions.get(0);
-        Assert.assertEquals("webhookUrl", webhookUrl.getKey());
+        Assert.assertEquals("webhook-url", webhookUrl.getKey());
         Assert.assertEquals(ConfigItemEffectMode.RUNTIME, webhookUrl.getEffectMode());
+        Assert.assertTrue(webhookUrl.getAliases().contains("webhookUrl"));
         Assert.assertTrue(webhookUrl.getAliases().contains("url"));
         Assert.assertTrue(webhookUrl.getAliases()
                 .contains("nacos.core.config.plugin.webhook.webhookUrl"));
         Assert.assertTrue(webhookUrl.getAliases()
                 .contains("nacos.core.config.plugin.webhook.url"));
         ConfigItemDefinition contentMaxCapacity = definitions.get(1);
-        Assert.assertEquals("contentMaxCapacity", contentMaxCapacity.getKey());
+        Assert.assertEquals("content-max-capacity", contentMaxCapacity.getKey());
         Assert.assertEquals(String.valueOf(CONTENT_MAX_CAPACITY),
                 contentMaxCapacity.getDefaultValue());
+        Assert.assertTrue(contentMaxCapacity.getAliases().contains("contentMaxCapacity"));
+        Assert.assertTrue(contentMaxCapacity.getAliases()
+                .contains("nacos.core.config.plugin.webhook.contentMaxCapacity"));
         Assert.assertEquals(ConfigItemEffectMode.RUNTIME, contentMaxCapacity.getEffectMode());
     }
 
@@ -68,16 +72,49 @@ public class WebHookConfigChangePluginServiceTest {
         final WebHookConfigChangePluginService webHookConfigChangePluginService =
                 new WebHookConfigChangePluginService();
         Map<String, String> config = new LinkedHashMap<>();
-        config.put("webhookUrl", WEBHOOK_URL);
-        config.put("contentMaxCapacity", String.valueOf(CONTENT_MAX_CAPACITY));
+        config.put("webhook-url", WEBHOOK_URL);
+        config.put("content-max-capacity", String.valueOf(CONTENT_MAX_CAPACITY));
         webHookConfigChangePluginService.applyConfig(config);
 
-        config.put("webhookUrl", "http://localhost:8080/changed");
+        config.put("webhook-url", "http://localhost:8080/changed");
         Map<String, String> currentConfig = webHookConfigChangePluginService.getCurrentConfig();
-        currentConfig.put("webhookUrl", "http://localhost:8080/mutated");
+        currentConfig.put("webhook-url", "http://localhost:8080/mutated");
 
         Assert.assertEquals(WEBHOOK_URL,
-                webHookConfigChangePluginService.getCurrentConfig().get("webhookUrl"));
+                webHookConfigChangePluginService.getCurrentConfig().get("webhook-url"));
+    }
+
+    @Test
+    public void testApplyConfigAcceptsLegacyAliases() {
+        final WebHookConfigChangePluginService webHookConfigChangePluginService =
+                new WebHookConfigChangePluginService();
+        Map<String, String> config = new LinkedHashMap<>();
+        config.put("webhookUrl", WEBHOOK_URL);
+        config.put("nacos.core.config.plugin.webhook.contentMaxCapacity",
+                String.valueOf(CONTENT_MAX_CAPACITY));
+
+        webHookConfigChangePluginService.applyConfig(config);
+
+        Assert.assertEquals(WEBHOOK_URL,
+                webHookConfigChangePluginService.getCurrentConfig().get("webhook-url"));
+        Assert.assertEquals(String.valueOf(CONTENT_MAX_CAPACITY),
+                webHookConfigChangePluginService.getCurrentConfig().get("content-max-capacity"));
+    }
+
+    @Test
+    public void testApplyConfigRejectsDecimalContentMaxCapacity() {
+        assertInvalidContentMaxCapacity("1.5");
+    }
+
+    @Test
+    public void testApplyConfigRejectsNonPositiveContentMaxCapacity() {
+        assertInvalidContentMaxCapacity("0");
+        assertInvalidContentMaxCapacity("-1");
+    }
+
+    @Test
+    public void testApplyConfigRejectsOverflowContentMaxCapacity() {
+        assertInvalidContentMaxCapacity("2147483648");
     }
 
     @Test
@@ -92,8 +129,9 @@ public class WebHookConfigChangePluginServiceTest {
         ConfigChangeResponse configChangeResponse = new ConfigChangeResponse(
                 ConfigChangePointCutTypes.PUBLISH_BY_HTTP);
         ConfigChangeRequest configChangeRequest = new ConfigChangeRequest(pointCutType);
-        properties.setProperty("contentMaxCapacity", String.valueOf(CONTENT_MAX_CAPACITY));
-        properties.setProperty("webhookUrl", WEBHOOK_URL);
+        webHookConfigChangePluginService.applyConfig(newConfig("content-max-capacity",
+                String.valueOf(CONTENT_MAX_CAPACITY), "webhook-url", WEBHOOK_URL));
+        properties.putAll(webHookConfigChangePluginService.getCurrentConfig());
         configChangeRequest.setArg(ConfigChangeConstants.PLUGIN_PROPERTIES, properties);
         configChangeRequest.setArg("content", content);
         configChangeRequest.setArg("dataId", dataId);
@@ -102,5 +140,22 @@ public class WebHookConfigChangePluginServiceTest {
         configChangeResponse.setMsg("FileFormatPlugin validate is not pass");
         configChangeResponse.setSuccess(false);
         webHookConfigChangePluginService.execute(configChangeRequest, configChangeResponse);
+    }
+
+    private void assertInvalidContentMaxCapacity(String contentMaxCapacity) {
+        try {
+            new WebHookConfigChangePluginService().applyConfig(newConfig(
+                    "content-max-capacity", contentMaxCapacity));
+            Assert.fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException ignored) {
+        }
+    }
+
+    private Map<String, String> newConfig(String... keysAndValues) {
+        Map<String, String> config = new LinkedHashMap<>();
+        for (int i = 0; i < keysAndValues.length; i += 2) {
+            config.put(keysAndValues[i], keysAndValues[i + 1]);
+        }
+        return config;
     }
 }

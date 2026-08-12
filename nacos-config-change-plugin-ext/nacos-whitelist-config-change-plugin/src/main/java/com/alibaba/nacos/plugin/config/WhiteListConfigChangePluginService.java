@@ -53,9 +53,9 @@ import java.util.stream.Collectors;
  * @author liyunfei
  **/
 public class WhiteListConfigChangePluginService implements ConfigChangePluginService {
-
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(WhiteListConfigChangePluginService.class);
-
+    
     private static final String SUFFIXES = "suffixes";
 
     private static final String LEGACY_SUFFIXS = "suffixs";
@@ -107,27 +107,27 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
             configChangeResponse.setMsg(e.getMessage());
         }
     }
-
+    
     @Override
     public ConfigChangeExecuteTypes executeType() {
         return ConfigChangeExecuteTypes.EXECUTE_BEFORE_TYPE;
     }
-
+    
     @Override
     public String getServiceType() {
         return "whitelist";
     }
-
+    
     @Override
     public int getOrder() {
         return 200;
     }
-
+    
     @Override
     public ConfigChangePointCutTypes[] pointcutMethodNames() {
         return new ConfigChangePointCutTypes[] {ConfigChangePointCutTypes.IMPORT_BY_HTTP};
     }
-
+    
     void filterFile(Object[] args, Set<String> whiteList) throws IOException {
         for (int index = 0; index < args.length; index++) {
             if (args[index] instanceof MultipartFile) {
@@ -140,14 +140,14 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
                 String metaData = unziped.getMetaDataItem().getItemData();
                 Map<String, Object> map = parseYamlString(metaData);
                 ArrayList<LinkedHashMap<String, String>> lists;
-
+                
                 try {
                     lists = (ArrayList<LinkedHashMap<String, String>>) map.get("metadata");
                 } catch (ClassCastException e) {
                     LOGGER.error("load import file meta data fail,can not execute the whitelist plugin service");
                     return;
                 }
-
+                
                 Map<String, String> dataIdTypeMap = new HashMap<>(8);
                 List<ZipUtils.ZipItem> itemList = new ArrayList<>();
                 lists.forEach(item0 -> {
@@ -167,7 +167,7 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
             }
         }
     }
-
+    
     /**
      * parse yaml string.
      *
@@ -178,13 +178,13 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
         yaml = yaml.replace("\\r", "");
         yaml = yaml.replace("\\n", LineSeparator.DEFAULT.toString());
         LinkedHashMap<String, Object> sourceMap = null;
-
+        
         try {
             sourceMap = new Yaml().loadAs(yaml, LinkedHashMap.class);
         } catch (Exception e) {
             LOGGER.error("parseYamlString fail", e);
         }
-
+        
         if (Objects.isNull(sourceMap)) {
             return Collections.EMPTY_MAP;
         }
@@ -192,7 +192,7 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
         fillAllPathMap(sourceMap, targetMap, "");
         return targetMap;
     }
-
+    
     private static void fillAllPathMap(Map<String, Object> sourceMap, Map<String, Object> targetMap, String prefix) {
         prefix = StringUtils.isEmpty(prefix) ? prefix : prefix + ".";
         for (Map.Entry<String, Object> entry : sourceMap.entrySet()) {

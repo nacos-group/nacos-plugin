@@ -54,12 +54,16 @@ import java.util.concurrent.TimeUnit;
  * @author liyunfei
  **/
 public class WebHookConfigChangePluginService implements ConfigChangePluginService {
-
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(WebHookConfigChangePluginService.class);
+    
+    private static final String WEBHOOK_URL = "webhook-url";
 
-    private static final String WEBHOOK_URL = "webhookUrl";
+    private static final String CONTENT_MAX_CAPACITY = "content-max-capacity";
 
-    private static final String CONTENT_MAX_CAPACITY = "contentMaxCapacity";
+    private static final String LEGACY_WEBHOOK_URL_CAMEL_CASE = "webhookUrl";
+
+    private static final String LEGACY_CONTENT_MAX_CAPACITY_CAMEL_CASE = "contentMaxCapacity";
 
     private static final String LEGACY_WEBHOOK_URL = "url";
 
@@ -68,29 +72,31 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
     private static final List<ConfigItemDefinition> CONFIG_DEFINITIONS = buildConfigDefinitions();
 
     private final NacosRestTemplate restTemplate = HttpClientBeanHolder.getNacosRestTemplate(LOGGER);
-
+    
     private final Set<Integer> retryResponseCodes = new CopyOnWriteArraySet<Integer>(
             Arrays.asList(HttpStatus.SC_INTERNAL_SERVER_ERROR, HttpStatus.SC_BAD_GATEWAY,
                     HttpStatus.SC_SERVICE_UNAVAILABLE, HttpStatus.SC_GATEWAY_TIMEOUT));
-
+    
     private static final int INCREASE_STEPS = 1000;
-
+    
     private static final int DEFAULT_MAX_CONTENT_CAPACITY = 10 * 1024;
-
+    
     private volatile Map<String, String> currentConfig = Collections.emptyMap();
 
     private static List<ConfigItemDefinition> buildConfigDefinitions() {
         ConfigItemDefinition webhookUrl = new ConfigItemDefinition.Builder(WEBHOOK_URL,
                 "Webhook URL", ConfigItemType.STRING)
                 .description("Webhook endpoint used to notify config changes")
-                .aliases(Arrays.asList(LEGACY_WEBHOOK_URL, LEGACY_CONFIG_PREFIX + WEBHOOK_URL,
+                .aliases(Arrays.asList(LEGACY_WEBHOOK_URL_CAMEL_CASE, LEGACY_WEBHOOK_URL,
+                        LEGACY_CONFIG_PREFIX + LEGACY_WEBHOOK_URL_CAMEL_CASE,
                         LEGACY_CONFIG_PREFIX + LEGACY_WEBHOOK_URL))
                 .effectMode(ConfigItemEffectMode.RUNTIME).build();
         ConfigItemDefinition contentMaxCapacity = new ConfigItemDefinition.Builder(
                 CONTENT_MAX_CAPACITY, "Content max capacity", ConfigItemType.NUMBER)
                 .description("Maximum content length in webhook payload")
                 .defaultValue(String.valueOf(DEFAULT_MAX_CONTENT_CAPACITY))
-                .aliases(Collections.singletonList(LEGACY_CONFIG_PREFIX + CONTENT_MAX_CAPACITY))
+                .aliases(Arrays.asList(LEGACY_CONTENT_MAX_CAPACITY_CAMEL_CASE,
+                        LEGACY_CONFIG_PREFIX + LEGACY_CONTENT_MAX_CAPACITY_CAMEL_CASE))
                 .effectMode(ConfigItemEffectMode.RUNTIME).build();
         return Collections.unmodifiableList(Arrays.asList(webhookUrl, contentMaxCapacity));
     }
@@ -102,7 +108,25 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
 
     @Override
     public void applyConfig(Map<String, String> config) {
-        currentConfig = null == config ? Collections.emptyMap() : new LinkedHashMap<>(config);
+        if (null == config) {
+            currentConfig = Collections.emptyMap();
+            return;
+        }
+        Map<String, String> normalizedConfig = new LinkedHashMap<>();
+        String webhookUrl = getConfigValue(config, WEBHOOK_URL, LEGACY_WEBHOOK_URL_CAMEL_CASE,
+                LEGACY_WEBHOOK_URL, LEGACY_CONFIG_PREFIX + LEGACY_WEBHOOK_URL_CAMEL_CASE,
+                LEGACY_CONFIG_PREFIX + LEGACY_WEBHOOK_URL);
+        if (webhookUrl != null) {
+            normalizedConfig.put(WEBHOOK_URL, webhookUrl);
+        }
+        String contentMaxCapacity = getConfigValue(config, CONTENT_MAX_CAPACITY,
+                LEGACY_CONTENT_MAX_CAPACITY_CAMEL_CASE,
+                LEGACY_CONFIG_PREFIX + LEGACY_CONTENT_MAX_CAPACITY_CAMEL_CASE);
+        if (contentMaxCapacity != null) {
+            normalizedConfig.put(CONTENT_MAX_CAPACITY,
+                    String.valueOf(parseContentMaxCapacity(contentMaxCapacity)));
+        }
+        currentConfig = normalizedConfig;
     }
 
     @Override
@@ -113,42 +137,45 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
     @Override
     public void execute(ConfigChangeRequest configChangeRequest, ConfigChangeResponse configChangeResponse) {
         final Properties properties = (Properties) configChangeRequest.getArg(ConfigChangeConstants.PLUGIN_PROPERTIES);
-        final String webhookUrl = properties.getProperty(WEBHOOK_URL,
-                properties.getProperty(LEGACY_WEBHOOK_URL));
+        final String webhookUrl = getProperty(properties, WEBHOOK_URL, LEGACY_WEBHOOK_URL_CAMEL_CASE,
+                LEGACY_WEBHOOK_URL, LEGACY_CONFIG_PREFIX + LEGACY_WEBHOOK_URL_CAMEL_CASE,
+                LEGACY_CONFIG_PREFIX + LEGACY_WEBHOOK_URL);
         ConfigChangeNotifyInfo configChangeNotifyInfo = new ConfigChangeNotifyInfo(
                 configChangeRequest.getRequestType().value(), true, (String) configChangeRequest.getArg("modifyTime"));
         wrapConfigChangeNotifyInfo(configChangeNotifyInfo, properties, configChangeRequest, configChangeResponse);
         ConfigChangePluginExecutor
                 .executeAsyncConfigChangePluginTask(new WebhookNotifySingleTask(webhookUrl, configChangeNotifyInfo));
     }
-
+    
     @Override
     public ConfigChangeExecuteTypes executeType() {
         return ConfigChangeExecuteTypes.EXECUTE_AFTER_TYPE;
     }
-
+    
     @Override
     public String getServiceType() {
         return "webhook";
     }
-
+    
     @Override
     public int getOrder() {
         return Integer.MAX_VALUE;
     }
-
+    
     @Override
     public ConfigChangePointCutTypes[] pointcutMethodNames() {
         return ConfigChangePointCutTypes.values();
     }
-
+    
     private ConfigChangeNotifyInfo wrapConfigChangeNotifyInfo(ConfigChangeNotifyInfo configChangeNotifyInfo,
             Properties properties, ConfigChangeRequest configChangeRequest, ConfigChangeResponse configChangeResponse) {
-        final Object contentMaxCapacity = properties.getProperty(CONTENT_MAX_CAPACITY);
+        final String contentMaxCapacity = getProperty(properties, CONTENT_MAX_CAPACITY,
+                LEGACY_CONTENT_MAX_CAPACITY_CAMEL_CASE,
+                LEGACY_CONFIG_PREFIX + LEGACY_CONTENT_MAX_CAPACITY_CAMEL_CASE);
         final String content = (String) configChangeRequest.getArg("content");
         int maxContent = DEFAULT_MAX_CONTENT_CAPACITY;
         if (contentMaxCapacity != null) {
-            maxContent = Integer.parseInt((String) contentMaxCapacity);
+            maxContent = parseContentMaxCapacity(contentMaxCapacity);
         }
         // check content length
         if (content != null) {
@@ -202,21 +229,56 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
         return configChangeNotifyInfo;
     }
 
+    private static String getConfigValue(Map<String, String> config, String... keys) {
+        for (String key : keys) {
+            if (config.containsKey(key)) {
+                return config.get(key);
+            }
+        }
+        return null;
+    }
+
+    private static String getProperty(Properties properties, String... keys) {
+        for (String key : keys) {
+            String value = properties.getProperty(key);
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    private static int parseContentMaxCapacity(String contentMaxCapacity) {
+        String value = contentMaxCapacity.trim();
+        if (value.length() == 0 || !value.matches("\\d+")) {
+            throw new IllegalArgumentException("content-max-capacity must be a positive integer");
+        }
+        try {
+            int maxContentCapacity = Integer.parseInt(value);
+            if (maxContentCapacity <= 0) {
+                throw new IllegalArgumentException("content-max-capacity must be a positive integer");
+            }
+            return maxContentCapacity;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("content-max-capacity exceeds supported integer range", e);
+        }
+    }
+    
     private class WebhookNotifySingleTask implements Runnable {
-
+        
         private String pushUrl;
-
+        
         private ConfigChangeNotifyInfo configChangeNotifyInfo;
-
+        
         private int retry = 0;
-
+        
         private final int maxRetry = 6;
-
+        
         public WebhookNotifySingleTask(String pushUrl, ConfigChangeNotifyInfo configChangeNotifyInfo) {
             this.pushUrl = pushUrl;
             this.configChangeNotifyInfo = configChangeNotifyInfo;
         }
-
+        
         @Override
         public void run() {
             try {
@@ -245,14 +307,14 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
                 }
             }
         }
-
+        
         /**
          * Retry delay time.
          */
         private long getDelay() {
             return (long) retry * retry * INCREASE_STEPS;
         }
-
+        
         private void retryRequest() {
             retry++;
             if (retry > maxRetry) {
@@ -263,5 +325,5 @@ public class WebHookConfigChangePluginService implements ConfigChangePluginServi
             ConfigChangePluginExecutor.scheduleAsyncConfigChangePluginTask(this, getDelay(), TimeUnit.MILLISECONDS);
         }
     }
-
+    
 }
