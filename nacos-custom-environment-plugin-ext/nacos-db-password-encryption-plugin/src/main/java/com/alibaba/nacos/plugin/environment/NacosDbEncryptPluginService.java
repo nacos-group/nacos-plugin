@@ -21,8 +21,10 @@ import com.alibaba.nacos.api.plugin.PluginConfigSpec;
 import com.alibaba.nacos.plugin.environment.spi.CustomEnvironmentPluginService;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,15 +38,17 @@ import java.util.Set;
 public class NacosDbEncryptPluginService
         implements CustomEnvironmentPluginService, PluginConfigSpec {
 
-    private static final String DB_PWD_KEY = "db.password.0";
+    private static final String DATASOURCE_DB_PWD_KEY = "nacos.plugin.datasource.db.password.0";
 
-    private static final Set<String> PROPERTY_KEYS = Collections.singleton(DB_PWD_KEY);
+    private static final String LEGACY_DB_PWD_KEY = "db.password.0";
+
+    private static final Set<String> PROPERTY_KEYS = Collections.unmodifiableSet(
+            new LinkedHashSet<>(Arrays.asList(DATASOURCE_DB_PWD_KEY, LEGACY_DB_PWD_KEY)));
 
     @Override
     public Map<String, Object> customValue(Map<String, Object> property) {
-        String pwd = (String) property.get(DB_PWD_KEY);
-        byte[] decode = Base64.getDecoder().decode(pwd);
-        property.put(DB_PWD_KEY, new String(decode, StandardCharsets.UTF_8));
+        decodePassword(property, DATASOURCE_DB_PWD_KEY);
+        decodePassword(property, LEGACY_DB_PWD_KEY);
         return property;
     }
 
@@ -66,5 +70,14 @@ public class NacosDbEncryptPluginService
     @Override
     public List<ConfigItemDefinition> getConfigDefinitions() {
         return Collections.emptyList();
+    }
+
+    private void decodePassword(Map<String, Object> property, String key) {
+        Object password = property.get(key);
+        if (password == null) {
+            return;
+        }
+        byte[] decode = Base64.getDecoder().decode((String) password);
+        property.put(key, new String(decode, StandardCharsets.UTF_8));
     }
 }

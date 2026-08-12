@@ -23,9 +23,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.ServiceLoader;
 
@@ -36,7 +38,9 @@ import java.util.ServiceLoader;
  */
 public class NacosDbEncryptPluginServiceTest {
 
-    private static final String DB_PWD_KEY = "db.password.0";
+    private static final String DATASOURCE_DB_PWD_KEY = "nacos.plugin.datasource.db.password.0";
+
+    private static final String LEGACY_DB_PWD_KEY = "db.password.0";
 
     @Test
     public void testEnvironmentPluginTypeUsesPreContextLifecycle() {
@@ -61,20 +65,60 @@ public class NacosDbEncryptPluginServiceTest {
 
         Assert.assertEquals("NacosDbEncryptPluginService", service.pluginName());
         Assert.assertEquals(Integer.valueOf(1), service.order());
-        Assert.assertEquals(Collections.singleton(DB_PWD_KEY), service.propertyKey());
+        Assert.assertEquals(new LinkedHashSet<>(Arrays.asList(DATASOURCE_DB_PWD_KEY, LEGACY_DB_PWD_KEY)),
+                service.propertyKey());
     }
 
     @Test
-    public void testCustomValueDecodesDatabasePassword() {
+    public void testCustomValueDecodesCanonicalDatabasePassword() {
         NacosDbEncryptPluginService service = new NacosDbEncryptPluginService();
         Map<String, Object> property = new HashMap<>();
-        property.put(DB_PWD_KEY,
-                Base64.getEncoder().encodeToString("nacos-pass".getBytes(StandardCharsets.UTF_8)));
+        property.put(DATASOURCE_DB_PWD_KEY, encode("nacos-pass"));
 
         Map<String, Object> result = service.customValue(property);
 
         Assert.assertSame(property, result);
-        Assert.assertEquals("nacos-pass", result.get(DB_PWD_KEY));
+        Assert.assertEquals("nacos-pass", result.get(DATASOURCE_DB_PWD_KEY));
+    }
+
+    @Test
+    public void testCustomValueDecodesLegacyDatabasePassword() {
+        NacosDbEncryptPluginService service = new NacosDbEncryptPluginService();
+        Map<String, Object> property = new HashMap<>();
+        property.put(LEGACY_DB_PWD_KEY, encode("legacy-pass"));
+
+        Map<String, Object> result = service.customValue(property);
+
+        Assert.assertSame(property, result);
+        Assert.assertEquals("legacy-pass", result.get(LEGACY_DB_PWD_KEY));
+    }
+
+    @Test
+    public void testCustomValueDecodesBothCanonicalAndLegacyDatabasePasswords() {
+        NacosDbEncryptPluginService service = new NacosDbEncryptPluginService();
+        Map<String, Object> property = new HashMap<>();
+        property.put(DATASOURCE_DB_PWD_KEY, encode("canonical-pass"));
+        property.put(LEGACY_DB_PWD_KEY, encode("legacy-pass"));
+
+        Map<String, Object> result = service.customValue(property);
+
+        Assert.assertSame(property, result);
+        Assert.assertEquals("canonical-pass", result.get(DATASOURCE_DB_PWD_KEY));
+        Assert.assertEquals("legacy-pass", result.get(LEGACY_DB_PWD_KEY));
+    }
+
+    @Test
+    public void testCustomValueSkipsNullDatabasePassword() {
+        NacosDbEncryptPluginService service = new NacosDbEncryptPluginService();
+        Map<String, Object> property = new HashMap<>();
+        property.put(DATASOURCE_DB_PWD_KEY, null);
+        property.put(LEGACY_DB_PWD_KEY, encode("legacy-pass"));
+
+        Map<String, Object> result = service.customValue(property);
+
+        Assert.assertSame(property, result);
+        Assert.assertNull(result.get(DATASOURCE_DB_PWD_KEY));
+        Assert.assertEquals("legacy-pass", result.get(LEGACY_DB_PWD_KEY));
     }
 
     @Test
@@ -89,5 +133,9 @@ public class NacosDbEncryptPluginServiceTest {
         }
 
         Assert.assertTrue(discovered);
+    }
+
+    private String encode(String value) {
+        return Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8));
     }
 }
