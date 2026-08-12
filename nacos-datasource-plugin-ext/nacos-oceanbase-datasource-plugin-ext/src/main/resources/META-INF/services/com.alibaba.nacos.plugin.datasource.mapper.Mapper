@@ -14,16 +14,13 @@
 # limitations under the License.
 #
 
-com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigInfoBetaMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigInfoMapperByOceanbase
-com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigInfoTagMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigTagsRelationMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.HistoryConfigInfoMapperOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.TenantCapacityMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.TenantInfoMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.GroupCapacityMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigInfoGrayMapperByOceanbase
-com.alibaba.nacos.plugin.datasource.impl.oceanbase.ConfigMigrateMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.AiResourceMapperByOceanbase
 com.alibaba.nacos.plugin.datasource.impl.oceanbase.AiResourceVersionByOceanbase
 

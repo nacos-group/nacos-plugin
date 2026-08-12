@@ -17,6 +17,7 @@
 package com.alibaba.nacos.plugin.datasource.dialect;
 
 import com.alibaba.nacos.api.plugin.PluginConfigSpec;
+import com.alibaba.nacos.plugin.datasource.mapper.Mapper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,14 +30,14 @@ import java.util.ServiceLoader;
  * @author Nacos
  */
 public class OceanbaseDatabaseDialectTest {
-    
+
     private static final String OCEANBASE = "oceanbase";
-    
+
     @Test
     public void testZeroConfigContract() {
         DatabaseDialect dialect = new OceanbaseDatabaseDialect();
         PluginConfigSpec configSpec = (PluginConfigSpec) dialect;
-        
+
         Assert.assertEquals(OCEANBASE, dialect.getType());
         Assert.assertFalse(configSpec.isConfigurable());
         Assert.assertTrue(configSpec.getConfigDefinitions().isEmpty());
@@ -44,12 +45,25 @@ public class OceanbaseDatabaseDialectTest {
         configSpec.applyConfig(Collections.singletonMap("unused", "value"));
         Assert.assertTrue(configSpec.getCurrentConfig().isEmpty());
     }
-    
+
     @Test
     public void testDiscoverableThroughSpi() {
         Assert.assertTrue(isDiscoverable(OCEANBASE));
     }
-    
+
+    @Test
+    public void testMapperSpiDoesNotReferenceRemovedMappers() {
+        int mapperCount = 0;
+        for (Mapper mapper : ServiceLoader.load(Mapper.class)) {
+            String className = mapper.getClass().getName();
+            Assert.assertFalse(className, className.contains("ConfigInfoBetaMapper"));
+            Assert.assertFalse(className, className.contains("ConfigInfoTagMapper"));
+            Assert.assertFalse(className, className.contains("ConfigMigrateMapper"));
+            mapperCount++;
+        }
+        Assert.assertTrue(mapperCount > 0);
+    }
+
     private boolean isDiscoverable(String type) {
         for (DatabaseDialect dialect : ServiceLoader.load(DatabaseDialect.class)) {
             if (type.equals(dialect.getType()) && dialect instanceof OceanbaseDatabaseDialect) {

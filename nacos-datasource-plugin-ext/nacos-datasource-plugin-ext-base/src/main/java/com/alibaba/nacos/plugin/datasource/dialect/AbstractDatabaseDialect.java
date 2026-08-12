@@ -16,19 +16,14 @@
 
 package com.alibaba.nacos.plugin.datasource.dialect;
 
-import com.alibaba.nacos.api.plugin.ConfigItemDefinition;
-import com.alibaba.nacos.api.plugin.PluginConfigSpec;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Abstract DatabaseDialect.
  * Default limit for mysql,postgresql
  * @author Long Yu
  */
-public abstract class AbstractDatabaseDialect implements DatabaseDialect, PluginConfigSpec {
+public abstract class AbstractDatabaseDialect implements DatabaseDialect {
     
     @Override
     public int getPagePrevNum(int page, int pageSize) {
@@ -63,10 +58,5 @@ public abstract class AbstractDatabaseDialect implements DatabaseDialect, Plugin
     @Override
     public String[] getReturnPrimaryKeys() {
         return PrimaryKeyConstant.LOWER_RETURN_PRIMARY_KEYS;
-    }
-
-    @Override
-    public List<ConfigItemDefinition> getConfigDefinitions() {
-        return Collections.emptyList();
     }
 }
