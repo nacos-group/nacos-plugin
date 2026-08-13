@@ -16,6 +16,9 @@
 
 package com.alibaba.nacos.plugin.config;
 
+import com.alibaba.nacos.api.plugin.ConfigItemDefinition;
+import com.alibaba.nacos.api.plugin.ConfigItemEffectMode;
+import com.alibaba.nacos.api.plugin.ConfigItemType;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.alibaba.nacos.plugin.config.constants.ConfigChangeConstants;
 import com.alibaba.nacos.plugin.config.constants.ConfigChangeExecuteTypes;
@@ -53,10 +56,45 @@ public class WhiteListConfigChangePluginService implements ConfigChangePluginSer
     
     private static final Logger LOGGER = LoggerFactory.getLogger(WhiteListConfigChangePluginService.class);
     
+    private static final String SUFFIXES = "suffixes";
+
+    private static final String LEGACY_SUFFIXS = "suffixs";
+
+    private static final String LEGACY_SUFFIXS_FULL_KEY = "nacos.core.config.plugin.whitelist.suffixs";
+
+    private static final List<ConfigItemDefinition> CONFIG_DEFINITIONS = buildConfigDefinitions();
+
+    private volatile Map<String, String> currentConfig = Collections.emptyMap();
+
+    private static List<ConfigItemDefinition> buildConfigDefinitions() {
+        ConfigItemDefinition suffixes = new ConfigItemDefinition.Builder(SUFFIXES,
+                "Allowed suffixes", ConfigItemType.STRING)
+                .description("Comma-separated config file types allowed during import")
+                .defaultValue("").aliases(Arrays.asList(LEGACY_SUFFIXS, LEGACY_SUFFIXS_FULL_KEY))
+                .effectMode(ConfigItemEffectMode.RUNTIME).build();
+        return Collections.unmodifiableList(Collections.singletonList(suffixes));
+    }
+
+    @Override
+    public List<ConfigItemDefinition> getConfigDefinitions() {
+        return CONFIG_DEFINITIONS;
+    }
+
+    @Override
+    public void applyConfig(Map<String, String> config) {
+        currentConfig = null == config ? Collections.emptyMap() : new LinkedHashMap<>(config);
+    }
+
+    @Override
+    public Map<String, String> getCurrentConfig() {
+        return new LinkedHashMap<>(currentConfig);
+    }
+
     @Override
     public void execute(ConfigChangeRequest configChangeRequest, ConfigChangeResponse configChangeResponse) {
         final Properties properties = (Properties) configChangeRequest.getArg(ConfigChangeConstants.PLUGIN_PROPERTIES);
-        final String whiteListUrls = properties.getProperty("suffixs", "");
+        final String whiteListUrls = properties.getProperty(SUFFIXES,
+                properties.getProperty(LEGACY_SUFFIXS, ""));
         final String[] whiteLists = whiteListUrls.split("\\,");
         // is convenient to contains judge
         final Set<String> whiteList = Arrays.stream(whiteLists).collect(Collectors.toSet());

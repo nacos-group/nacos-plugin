@@ -19,10 +19,16 @@
     </modules>
 
     <properties>
+        <alibaba-nacos.version>3.3.0-BETA</alibaba-nacos.version>
         <yaml.version>1.29</yaml.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-api</artifactId>
+            <version>${alibaba-nacos.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-config-plugin</artifactId>
