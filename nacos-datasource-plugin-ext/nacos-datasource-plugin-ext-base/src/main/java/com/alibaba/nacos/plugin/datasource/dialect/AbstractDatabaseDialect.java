@@ -59,5 +59,4 @@ public abstract class AbstractDatabaseDialect implements DatabaseDialect {
     public String[] getReturnPrimaryKeys() {
         return PrimaryKeyConstant.LOWER_RETURN_PRIMARY_KEYS;
     }
-
 }

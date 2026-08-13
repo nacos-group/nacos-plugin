@@ -29,8 +29,6 @@ nacos-oceanbase-datasource-plugin-ext/
 │           ├── AbstractOceanbaseMapper.java           # 抽象基类
 │           ├── ConfigInfoMapperByOceanbase.java       # 配置信息
 │           ├── ConfigInfoAggrMapperByOceanbase.java   # 聚合配置
-│           ├── ConfigInfoBetaMapperByOceanbase.java   # Beta 配置
-│           ├── ConfigInfoTagMapperByOceanbase.java    # 标签配置
 │           ├── ConfigTagsRelationMapperByOceanbase.java # 标签关系
 │           ├── HistoryConfigInfoMapperOceanbase.java  # 历史配置
 │           ├── GroupCapacityMapperByOceanbase.java    # 分组容量
