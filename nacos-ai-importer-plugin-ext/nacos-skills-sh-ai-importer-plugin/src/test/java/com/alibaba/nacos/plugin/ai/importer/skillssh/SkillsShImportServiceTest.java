@@ -65,6 +65,14 @@ public class SkillsShImportServiceTest {
         assertEquals(ConfigItemEffectMode.RESTART,
                 definitions.get(AiResourceImportConstants.CONFIG_ENDPOINT).getEffectMode());
         assertEquals(ConfigItemEffectMode.RUNTIME,
+                definitions.get(SkillsShImportServiceBuilder.CONFIG_TOKEN).getEffectMode());
+        assertEquals(ConfigItemEffectMode.RUNTIME,
+                definitions.get(SkillsShImportServiceBuilder.CONFIG_CONNECT_TIMEOUT_MILLIS)
+                        .getEffectMode());
+        assertEquals(ConfigItemEffectMode.RUNTIME,
+                definitions.get(SkillsShImportServiceBuilder.CONFIG_READ_TIMEOUT_MILLIS)
+                        .getEffectMode());
+        assertEquals(ConfigItemEffectMode.RUNTIME,
                 definitions.get(AiResourceImportConstants.CONFIG_DISPLAY_NAME).getEffectMode());
 
         Map<String, String> config = new HashMap<String, String>();
