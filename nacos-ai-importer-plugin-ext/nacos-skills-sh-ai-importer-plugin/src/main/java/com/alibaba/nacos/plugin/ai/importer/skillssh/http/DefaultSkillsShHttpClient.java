@@ -10,7 +10,7 @@
 package com.alibaba.nacos.plugin.ai.importer.skillssh.http;
 
 import com.alibaba.nacos.common.utils.StringUtils;
-import com.alibaba.nacos.plugin.ai.importer.model.AiResourceImportSource;
+import com.alibaba.nacos.plugin.ai.importer.skillssh.SkillsShImportConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,7 +20,6 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Default URLConnection-based skills.sh HTTP client.
@@ -45,21 +44,18 @@ public class DefaultSkillsShHttpClient implements SkillsShHttpClient {
     
     private static final String HTTPS = "https";
     
-    private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 3000;
-    
-    private static final int DEFAULT_READ_TIMEOUT_MILLIS = 10000;
-    
     @Override
-    public SkillsShHttpResponse get(AiResourceImportSource source, String url) throws Exception {
+    public SkillsShHttpResponse get(SkillsShImportConfig config, String url) throws Exception {
         URL target = new URL(url);
-        validateTarget(source, target);
+        validateTarget(config, target);
         HttpURLConnection connection = (HttpURLConnection) target.openConnection();
         connection.setRequestMethod("GET");
-        connection.setConnectTimeout(resolveConnectTimeout(source));
-        connection.setReadTimeout(resolveReadTimeout(source));
+        connection.setConnectTimeout(config.getConnectTimeoutMillis());
+        connection.setReadTimeout(config.getReadTimeoutMillis());
         connection.setRequestProperty("Accept", "application/json");
-        String token = getProperty(source, PROPERTY_TOKEN, PROPERTY_AUTH_TOKEN, PROPERTY_AUTH_TOKEN_CAMEL);
+        String token = config.getToken();
         if (StringUtils.isNotBlank(token)) {
+            // Authenticated skills.sh v1 APIs accept Bearer tokens from ConfigSpec.
             connection.setRequestProperty("Authorization", "Bearer " + token.trim());
         }
         int statusCode = connection.getResponseCode();
@@ -69,12 +65,17 @@ public class DefaultSkillsShHttpClient implements SkillsShHttpClient {
         return new SkillsShHttpResponse(url, statusCode, body);
     }
     
-    private void validateTarget(AiResourceImportSource source, URL target) throws UnknownHostException {
+    private void validateTarget(SkillsShImportConfig config, URL target)
+            throws UnknownHostException {
         String protocol = target.getProtocol().toLowerCase(Locale.ENGLISH);
-        if (!HTTPS.equals(protocol) && !getBoolean(source, PROPERTY_ALLOW_HTTP, PROPERTY_ALLOW_HTTP_CAMEL)) {
+        if (!HTTPS.equals(protocol) && !config.isAllowHttp()) {
             throw new IllegalArgumentException("skills.sh importer requires HTTPS endpoints unless allow-http is enabled.");
         }
-        if (!getBoolean(source, PROPERTY_ALLOW_PRIVATE_NETWORK, PROPERTY_ALLOW_PRIVATE_NETWORK_CAMEL)) {
+        /*
+         * Private network access is opt-in to avoid accidentally turning importer
+         * configuration into a server-side request path to local infrastructure.
+         */
+        if (!config.isAllowPrivateNetwork()) {
             InetAddress[] addresses = InetAddress.getAllByName(target.getHost());
             for (InetAddress address : addresses) {
                 if (isPrivateAddress(address)) {
@@ -87,33 +88,6 @@ public class DefaultSkillsShHttpClient implements SkillsShHttpClient {
     private boolean isPrivateAddress(InetAddress address) {
         return address.isAnyLocalAddress() || address.isLoopbackAddress() || address.isLinkLocalAddress()
                 || address.isSiteLocalAddress() || address.isMulticastAddress();
-    }
-    
-    private int resolveConnectTimeout(AiResourceImportSource source) {
-        return source.getConnectTimeoutMillis() > 0 ? source.getConnectTimeoutMillis() : DEFAULT_CONNECT_TIMEOUT_MILLIS;
-    }
-    
-    private int resolveReadTimeout(AiResourceImportSource source) {
-        return source.getReadTimeoutMillis() > 0 ? source.getReadTimeoutMillis() : DEFAULT_READ_TIMEOUT_MILLIS;
-    }
-    
-    private boolean getBoolean(AiResourceImportSource source, String kebabKey, String camelKey) {
-        String value = getProperty(source, kebabKey, camelKey);
-        return StringUtils.isNotBlank(value) && Boolean.parseBoolean(value);
-    }
-    
-    private String getProperty(AiResourceImportSource source, String... keys) {
-        Map<String, String> properties = source == null ? null : source.getProperties();
-        if (properties == null) {
-            return null;
-        }
-        for (String key : keys) {
-            String value = properties.get(key);
-            if (StringUtils.isNotBlank(value)) {
-                return value;
-            }
-        }
-        return null;
     }
     
     private byte[] readBody(InputStream input) throws IOException {

@@ -22,7 +22,6 @@ import com.alibaba.nacos.plugin.ai.importer.model.AiResourceImportCandidatePage;
 import com.alibaba.nacos.plugin.ai.importer.model.AiResourceImportContext;
 import com.alibaba.nacos.plugin.ai.importer.model.AiResourceImportItem;
 import com.alibaba.nacos.plugin.ai.importer.model.AiResourceImportPayloadKind;
-import com.alibaba.nacos.plugin.ai.importer.model.AiResourceImportSource;
 import com.alibaba.nacos.plugin.ai.importer.skillssh.http.DefaultSkillsShHttpClient;
 import com.alibaba.nacos.plugin.ai.importer.skillssh.http.SkillsShHttpClient;
 import com.alibaba.nacos.plugin.ai.importer.skillssh.http.SkillsShHttpResponse;
@@ -80,35 +79,30 @@ public class SkillsShImportService implements AiResourceImportService {
     
     private static final int DEFAULT_LIMIT = 30;
     
-    private static final int DEFAULT_MAX_FILE_COUNT = 500;
-    
     private final SkillsShHttpClient httpClient;
     
-    public SkillsShImportService() {
-        this(new DefaultSkillsShHttpClient());
+    private final SkillsShImportConfig config;
+    
+    /*
+     * The service is request-scoped. All source configuration is captured by the builder
+     * before build(), while AiResourceImportContext only carries request data.
+     */
+    SkillsShImportService(SkillsShImportConfig config) {
+        this(config, new DefaultSkillsShHttpClient());
     }
     
-    SkillsShImportService(SkillsShHttpClient httpClient) {
+    SkillsShImportService(SkillsShImportConfig config, SkillsShHttpClient httpClient) {
+        this.config = config;
         this.httpClient = httpClient;
-    }
-    
-    @Override
-    public String importerType() {
-        return SkillsShImportServiceBuilder.IMPORTER_TYPE;
-    }
-    
-    @Override
-    public Set<String> supportedResourceTypes() {
-        return Collections.singleton(RESOURCE_TYPE_SKILL);
     }
     
     @Override
     public AiResourceImportCandidatePage search(AiResourceImportContext context) throws NacosException {
         try {
-            AiResourceImportSource source = requireSource(context);
-            String apiRoot = resolveApiRoot(source);
+            String apiRoot = resolveApiRoot();
             int resultLimit = resolveLimit(context.getLimit());
-            SkillsShHttpResponse response = httpClient.get(source, searchUrl(apiRoot, resolveQuery(context.getQuery()), resultLimit));
+            SkillsShHttpResponse response = httpClient.get(config,
+                    searchUrl(apiRoot, resolveQuery(context.getQuery()), resultLimit));
             if (!response.isSuccess()) {
                 throw new IllegalStateException("HTTP " + response.getStatusCode() + " when fetching " + response.getUrl());
             }
@@ -128,15 +122,15 @@ public class SkillsShImportService implements AiResourceImportService {
     @Override
     public AiResourceImportArtifact fetch(AiResourceImportContext context, AiResourceImportItem item) throws NacosException {
         try {
-            AiResourceImportSource source = requireSource(context);
-            String apiRoot = resolveApiRoot(source);
+            String apiRoot = resolveApiRoot();
             SkillsShSkillRef skillRef = resolveSkillRef(item);
-            SkillsShHttpResponse response = httpClient.get(source, detailUrl(apiRoot, skillRef.getExternalId()));
+            SkillsShHttpResponse response = httpClient.get(config,
+                    detailUrl(apiRoot, skillRef.getExternalId()));
             if (!response.isSuccess()) {
                 throw new IllegalStateException("HTTP " + response.getStatusCode() + " when fetching " + response.getUrl());
             }
             SkillsShDetailResponse detailResponse = JacksonUtils.toObj(response.getBody(), SkillsShDetailResponse.class);
-            byte[] zipBytes = toSkillZip(source, skillRef, detailResponse);
+            byte[] zipBytes = toSkillZip(skillRef, detailResponse);
             AiResourceImportArtifact result = new AiResourceImportArtifact();
             result.setResourceType(RESOURCE_TYPE_SKILL);
             result.setExternalId(skillRef.getExternalId());
@@ -151,13 +145,6 @@ public class SkillsShImportService implements AiResourceImportService {
         } catch (Exception e) {
             throw dataAccess("Fetch skills.sh artifact failed: " + e.getMessage(), e);
         }
-    }
-    
-    private AiResourceImportSource requireSource(AiResourceImportContext context) throws NacosException {
-        if (context == null || context.getSource() == null || StringUtils.isBlank(context.getSource().getEndpoint())) {
-            throw invalid("skills.sh import source endpoint must not be empty.");
-        }
-        return context.getSource();
     }
     
     private int resolveLimit(int limit) {
@@ -253,7 +240,7 @@ public class SkillsShImportService implements AiResourceImportService {
         return result.toString();
     }
     
-    private byte[] toSkillZip(AiResourceImportSource source, SkillsShSkillRef skillRef, SkillsShDetailResponse detail)
+    private byte[] toSkillZip(SkillsShSkillRef skillRef, SkillsShDetailResponse detail)
             throws Exception {
         if (detail == null || CollectionUtils.isEmpty(detail.getFiles())) {
             throw invalid("skills.sh detail response does not contain skill files.");
@@ -269,12 +256,12 @@ public class SkillsShImportService implements AiResourceImportService {
                 if (StringUtils.isBlank(path)) {
                     continue;
                 }
-                if (++fileCount > resolveMaxFileCount(source)) {
+                if (++fileCount > config.getMaxItemCount()) {
                     throw invalid("skills.sh detail response contains too many files.");
                 }
                 validatePathSafety(path);
                 byte[] bytes = nullToEmpty(each.getContents()).getBytes(StandardCharsets.UTF_8);
-                checkDownloadedSize(source, totalSize + bytes.length);
+                checkDownloadedSize(totalSize + bytes.length);
                 totalSize += bytes.length;
                 String entryName = skillRef.getSkillId() + "/" + path;
                 validatePathSafety(entryName);
@@ -291,10 +278,6 @@ public class SkillsShImportService implements AiResourceImportService {
             throw invalid("skills.sh detail response must contain SKILL.md.");
         }
         return output.toByteArray();
-    }
-    
-    private int resolveMaxFileCount(AiResourceImportSource source) {
-        return source.getMaxItemCount() > 0 ? source.getMaxItemCount() : DEFAULT_MAX_FILE_COUNT;
     }
     
     private String normalizeFilePath(String path) {
@@ -320,8 +303,8 @@ public class SkillsShImportService implements AiResourceImportService {
         }
     }
     
-    private void checkDownloadedSize(AiResourceImportSource source, long totalSize) throws NacosException {
-        if (source.getMaxArtifactSize() > 0 && totalSize > source.getMaxArtifactSize()) {
+    private void checkDownloadedSize(long totalSize) throws NacosException {
+        if (config.getMaxArtifactSize() > 0 && totalSize > config.getMaxArtifactSize()) {
             throw invalid("skills.sh artifact size exceeds source limit.");
         }
     }
@@ -362,8 +345,8 @@ public class SkillsShImportService implements AiResourceImportService {
         }
     }
     
-    private String resolveApiRoot(AiResourceImportSource source) throws NacosException {
-        String endpoint = trimTrailingSlash(source.getEndpoint());
+    private String resolveApiRoot() throws NacosException {
+        String endpoint = trimTrailingSlash(config.getEndpoint());
         if (endpoint.endsWith(API_SEARCH)) {
             return endpoint.substring(0, endpoint.length() - API_SEARCH.length());
         }

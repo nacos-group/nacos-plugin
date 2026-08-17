@@ -9,7 +9,7 @@
  */
 package com.alibaba.nacos.plugin.ai.importer.skillssh.http;
 
-import com.alibaba.nacos.plugin.ai.importer.model.AiResourceImportSource;
+import com.alibaba.nacos.plugin.ai.importer.skillssh.SkillsShImportConfig;
 
 /**
  * HTTP client abstraction for skills.sh API calls.
@@ -21,10 +21,10 @@ public interface SkillsShHttpClient {
     /**
      * Execute an HTTP GET request.
      *
-     * @param source import source
+     * @param config import configuration
      * @param url target URL
      * @return response
      * @throws Exception if the request fails
      */
-    SkillsShHttpResponse get(AiResourceImportSource source, String url) throws Exception;
+    SkillsShHttpResponse get(SkillsShImportConfig config, String url) throws Exception;
 }
