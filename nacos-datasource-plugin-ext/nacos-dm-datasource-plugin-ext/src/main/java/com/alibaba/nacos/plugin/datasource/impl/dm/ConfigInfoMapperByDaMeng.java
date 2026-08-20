@@ -85,7 +85,7 @@ public class ConfigInfoMapperByDaMeng extends AbstractMapperByDaMeng implements 
         String innerSql = getLimitPageSqlWithMark(" SELECT id FROM config_info ORDER BY id ");
         String sql = " SELECT t.id,data_id,group_id,content,md5" + " FROM ( " + innerSql + "  ) "
                 + " g, config_info t  WHERE g.id = t.id ";
-        return new MapperResult(sql, CollectionUtils.list(startRow, pageSize));
+        return new MapperResult(sql, CollectionUtils.list(pageSize, startRow));
     }
     
     @Override
@@ -263,8 +263,8 @@ public class ConfigInfoMapperByDaMeng extends AbstractMapperByDaMeng implements 
         String sql = " SELECT t.id,data_id,group_id,tenant_id,app_name,content,md5 " + " FROM ( " + innerSql + " )"
                 + " g, config_info t  WHERE g.id = t.id ";
         return new MapperResult(sql, CollectionUtils
-                .list(context.getWhereParameter(FieldConstant.TENANT_ID), context.getStartRow(),
-                        context.getPageSize()));
+                .list(context.getWhereParameter(FieldConstant.TENANT_ID), context.getPageSize(),
+                        context.getStartRow()));
     }
     
     @Override
