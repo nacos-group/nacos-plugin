@@ -15,6 +15,7 @@
 #
 
 com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigInfoBetaMapperByKingbase
+com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigInfoGrayMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigInfoMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigInfoTagMapperByKingbase
 com.alibaba.nacos.plugin.datasource.impl.kingbase.ConfigTagsRelationMapperByKingbase

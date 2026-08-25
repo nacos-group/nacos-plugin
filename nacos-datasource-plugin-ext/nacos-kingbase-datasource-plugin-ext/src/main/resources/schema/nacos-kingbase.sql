@@ -54,6 +54,28 @@ CREATE TABLE `config_info_beta` (
 )  COMMENT='config_info_beta';
 
 
+CREATE TABLE `config_info_gray` (
+                                    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                    `data_id` varchar(255) NOT NULL COMMENT 'data_id',
+                                    `group_id` varchar(128) NOT NULL COMMENT 'group_id',
+                                    `content` longtext NOT NULL COMMENT 'content',
+                                    `md5` varchar(32) DEFAULT NULL COMMENT 'md5',
+                                    `src_user` text COMMENT 'src_user',
+                                    `src_ip` varchar(100) DEFAULT NULL COMMENT 'src_ip',
+                                    `gmt_create` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'gmt_create',
+                                    `gmt_modified` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'gmt_modified',
+                                    `app_name` varchar(128) DEFAULT NULL COMMENT 'app_name',
+                                    `tenant_id` varchar(128) DEFAULT '' COMMENT 'tenant_id',
+                                    `gray_name` varchar(128) NOT NULL COMMENT 'gray_name',
+                                    `gray_rule` text NOT NULL COMMENT 'gray_rule',
+                                    `encrypted_data_key` varchar(256) NOT NULL DEFAULT '' COMMENT 'encrypted_data_key',
+                                    PRIMARY KEY (`id`),
+                                    UNIQUE KEY `uk_configinfogray_datagrouptenantgray` (`data_id`,`group_id`,`tenant_id`,`gray_name`),
+                                    KEY `idx_dataid_gmt_modified` (`data_id`,`gmt_modified`),
+                                    KEY `idx_gmt_modified` (`gmt_modified`)
+)  COMMENT='config_info_gray';
+
+
 CREATE TABLE `config_info_tag` (
                                    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                    `data_id` varchar(255) NOT NULL COMMENT 'data_id',
