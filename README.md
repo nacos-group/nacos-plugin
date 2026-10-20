@@ -1,11 +1,21 @@
 # nacos-plugin
-A collection of Nacos plug-ins that provide pluggable plug-in capabilities for Nacos and support user customization and high scalability
+Nacos 生态插件集合，包含安装到 Nacos Server 的扩展，以及安装到 coding agent / personal agent 的接入插件。
+
+## 按安装位置选择
+
+| 安装位置 | 插件 | 安装、开发与兼容入口 |
+| --- | --- | --- |
+| Nacos Server | 数据库、加密、自定义环境、配置变更、追踪及 AI 导入插件 | 本页下方的服务端插件安装、版本映射和 Maven 开发指南。 |
+| Agent 应用 | Nacos AI Registry：发现、管理和使用 agentic 资源 | [插件入口](agent-plugins/README.md)、[通用规范](agent-plugins/specs/README.md)、[Codex 设计](agent-plugins/codex/README.md)。 |
+
+两类插件分别构建与发布。Agent 插件不安装到 Nacos Server，也不加入根 Maven 构建；
+其版本、运行依赖以及与 Nacos 和 Agent 应用的兼容关系由组件独立维护。
 
 ![](https://tva1.sinaimg.cn/large/008i3skNly1gxmnilyukqj30qp0fgglx.jpg)
 
-## 一、版本映射关系
+## 一、服务端插件版本映射关系
 
-本插件项目与 Nacos 版本的对应关系如下：
+以下版本映射仅适用于服务端插件：
 
 | 插件 Tag 版本 | 支持的 Nacos 版本        |
 |-----------|---------------------|
@@ -19,7 +29,7 @@ A collection of Nacos plug-ins that provide pluggable plug-in capabilities for N
 
 > 3.1.x 对kingbase的数据库插件做了较大的改动，用户若从2.x版本升级到3.x版本时，请先阅读[kingbase插件的README](nacos-datasource-plugin-ext/nacos-kingbase-datasource-plugin-ext/README.md)，并在测试环境中确认无误后再进行生产环境的升级。
 
-## 二、安装说明
+## 二、服务端插件安装说明
 
 ### 2.1 编译插件
 
@@ -47,7 +57,7 @@ cp <插件模块>/target/<插件名称>.jar <NACOS_HOME>/plugins/
 
 根据具体插件的使用说明，在 Nacos 的配置文件（如 `application.properties`）中进行相应配置。
 
-## 三、插件列表
+## 三、服务端插件列表
 
 ### 3.1 数据源扩展插件 (nacos-datasource-plugin-ext)
 
@@ -98,12 +108,20 @@ cp <插件模块>/target/<插件名称>.jar <NACOS_HOME>/plugins/
 **子插件列表**：
 - **nacos-trace-logging-plugin**: Nacos 日志命名追踪插件
 
-## 四、开发指南
+### 3.6 AI 导入插件 (nacos-ai-importer-plugin-ext)
+
+提供 AI 资源导入适配，参见 [AI 导入插件说明](nacos-ai-importer-plugin-ext/README.md)。
+
+## 四、服务端插件开发指南
 
 ### 4.1 项目结构
 
 ```
 nacos-plugin/
+├── agent-plugins/                       # 按 Agent 应用组织的插件
+│   ├── specs/                          # 通用规范
+│   └── codex/                          # Codex 适配及专属 specs
+├── nacos-ai-importer-plugin-ext/         # AI 资源导入插件集合
 ├── nacos-config-change-plugin-ext/        # 配置变更插件集合
 │   ├── nacos-fileformat-config-change-plugin/
 │   ├── nacos-webhook-config-change-plugin/

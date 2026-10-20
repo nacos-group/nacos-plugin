@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="title desc">
+<title id="title">Agent · 解除接入确认</title><desc id="desc">确认弹窗 · 背景保留原列表，只有确认后才执行。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
+<rect x="0" y="0" width="1456" height="1040" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="42" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" fill="#171717" font-weight="600">42  Agent · 解除接入确认</text>
+<text x="24" y="72" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">确认弹窗 · 背景保留原列表，只有确认后才执行。</text>
+<text x="24" y="104" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">设计状态 · 通用示例 · 点击链接仅切换图稿，不执行真实操作</text>
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<rect x="1152" y="128" width="280" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1172" y="162" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">设计说明</text>
+<text x="1172" y="190" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">左侧只展示一个界面状态。本栏属于图册，</text>
+<text x="1172" y="213" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">不进入产品。</text>
+<g data-layer="underlay">
+<text x="48" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">资源中心</text>
+<text x="174" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<text x="48" y="191" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">当前对话：示例项目</text>
+<a href="62-pending-operations.svg" aria-label="待处理操作"><title>待处理操作</title>
+<text x="874" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">待处理操作</text>
+</a>
+<a href="14-settings.svg" aria-label="设置"><title>设置</title>
+<text x="1038" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">设置</text>
+</a>
+<a href="01-connected.svg" aria-label="已接入"><title>已接入</title>
+<text x="48" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">已接入</text>
+</a>
+<line x1="48" y1="246" x2="90" y2="246" stroke="#171717" stroke-width="2"/>
+<a href="04-discover.svg" aria-label="发现资源"><title>发现资源</title>
+<text x="156" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">发现资源</text>
+</a>
+<a href="06-owned.svg" aria-label="我的资源"><title>我的资源</title>
+<text x="280" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">我的资源</text>
+</a>
+<line x1="48" y1="246" x2="1104" y2="246" stroke="#E5E5E5"/>
+<text x="48" y="288" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="18" fill="#171717" font-weight="600">已接入的资源</text>
+<text x="48" y="315" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">全部   技能   工具服务   远端 Agent</text>
+<rect x="48" y="336" width="608" height="120" rx="7" fill="#F5F5F5" stroke="none"/>
+<rect x="60" y="352" width="30" height="30" rx="6" fill="#EAEAEA" stroke="none"/>
+<text x="69" y="372" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="600">S</text>
+<a href="01-connected.svg" aria-label="发布说明助手"><title>发布说明助手</title>
+<text x="104" y="366" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="15" fill="#171717" font-weight="400">发布说明助手</text>
+</a>
+<text x="104" y="391" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">将版本变化整理成发布说明</text>
+<text x="104" y="432" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">技能 · 1.1.0 · 项目目录</text>
+<a href="01-connected.svg" aria-label="查看详情"><title>查看详情</title>
+<text x="498" y="368" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#171717" font-weight="400">查看详情</text>
+</a>
+<a href="02-resource-menus.svg" aria-label="⋯"><title>⋯</title>
+<text x="622" y="368" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="400">⋯</text>
+</a>
+<rect x="498" y="399" width="78" height="25" rx="5" fill="#F5F5F5" stroke="none"/>
+<text x="507" y="416" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">待加载确认</text>
+<line x1="48" y1="464" x2="656" y2="464" stroke="#E5E5E5"/>
+<rect x="60" y="492" width="30" height="30" rx="6" fill="#EAEAEA" stroke="none"/>
+<text x="69" y="512" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="600">M</text>
+<a href="08-mcp-tools.svg" aria-label="团队知识库"><title>团队知识库</title>
+<text x="104" y="506" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="15" fill="#171717" font-weight="400">团队知识库</text>
+</a>
+<text x="104" y="531" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">搜索团队资料与文档</text>
+<text x="104" y="572" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">MCP · 原生连接</text>
+<a href="08-mcp-tools.svg" aria-label="查看工具"><title>查看工具</title>
+<text x="498" y="508" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#171717" font-weight="400">查看工具</text>
+</a>
+<a href="21-mcp-menu.svg" aria-label="⋯"><title>⋯</title>
+<text x="622" y="508" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="400">⋯</text>
+</a>
+<rect x="498" y="539" width="78" height="25" rx="5" fill="#F5F5F5" stroke="none"/>
+<text x="507" y="556" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">待加载确认</text>
+<line x1="48" y1="604" x2="656" y2="604" stroke="#E5E5E5"/>
+<rect x="60" y="632" width="30" height="30" rx="6" fill="#EAEAEA" stroke="none"/>
+<text x="69" y="652" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="600">A</text>
+<a href="71-connected-agent.svg" aria-label="排障助手"><title>排障助手</title>
+<text x="104" y="646" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="15" fill="#171717" font-weight="400">排障助手</text>
+</a>
+<text x="104" y="671" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">根据症状整理排查步骤</text>
+<text x="104" y="712" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">Agent · 已绑定端点</text>
+<a href="10-agent-compose.svg" aria-label="发起任务"><title>发起任务</title>
+<text x="498" y="648" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#171717" font-weight="400">发起任务</text>
+</a>
+<a href="22-agent-menu.svg" aria-label="⋯"><title>⋯</title>
+<text x="622" y="648" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="400">⋯</text>
+</a>
+<rect x="498" y="679" width="54" height="25" rx="5" fill="#F5F5F5" stroke="none"/>
+<text x="507" y="696" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">已接入</text>
+<line x1="48" y1="744" x2="656" y2="744" stroke="#E5E5E5"/>
+<line x1="680" y1="270" x2="680" y2="938" stroke="#E5E5E5"/>
+<text x="704" y="291" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="18" fill="#171717" font-weight="600">发布说明助手</text>
+<text x="704" y="322" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">技能 · 1.1.0 · 项目目录</text>
+<rect x="704" y="374" width="125.88" height="25" rx="5" fill="#FFF7ED" stroke="none"/>
+<text x="713" y="391" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#92400E" font-weight="400">待 Codex 加载确认</text>
+<text x="704" y="442" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="17" fill="#171717" font-weight="600">文件已安装</text>
+<text x="704" y="478" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">文件与访问检查通过。当前对话是否已加载，需要单独确认</text>
+<text x="704" y="501" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">。</text>
+<text x="704" y="566" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">实际版本</text>
+<text x="830" y="566" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">1.1.0</text>
+<text x="704" y="608" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">项目技能目录</text>
+<text x="704" y="636" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">/workspace/example/.agents/skills/release-helper</text>
+<a href="51-skill-verified.svg" aria-label="检查文件与访问"><title>检查文件与访问</title>
+<text x="704" y="718" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">检查文件与访问</text>
+</a>
+<a href="03-skill-changes.svg" aria-label="检查更新"><title>检查更新</title>
+<text x="704" y="760" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">检查更新</text>
+</a>
+<a href="50-skill-handoff.svg" aria-label="在当前对话中使用"><title>在当前对话中使用</title>
+<rect x="704" y="850" width="272" height="38" rx="6" fill="#171717" stroke="#171717"/>
+<text x="718" y="875" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#fff" font-weight="600">在当前对话中使用</text>
+</a>
+</g><g data-layer="overlay">
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#000" fill-opacity="0.22"/>
+<rect x="296" y="300" width="560" height="456" rx="12" fill="#fff" stroke="#E5E5E5"/>
+<text x="324" y="346" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="21" fill="#171717" font-weight="600">解除排障助手接入？</text>
+<text x="324" y="393" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="15" fill="#171717" font-weight="400">将移除本地保存的 Agent 服务绑定。</text>
+<rect x="324" y="426" width="504" height="99" rx="6" fill="#F5F5F5" stroke="none"/>
+<text x="340" y="453" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#171717" font-weight="400">服务：https://agent.example.org/a2a</text>
+<text x="340" y="476" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#171717" font-weight="400">影响：本地接入记录</text>
+<text x="324" y="569" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">不会停止远端服务，也不会取消已发任务。取消任务需要单独操作。</text>
+<a href="01-connected.svg" aria-label="取消"><title>取消</title>
+<rect x="536" y="683" width="108" height="40" rx="6" fill="#fff" stroke="#858585"/>
+<text x="576" y="710" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">取消</text>
+</a>
+<a href="44-agent-disconnected.svg" aria-label="确认解除接入"><title>确认解除接入</title>
+<rect x="664" y="683" width="164" height="38" rx="6" fill="#fff" stroke="#fff"/>
+<text x="678" y="708" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#B91C1C" font-weight="400">确认解除接入</text>
+</a>
+</g>
+<text x="1172" y="266" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">只有一次确认</text>
+<text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">点击菜单动作才弹出。取消或 Escape </text>
+<text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">关闭，回到原来的资源行。</text>
+<text x="1172" y="371" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">确认后的结果</text>
+<text x="1172" y="400" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">弹窗关闭，已接入列表更新，详情区给出</text>
+<text x="1172" y="422" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">实际结果。</text>
+<text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：42-agent-disconnect</text>
+</svg>

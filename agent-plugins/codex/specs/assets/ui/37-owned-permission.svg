@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="title desc">
+<title id="title">我的资源 · 发布权限不足</title><desc id="desc">我的资源 · 右侧仅显示选定版本的当前步骤。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
+<rect x="0" y="0" width="1456" height="1040" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="42" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" fill="#171717" font-weight="600">37  我的资源 · 发布权限不足</text>
+<text x="24" y="72" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">我的资源 · 右侧仅显示选定版本的当前步骤。</text>
+<text x="24" y="104" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">设计状态 · 通用示例 · 点击链接仅切换图稿，不执行真实操作</text>
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<rect x="1152" y="128" width="280" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1172" y="162" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">设计说明</text>
+<text x="1172" y="190" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">左侧只展示一个界面状态。本栏属于图册，</text>
+<text x="1172" y="213" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">不进入产品。</text>
+<g data-layer="underlay">
+<text x="48" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">资源中心</text>
+<text x="174" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<text x="48" y="191" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">当前对话：示例项目</text>
+<a href="62-pending-operations.svg" aria-label="待处理操作"><title>待处理操作</title>
+<text x="874" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">待处理操作</text>
+</a>
+<a href="14-settings.svg" aria-label="设置"><title>设置</title>
+<text x="1038" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">设置</text>
+</a>
+<a href="01-connected.svg" aria-label="已接入"><title>已接入</title>
+<text x="48" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">已接入</text>
+</a>
+<a href="04-discover.svg" aria-label="发现资源"><title>发现资源</title>
+<text x="156" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">发现资源</text>
+</a>
+<a href="06-owned.svg" aria-label="我的资源"><title>我的资源</title>
+<text x="280" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">我的资源</text>
+</a>
+<line x1="280" y1="246" x2="336" y2="246" stroke="#171717" stroke-width="2"/>
+<line x1="48" y1="246" x2="1104" y2="246" stroke="#E5E5E5"/>
+<text x="48" y="287" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="18" fill="#171717" font-weight="600">我的技能</text>
+<text x="48" y="314" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">当前所有者：示例开发者</text>
+<a href="12-local-skills.svg" aria-label="本地技能"><title>本地技能</title>
+<rect x="498" y="272" width="152" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="512" y="297" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">本地技能</text>
+</a>
+<text x="48" y="355" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">筛选名称</text>
+<rect x="48" y="367" width="410" height="40" rx="6" fill="#fff" stroke="#858585"/>
+<text x="60" y="392" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">发布</text>
+<a href="06-owned.svg" aria-label="查询"><title>查询</title>
+<rect x="476" y="367" width="90" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="490" y="392" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">查询</text>
+</a>
+<rect x="48" y="438" width="608" height="140" rx="8" fill="#F5F5F5" stroke="none"/>
+<a href="06-owned.svg" aria-label="发布说明助手"><title>发布说明助手</title>
+<text x="68" y="470" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="400">发布说明助手</text>
+</a>
+<text x="68" y="503" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#171717" font-weight="400">已发布 1.1.0</text>
+<rect x="68" y="524" width="107.03999999999999" height="25" rx="5" fill="#FFF7ED" stroke="none"/>
+<text x="77" y="541" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#92400E" font-weight="400">1.2.0 审核通过</text>
+<a href="17-owned-menu.svg" aria-label="⋯"><title>⋯</title>
+<text x="622" y="470" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="400">⋯</text>
+</a>
+<line x1="48" y1="592" x2="656" y2="592" stroke="#E5E5E5"/>
+<text x="68" y="628" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">代码检查清单</text>
+<text x="68" y="661" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#171717" font-weight="400">已发布 2.0.0</text>
+<rect x="68" y="683" width="95.03999999999999" height="25" rx="5" fill="#FFF7ED" stroke="none"/>
+<text x="77" y="700" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#92400E" font-weight="400">2.1.0 审核中</text>
+<line x1="680" y1="270" x2="680" y2="938" stroke="#E5E5E5"/>
+<text x="704" y="291" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="18" fill="#171717" font-weight="600">发布说明助手 · 1.2.0</text>
+<text x="704" y="322" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">版本与发布</text>
+<a href="06-owned.svg" aria-label="‹ 返回"><title>‹ 返回</title>
+<text x="704" y="361" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">‹ 返回</text>
+</a>
+<rect x="704" y="400" width="400" height="116" rx="8" fill="#FFF7ED" stroke="none"/>
+<text x="720" y="429" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#92400E" font-weight="600">当前身份没有发布权限</text>
+<text x="720" y="458" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#92400E" font-weight="400">审核结论已读取，但不能执行普通发布。</text>
+<text x="704" y="569" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">请核对管理身份与服务端授权。现有版本信息保持可读。</text>
+<rect x="704" y="850" width="220" height="38" rx="6" fill="#F5F5F5" stroke="#E5E5E5"/>
+<text x="718" y="875" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#858585" font-weight="400">发布版本</text>
+<a href="14-settings.svg" aria-label="配置管理身份"><title>配置管理身份</title>
+<text x="704" y="800" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">配置管理身份</text>
+</a>
+</g>
+<text x="1172" y="266" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">没有并列流程卡片</text>
+<text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">版本列表保持稳定；提交、审核、发布、</text>
+<text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">权限不足分别是独立状态。</text>
+<text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：37-owned-permission</text>
+</svg>

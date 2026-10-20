@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="930" viewBox="0 0 1600 930" role="img" aria-labelledby="title desc">
+<title id="title">Nacos 资源中心简洁工作台布局</title><desc id="desc">目标设计示意：宽页面左侧资源列表与右侧安装确认并排；窄侧栏以有返回入口的单列安装确认页展示同一操作。示例不含真实环境数据。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<rect x="0" y="0" width="1600" height="930" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="40" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" font-weight="600" fill="#171717">Nacos 资源中心 · 简洁工作台</text>
+<text x="24" y="69" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">目标结构示意 · 非运行截图 · 通用示例数据</text>
+<text x="24" y="110" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" font-weight="600" fill="#171717">宽页面：保留列表，在详情区完成当前操作</text>
+<text x="1184" y="110" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" font-weight="600" fill="#171717">窄侧栏：单列进退，保留操作上下文</text>
+<rect x="24" y="128" width="1120" height="696" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="48" y="167" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" font-weight="600" fill="#171717">资源中心</text>
+<text x="178" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">团队资源库 · workspace</text>
+<text x="923" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">待处理操作</text>
+<text x="1064" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">设置</text>
+<text x="48" y="216" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">已接入</text>
+<text x="144" y="216" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="600" fill="#171717">发现资源</text>
+<text x="256" y="216" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">我的资源</text>
+<line x1="48" y1="234" x2="1120" y2="234" stroke="#E5E5E5"/>
+<line x1="144" y1="234" x2="200" y2="234" stroke="#171717"/>
+<rect x="48" y="254" width="428" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="62" y="277" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">发布说明</text>
+<rect x="488" y="254" width="72" height="36" rx="6" fill="#171717" stroke="#171717"/>
+<text x="502" y="277" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="600" fill="#fff">搜索</text>
+<text x="586" y="277" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">技能 ▾</text>
+<text x="48" y="320" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="600" fill="#171717">搜索结果</text>
+<text x="122" y="320" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">仅展示当前身份可见的资源</text>
+<rect x="48" y="338" width="592" height="102" rx="6" fill="#F5F5F5" stroke="none"/>
+<rect x="60" y="353" width="28" height="28" rx="6" fill="#EAEAEA" stroke="none"/>
+<text x="68" y="373" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="600" fill="#626262">S</text>
+<text x="100" y="366" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="15" font-weight="600" fill="#171717">发布说明助手</text>
+<text x="100" y="391" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">将版本变更整理为可评审的发布说明</text>
+<text x="100" y="417" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">技能 · 1.2.0</text>
+<text x="548" y="371" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">安装</text>
+<text x="608" y="371" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="18" font-weight="400" fill="#171717">⋯</text>
+<line x1="48" y1="447" x2="640" y2="447" stroke="#E5E5E5"/>
+<rect x="60" y="465" width="28" height="28" rx="6" fill="#EAEAEA" stroke="none"/>
+<text x="68" y="485" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="600" fill="#626262">S</text>
+<text x="100" y="478" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="15" font-weight="600" fill="#171717">代码检查清单</text>
+<text x="100" y="503" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">按团队约定整理代码评审检查项</text>
+<text x="100" y="529" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">技能 · 2.0.0</text>
+<text x="548" y="483" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">安装</text>
+<text x="608" y="483" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="18" font-weight="400" fill="#171717">⋯</text>
+<line x1="48" y1="559" x2="640" y2="559" stroke="#E5E5E5"/>
+<rect x="60" y="577" width="28" height="28" rx="6" fill="#EAEAEA" stroke="none"/>
+<text x="68" y="597" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="600" fill="#626262">S</text>
+<text x="100" y="590" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="15" font-weight="600" fill="#171717">接口文档助手</text>
+<text x="100" y="615" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">根据接口定义组织变更说明与示例</text>
+<text x="100" y="641" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">技能 · 接入前解析</text>
+<text x="548" y="595" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">安装</text>
+<text x="608" y="595" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="18" font-weight="400" fill="#171717">⋯</text>
+<rect x="48" y="702" width="108" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="62" y="725" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">加载更多</text>
+<line x1="664" y1="254" x2="664" y2="800" stroke="#E5E5E5"/>
+<text x="688" y="277" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" font-weight="600" fill="#171717">安装技能</text>
+<text x="1088" y="277" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">关闭</text>
+<text x="688" y="320" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" font-weight="600" fill="#171717">发布说明助手</text>
+<text x="688" y="347" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">核对目标与变更后安装。</text>
+<line x1="688" y1="369" x2="1120" y2="369" stroke="#E5E5E5"/>
+<text x="688" y="399" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">来源</text>
+<text x="798" y="399" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">团队资源库 / workspace</text>
+<text x="688" y="439" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">实际版本</text>
+<text x="798" y="439" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">1.2.0</text>
+<text x="688" y="479" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">安装范围</text>
+<text x="798" y="479" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">项目技能目录</text>
+<text x="688" y="519" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">目标目录</text>
+<text x="688" y="545" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" font-weight="400" fill="#171717">/workspace/example/.agents/skills</text>
+<text x="688" y="567" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" font-weight="400" fill="#171717">/release-notes-helper</text>
+<line x1="688" y1="589" x2="1120" y2="589" stroke="#E5E5E5"/>
+<text x="688" y="619" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="600" fill="#171717">文件变更</text>
+<text x="688" y="647" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">新增 3 个 · 修改 0 个 · 删除 0 个</text>
+<text x="688" y="679" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">查看文件清单 ›</text>
+<text x="688" y="724" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">安装完成后需确认 Codex 已加载。</text>
+<line x1="688" y1="745" x2="1120" y2="745" stroke="#E5E5E5"/>
+<rect x="688" y="764" width="80" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="702" y="787" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">返回</text>
+<rect x="1000" y="764" width="120" height="36" rx="6" fill="#171717" stroke="#171717"/>
+<text x="1014" y="787" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="600" fill="#fff">安装技能</text>
+<rect x="1184" y="128" width="392" height="696" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1200" y="165" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" font-weight="600" fill="#171717">资源中心</text>
+<text x="1516" y="165" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">设置</text>
+<text x="1200" y="195" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">团队资源库 · workspace</text>
+<line x1="1200" y1="215" x2="1560" y2="215" stroke="#E5E5E5"/>
+<text x="1200" y="249" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">‹ 返回详情</text>
+<text x="1200" y="293" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" font-weight="600" fill="#171717">安装技能</text>
+<text x="1200" y="324" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" font-weight="600" fill="#171717">发布说明助手</text>
+<text x="1200" y="351" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">核对目标与变更后安装。</text>
+<line x1="1200" y1="372" x2="1560" y2="372" stroke="#E5E5E5"/>
+<text x="1200" y="402" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">实际版本</text>
+<text x="1310" y="402" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">1.2.0</text>
+<text x="1200" y="442" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">安装范围</text>
+<text x="1310" y="442" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">项目技能目录</text>
+<text x="1200" y="482" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">目标目录</text>
+<text x="1200" y="509" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" font-weight="400" fill="#171717">/workspace/example/.agents/skills</text>
+<text x="1200" y="531" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" font-weight="400" fill="#171717">/release-notes-helper</text>
+<line x1="1200" y1="553" x2="1560" y2="553" stroke="#E5E5E5"/>
+<text x="1200" y="584" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="600" fill="#171717">文件变更</text>
+<text x="1200" y="612" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#626262">新增 3 个 · 修改 0 个 · 删除 0 个</text>
+<text x="1200" y="646" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">查看文件清单 ›</text>
+<text x="1200" y="703" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" font-weight="400" fill="#626262">安装完成后需确认 Codex 已加载。</text>
+<line x1="1200" y1="745" x2="1560" y2="745" stroke="#E5E5E5"/>
+<rect x="1200" y="764" width="80" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="1214" y="787" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="400" fill="#171717">返回</text>
+<rect x="1440" y="764" width="120" height="36" rx="6" fill="#171717" stroke="#171717"/>
+<text x="1454" y="787" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" font-weight="600" fill="#fff">安装技能</text>
+<text x="24" y="863" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" font-weight="600" fill="#171717">设计要点</text>
+<text x="24" y="891" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="15" font-weight="400" fill="#626262">列表突出名称与用途；一个当前主动作；目标与版本可见；诊断按需展开；执行结果不强制切走列表。</text>
+</svg>
