@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="title desc">
+<title id="title">待处理操作 · 当前上下文</title><desc id="desc">独立子页 · 只列出当前上下文的未完成或未知操作。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
+<rect x="0" y="0" width="1456" height="1040" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="42" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" fill="#171717" font-weight="600">62  待处理操作 · 当前上下文</text>
+<text x="24" y="72" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">独立子页 · 只列出当前上下文的未完成或未知操作。</text>
+<text x="24" y="104" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">设计状态 · 通用示例 · 点击链接仅切换图稿，不执行真实操作</text>
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<rect x="1152" y="128" width="280" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1172" y="162" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">设计说明</text>
+<text x="1172" y="190" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">左侧只展示一个界面状态。本栏属于图册，</text>
+<text x="1172" y="213" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">不进入产品。</text>
+<g data-layer="underlay">
+<text x="48" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">资源中心</text>
+<text x="174" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<text x="48" y="191" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">当前对话：示例项目</text>
+<a href="62-pending-operations.svg" aria-label="待处理操作"><title>待处理操作</title>
+<text x="874" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">待处理操作</text>
+</a>
+<a href="14-settings.svg" aria-label="设置"><title>设置</title>
+<text x="1038" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">设置</text>
+</a>
+<a href="01-connected.svg" aria-label="已接入"><title>已接入</title>
+<text x="48" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">已接入</text>
+</a>
+<line x1="48" y1="246" x2="90" y2="246" stroke="#171717" stroke-width="2"/>
+<a href="04-discover.svg" aria-label="发现资源"><title>发现资源</title>
+<text x="156" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">发现资源</text>
+</a>
+<a href="06-owned.svg" aria-label="我的资源"><title>我的资源</title>
+<text x="280" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">我的资源</text>
+</a>
+<line x1="48" y1="246" x2="1104" y2="246" stroke="#E5E5E5"/>
+<a href="01-connected.svg" aria-label="‹ 返回资源中心"><title>‹ 返回资源中心</title>
+<text x="48" y="284" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">‹ 返回资源中心</text>
+</a>
+<text x="48" y="332" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="22" fill="#171717" font-weight="600">待处理操作</text>
+<text x="48" y="374" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 / workspace · 当前上下文</text>
+<rect x="48" y="452" width="1056" height="110" rx="7" fill="#F5F5F5" stroke="none"/>
+<a href="15-operation-states.svg" aria-label="保存发布说明助手草稿"><title>保存发布说明助手草稿</title>
+<text x="70" y="487" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="17" fill="#171717" font-weight="400">保存发布说明助手草稿</text>
+</a>
+<text x="70" y="529" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#92400E" font-weight="400">结果未知</text>
+<a href="15-operation-states.svg" aria-label="查看记录"><title>查看记录</title>
+<rect x="908" y="486" width="174" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="922" y="511" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">查看记录</text>
+</a>
+<rect x="48" y="590" width="1056" height="110" rx="7" fill="#F5F5F5" stroke="none"/>
+<a href="34-agent-unknown.svg" aria-label="向排障助手发送任务"><title>向排障助手发送任务</title>
+<text x="70" y="625" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="17" fill="#171717" font-weight="400">向排障助手发送任务</text>
+</a>
+<text x="70" y="667" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#92400E" font-weight="400">结果未知</text>
+<a href="34-agent-unknown.svg" aria-label="查看记录"><title>查看记录</title>
+<rect x="908" y="624" width="174" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="922" y="649" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">查看记录</text>
+</a>
+</g>
+<text x="1172" y="266" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">不是完整历史</text>
+<text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">只展示当前上下文的待处理记录。查询记</text>
+<text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">录不会重发原操作。</text>
+<text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：62-pending-operations</text>
+</svg>

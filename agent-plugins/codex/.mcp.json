@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "nacos-ai-registry": {
+      "command": "python3",
+      "args": ["${PLUGIN_ROOT}/server/nacos-registry.pyz", "serve"],
+      "cwd": "${PLUGIN_ROOT}",
+      "env_vars": [
+        "NACOS_PLUGIN_HOME",
+        "NACOS_PLUGIN_CLIENT_USERNAME",
+        "NACOS_PLUGIN_CLIENT_PASSWORD",
+        "NACOS_PLUGIN_CLIENT_TOKEN",
+        "NACOS_PLUGIN_ADMIN_USERNAME",
+        "NACOS_PLUGIN_ADMIN_PASSWORD",
+        "NACOS_PLUGIN_ADMIN_TOKEN",
+        "NACOS_PLUGIN_MCP_TOKEN",
+        "NACOS_PLUGIN_AGENT_TOKEN"
+      ]
+    }
+  }
+}

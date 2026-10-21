@@ -1,0 +1,2 @@
+# Vendored as pure Python in the zipapp; users need no pip install.
+PyYAML==6.0.3

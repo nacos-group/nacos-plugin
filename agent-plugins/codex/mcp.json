@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "nacos-ai-registry": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["${PLUGIN_ROOT}/server/nacos-registry.pyz", "serve"],
+      "cwd": "${PLUGIN_ROOT}"
+    }
+  }
+}

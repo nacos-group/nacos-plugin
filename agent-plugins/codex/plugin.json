@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "nacos-ai-registry",
+  "version": "0.1.0-dev.10",
+  "description": "Discover, manage and use Nacos AI Registry resources from your agent.",
+  "repository": "https://github.com/nacos-group/nacos-plugin",
+  "license": "Apache-2.0",
+  "extensions": {
+    "com.openai": {
+      "mcpServers": "./.mcp.json",
+      "onboardingSkill": "./skills/setup/SKILL.md",
+      "requires_local_executor": true,
+      "interface": {
+        "displayName": "Nacos AI Registry",
+        "shortDescription": "Connect to Nacos resources",
+        "capabilities": []
+      }
+    }
+  }
+}

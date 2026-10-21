@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="title desc">
+<title id="title">本地技能 · 扫描结果</title><desc id="desc">独立子页 · 保留一张扫描列表，操作后更新原行。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
+<rect x="0" y="0" width="1456" height="1040" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="42" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" fill="#171717" font-weight="600">12  本地技能 · 扫描结果</text>
+<text x="24" y="72" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">独立子页 · 保留一张扫描列表，操作后更新原行。</text>
+<text x="24" y="104" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">设计状态 · 通用示例 · 点击链接仅切换图稿，不执行真实操作</text>
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<rect x="1152" y="128" width="280" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1172" y="162" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">设计说明</text>
+<text x="1172" y="190" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">左侧只展示一个界面状态。本栏属于图册，</text>
+<text x="1172" y="213" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">不进入产品。</text>
+<g data-layer="underlay">
+<text x="48" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">资源中心</text>
+<text x="174" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<text x="48" y="191" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">当前对话：示例项目</text>
+<a href="62-pending-operations.svg" aria-label="待处理操作"><title>待处理操作</title>
+<text x="874" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">待处理操作</text>
+</a>
+<a href="14-settings.svg" aria-label="设置"><title>设置</title>
+<text x="1038" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">设置</text>
+</a>
+<a href="01-connected.svg" aria-label="已接入"><title>已接入</title>
+<text x="48" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">已接入</text>
+</a>
+<a href="04-discover.svg" aria-label="发现资源"><title>发现资源</title>
+<text x="156" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">发现资源</text>
+</a>
+<a href="06-owned.svg" aria-label="我的资源"><title>我的资源</title>
+<text x="280" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">我的资源</text>
+</a>
+<line x1="280" y1="246" x2="336" y2="246" stroke="#171717" stroke-width="2"/>
+<line x1="48" y1="246" x2="1104" y2="246" stroke="#E5E5E5"/>
+<a href="06-owned.svg" aria-label="‹ 返回我的资源"><title>‹ 返回我的资源</title>
+<text x="48" y="284" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">‹ 返回我的资源</text>
+</a>
+<text x="48" y="329" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">本地技能</text>
+<rect x="48" y="366" width="1056" height="72" rx="7" fill="#F5F5F5" stroke="none"/>
+<text x="66" y="394" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">目录：/workspace/example/skills</text>
+<text x="66" y="419" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">已扫描 3 项，未上传任何文件。</text>
+<a href="12-local-skills.svg" aria-label="重新扫描"><title>重新扫描</title>
+<rect x="910" y="382" width="174" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="924" y="407" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">重新扫描</text>
+</a>
+<rect x="66" y="484" width="18" height="18" rx="4" fill="#171717" stroke="#858585"/>
+<text x="104" y="498" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">发布说明助手</text>
+<text x="104" y="532" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">可准备上传</text>
+<line x1="48" y1="574" x2="1104" y2="574" stroke="#E5E5E5"/>
+<a href="13-upload.svg" aria-label="准备上传"><title>准备上传</title>
+<rect x="910" y="484" width="174" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="924" y="509" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">准备上传</text>
+</a>
+<rect x="66" y="612" width="18" height="18" rx="4" fill="#171717" stroke="#858585"/>
+<text x="104" y="626" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">接口文档助手</text>
+<text x="104" y="660" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">仅跟踪</text>
+<line x1="48" y1="702" x2="1104" y2="702" stroke="#E5E5E5"/>
+<rect x="66" y="740" width="18" height="18" rx="4" fill="#fff" stroke="#858585"/>
+<text x="104" y="754" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">暂存技能</text>
+<text x="104" y="788" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">不可读：缺少 SKILL.md</text>
+<line x1="48" y1="830" x2="1104" y2="830" stroke="#E5E5E5"/>
+<rect x="48" y="852" width="1056" height="62" rx="6" fill="#F5F5F5" stroke="none"/>
+<text x="66" y="889" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">已选 2 项</text>
+<a href="49-local-results.svg" aria-label="仅跟踪选中项"><title>仅跟踪选中项</title>
+<rect x="238" y="864" width="208" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="252" y="889" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">仅跟踪选中项</text>
+</a>
+<a href="61-local-ignored.svg" aria-label="忽略选中项"><title>忽略选中项</title>
+<rect x="468" y="864" width="196" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="482" y="889" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">忽略选中项</text>
+</a>
+</g>
+<text x="1172" y="266" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">单项上传</text>
+<text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">点击准备上传后进入文件预览。批量跟踪</text>
+<text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">不会传包。</text>
+<text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：12-local-skills</text>
+</svg>

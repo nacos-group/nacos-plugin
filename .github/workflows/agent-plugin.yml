@@ -1,0 +1,43 @@
+name: Agent plugin CI
+on:
+  pull_request:
+    paths:
+      - 'agent-plugins/**'
+      - '.github/workflows/agent-plugin.yml'
+      - 'LICENSE'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-codex:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ['3.11', '3.13']
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: agent-plugins/codex
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: agent-plugins/codex/requirements-build.txt
+      - run: python -m pip install -r requirements-build.txt
+      - run: python -m unittest discover -s tests -v
+        env:
+          PYTHONPATH: src
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/test_ui_model.cjs
+      - run: python scripts/build.py
+      - run: python scripts/check_package.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nacos-ai-registry-codex-${{ matrix.os }}-${{ matrix.python }}
+          path: |
+            agent-plugins/codex/dist/*.zip
+            agent-plugins/codex/dist/*.sha256

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="title desc">
+<title id="title">设置 · 编辑认证</title><desc id="desc">设置子页 · 隐藏主导航，返回恢复原工作区。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
+<rect x="0" y="0" width="1456" height="1040" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="42" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" fill="#171717" font-weight="600">45  设置 · 编辑认证</text>
+<text x="24" y="72" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">设置子页 · 隐藏主导航，返回恢复原工作区。</text>
+<text x="24" y="104" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">设计状态 · 通用示例 · 点击链接仅切换图稿，不执行真实操作</text>
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<rect x="1152" y="128" width="280" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1172" y="162" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">设计说明</text>
+<text x="1172" y="190" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">左侧只展示一个界面状态。本栏属于图册，</text>
+<text x="1172" y="213" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">不进入产品。</text>
+<g data-layer="underlay">
+<a data-settings-back="true" href="01-connected.svg" aria-label="‹ 返回资源中心"><title>‹ 返回资源中心</title>
+<text x="48" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">‹ 返回资源中心</text>
+</a>
+<text x="48" y="218" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="22" fill="#171717" font-weight="600">设置</text>
+<text x="118" y="218" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<line x1="48" y1="246" x2="1104" y2="246" stroke="#E5E5E5"/>
+<rect x="48" y="279" width="224" height="44" rx="6" fill="#F5F5F5" stroke="none"/>
+<a href="14-settings.svg" aria-label="连接与认证"><title>连接与认证</title>
+<text x="64" y="307" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">连接与认证</text>
+</a>
+<a href="12-local-skills.svg" aria-label="本地技能"><title>本地技能</title>
+<text x="64" y="355" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">本地技能</text>
+</a>
+<text x="330" y="306" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">团队资源库</text>
+<text x="330" y="362" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">认证方式</text>
+<rect x="330" y="374" width="620" height="40" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="399" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">Nacos 原生登录</text>
+<text x="330" y="471" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">用户名环境变量名</text>
+<rect x="330" y="483" width="620" height="40" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="508" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">NACOS_PLUGIN_CLIENT_USERNAME</text>
+<text x="330" y="580" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">密码环境变量名</text>
+<rect x="330" y="592" width="620" height="40" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="617" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">NACOS_PLUGIN_CLIENT_PASSWORD</text>
+<text x="330" y="682" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">仅引用本机环境变量，页面不填写实际凭据。</text>
+<a href="14-settings.svg" aria-label="取消"><title>取消</title>
+<rect x="330" y="754" width="128" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="344" y="779" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">取消</text>
+</a>
+<a href="46-settings-saved.svg" aria-label="保存配置"><title>保存配置</title>
+<rect x="722" y="754" width="228" height="38" rx="6" fill="#171717" stroke="#171717"/>
+<text x="736" y="779" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#fff" font-weight="600">保存配置</text>
+</a>
+</g>
+<text x="1172" y="266" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">独立设置子页</text>
+<text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">隐藏已接入、发现资源、我的资源主导航</text>
+<text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">。顶部返回恢复进入设置前的工作区；设</text>
+<text x="1172" y="339" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">置内部切换不覆盖来源。</text>
+<text x="1172" y="393" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">编辑与返回</text>
+<text x="1172" y="422" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">取消编辑回到设置摘要；离开未保存表单</text>
+<text x="1172" y="444" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">须保留输入或明确提示。</text>
+<text x="1172" y="498" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">保存与检查独立</text>
+<text x="1172" y="527" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">保存不会自动宣告连通；修改失败或诊断</text>
+<text x="1172" y="549" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">失败都保留已有输入。</text>
+<text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：45-settings-edit</text>
+</svg>

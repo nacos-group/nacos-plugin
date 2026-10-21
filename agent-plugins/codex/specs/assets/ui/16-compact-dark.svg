@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="title desc">
+<title id="title">窄侧栏 · 工具详情</title><desc id="desc">侧栏 · 单一 390 px 视口，返回恢复来源列表。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
+<rect x="0" y="0" width="1456" height="1040" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="42" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" fill="#171717" font-weight="600">16  窄侧栏 · 工具详情</text>
+<text x="24" y="72" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">侧栏 · 单一 390 px 视口，返回恢复来源列表。</text>
+<text x="24" y="104" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">设计状态 · 通用示例 · 点击链接仅切换图稿，不执行真实操作</text>
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<rect x="1152" y="128" width="280" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1172" y="162" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">设计说明</text>
+<text x="1172" y="190" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">左侧只展示一个界面状态。本栏属于图册，</text>
+<text x="1172" y="213" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">不进入产品。</text>
+<g data-layer="underlay">
+<text x="48" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">资源中心</text>
+<text x="174" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<text x="48" y="191" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">当前对话：示例项目</text>
+<a href="62-pending-operations.svg" aria-label="待处理操作"><title>待处理操作</title>
+<text x="874" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">待处理操作</text>
+</a>
+<a href="14-settings.svg" aria-label="设置"><title>设置</title>
+<text x="1038" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">设置</text>
+</a>
+<a href="01-connected.svg" aria-label="已接入"><title>已接入</title>
+<text x="48" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">已接入</text>
+</a>
+<line x1="48" y1="246" x2="90" y2="246" stroke="#171717" stroke-width="2"/>
+<a href="04-discover.svg" aria-label="发现资源"><title>发现资源</title>
+<text x="156" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">发现资源</text>
+</a>
+<a href="06-owned.svg" aria-label="我的资源"><title>我的资源</title>
+<text x="280" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">我的资源</text>
+</a>
+<line x1="48" y1="246" x2="1104" y2="246" stroke="#E5E5E5"/>
+<rect x="24" y="128" width="1104" height="840" rx="0" fill="#F5F5F5" stroke="none"/>
+<rect x="362" y="155" width="390" height="756" rx="8" fill="#fff" stroke="#E5E5E5"/>
+<text x="378" y="192" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">资源中心</text>
+<a href="14-settings.svg" aria-label="设置"><title>设置</title>
+<text x="683" y="192" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">设置</text>
+</a>
+<text x="378" y="224" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<a href="01-connected.svg" aria-label="‹ 返回资源列表"><title>‹ 返回资源列表</title>
+<text x="378" y="281" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">‹ 返回资源列表</text>
+</a>
+<text x="378" y="333" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">团队知识库</text>
+<a href="54-mcp-overview.svg" aria-label="概览"><title>概览</title>
+<text x="378" y="380" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">概览</text>
+</a>
+<a href="08-mcp-tools.svg" aria-label="工具"><title>工具</title>
+<text x="458" y="380" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">工具</text>
+</a>
+<a href="09-mcp-connect.svg" aria-label="连接"><title>连接</title>
+<text x="538" y="380" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">连接</text>
+</a>
+<rect x="378" y="415" width="358" height="170" rx="7" fill="#F5F5F5" stroke="none"/>
+<text x="394" y="455" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="15" fill="#171717" font-weight="600">search_documents</text>
+<text x="394" y="505" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">按关键词搜索团队资料。</text>
+<text x="394" y="528" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">输入：query，文本。</text>
+<text x="378" y="639" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">工具已发现；当前对话是否已经加载，需要单独确认。</text>
+<a href="52-mcp-handoff.svg" aria-label="在当前对话中使用"><title>在当前对话中使用</title>
+<rect x="378" y="830" width="358" height="44" rx="6" fill="#171717" stroke="none"/>
+<text x="443" y="858" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#fff" font-weight="600">在当前对话中使用</text>
+</a>
+</g>
+<text x="1172" y="266" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">侧栏是同一套流程</text>
+<text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">详情占据当前侧栏，返回还原列表；字体</text>
+<text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">放大时底部按钮回到文档流。</text>
+<text x="1172" y="371" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="600">设计分支 · 仅图册</text>
+<a href="48-compact-dark.svg" aria-label="查看深色"><title>查看深色</title>
+<rect x="1172" y="389" width="236" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="1186" y="414" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">查看深色</text>
+</a>
+<text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：16-compact-dark</text>
+</svg>

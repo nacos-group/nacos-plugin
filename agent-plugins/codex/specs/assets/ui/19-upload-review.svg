@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="title desc">
+<title id="title">上传 · 保存确认</title><desc id="desc">上传子页 · 同一工作区逐步切换，每次只展示当前状态。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
+<rect x="0" y="0" width="1456" height="1040" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="42" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" fill="#171717" font-weight="600">19  上传 · 保存确认</text>
+<text x="24" y="72" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">上传子页 · 同一工作区逐步切换，每次只展示当前状态。</text>
+<text x="24" y="104" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">设计状态 · 通用示例 · 点击链接仅切换图稿，不执行真实操作</text>
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<rect x="1152" y="128" width="280" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1172" y="162" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">设计说明</text>
+<text x="1172" y="190" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">左侧只展示一个界面状态。本栏属于图册，</text>
+<text x="1172" y="213" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">不进入产品。</text>
+<g data-layer="underlay">
+<text x="48" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">资源中心</text>
+<text x="174" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<text x="48" y="191" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">当前对话：示例项目</text>
+<a href="62-pending-operations.svg" aria-label="待处理操作"><title>待处理操作</title>
+<text x="874" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">待处理操作</text>
+</a>
+<a href="14-settings.svg" aria-label="设置"><title>设置</title>
+<text x="1038" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">设置</text>
+</a>
+<a href="01-connected.svg" aria-label="已接入"><title>已接入</title>
+<text x="48" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">已接入</text>
+</a>
+<a href="04-discover.svg" aria-label="发现资源"><title>发现资源</title>
+<text x="156" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">发现资源</text>
+</a>
+<a href="06-owned.svg" aria-label="我的资源"><title>我的资源</title>
+<text x="280" y="232" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">我的资源</text>
+</a>
+<line x1="280" y1="246" x2="336" y2="246" stroke="#171717" stroke-width="2"/>
+<line x1="48" y1="246" x2="1104" y2="246" stroke="#E5E5E5"/>
+<a href="13-upload.svg" aria-label="‹ 返回"><title>‹ 返回</title>
+<text x="48" y="284" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">‹ 返回</text>
+</a>
+<text x="48" y="330" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="22" fill="#171717" font-weight="600">核对草稿变更</text>
+<text x="48" y="367" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">预检完成，尚未保存草稿</text>
+<line x1="48" y1="390" x2="1104" y2="390" stroke="#E5E5E5"/>
+<text x="152" y="438" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="19" fill="#171717" font-weight="600">发布说明助手</text>
+<rect x="152" y="469" width="90" height="25" rx="5" fill="#F0FDF4" stroke="none"/>
+<text x="161" y="486" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#166534" font-weight="400">可以保存草稿</text>
+<text x="152" y="532" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">目标：团队资源库 / workspace</text>
+<text x="152" y="566" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">动作：创建新草稿</text>
+<text x="152" y="600" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">预检版本：1.2.0</text>
+<text x="152" y="634" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">可见性：服务端默认，保存后核验</text>
+<text x="152" y="718" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">新增 3 个 · 修改 0 个 · 删除 0 个</text>
+<text x="152" y="769" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">文件与目标变化时，返回预览重新确认。</text>
+<a href="39-draft-saved.svg" aria-label="保存草稿"><title>保存草稿</title>
+<rect x="740" y="848" width="220" height="38" rx="6" fill="#171717" stroke="#171717"/>
+<text x="754" y="873" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#fff" font-weight="600">保存草稿</text>
+</a>
+</g>
+<text x="1172" y="266" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">一个步骤占用工作区</text>
+<text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">文件预览、冲突、保存确认与结果不会并</text>
+<text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">排。左侧返回保留前一步上下文。</text>
+<text x="1172" y="371" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="600">设计分支 · 仅图册</text>
+<a href="15-operation-states.svg" aria-label="响应丢失 · 结果未知"><title>响应丢失 · 结果未知</title>
+<rect x="1172" y="389" width="236" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="1186" y="414" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">响应丢失 · 结果未知</text>
+</a>
+<text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：19-upload-review</text>
+</svg>
