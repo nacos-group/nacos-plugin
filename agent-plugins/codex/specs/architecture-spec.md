@@ -17,7 +17,7 @@
 # Codex 适配与实现规范
 
 本文件补充[通用架构](../../specs/architecture-spec.md)，只记录 Codex 的接入和实现选择。
-交付状态以 [TODO](TODO.md) 和兼容说明（实现交付时见 `agent-plugins/codex/docs/compatibility.md`）为准。
+交付状态以 [TODO](TODO.md) 和[兼容说明](../docs/compatibility.md)为准。
 
 ## 1. 插件与资源加载
 

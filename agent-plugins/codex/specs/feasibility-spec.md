@@ -18,7 +18,7 @@
 
 本文保留 2026-10-19 原设计阶段的 Codex 官方文档核对记录与技术推导，不表示其中能力
 已经运行验收。Nacos 协议与跨应用原理见[通用可行性分析](../../specs/feasibility-spec.md)；
-当前实现状态与未通过项见 [TODO](TODO.md) 和兼容说明（实现交付时见 `agent-plugins/codex/docs/compatibility.md`）。
+当前实现状态与未通过项见 [TODO](TODO.md) 和[兼容说明](../docs/compatibility.md)。
 
 ## 1. 插件入口
 
