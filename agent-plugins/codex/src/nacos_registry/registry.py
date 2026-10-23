@@ -11,9 +11,17 @@ from .transport import checked_url, http, json_body, secret, error_kind
 
 
 class Registry:
-    def __init__(self, profile):
+    def __init__(self, profile, credential_resolver=None):
         self.profile = profile
         self.tokens = {}
+        self.credential_resolver = credential_resolver
+
+    def credential(self, surface, field):
+        auth = self.profile.get(surface + "Auth", {})
+        if auth.get("source") == "local":
+            require(self.credential_resolver is not None, "Local credential storage is unavailable", "credential_missing")
+            return self.credential_resolver(self.profile, surface)[field]
+        return secret(auth[field + "Env"])
 
     def headers(self, surface):
         config = self.profile.get(surface + "Auth", {"type": "none"})
@@ -21,12 +29,12 @@ class Registry:
         if kind == "none":
             return {}
         if kind == "token":
-            return {"accessToken": secret(config["tokenEnv"])}
+            return {"accessToken": self.credential(surface, "token")}
         if kind == "login":
             cached = self.tokens.get(surface)
             if not cached or cached[1] <= time.time():
                 base = self.profile[surface + "Url"]
-                fields = {"username": secret(config["usernameEnv"]), "password": secret(config["passwordEnv"])}
+                fields = {"username": self.credential(surface, "username"), "password": self.credential(surface, "password")}
                 try:
                     _, _, body = http(base + "/v3/auth/user/login", "POST", {"Content-Type": "application/x-www-form-urlencoded"}, urlencode(fields).encode())
                 except PluginError as exc:
@@ -103,7 +111,7 @@ class Registry:
         auth = self.profile.get("adminAuth", {})
         require(auth.get("type") == "login", "Owned resources require native Admin login; token and anonymous identity cannot be verified", "unsupported")
         self.headers("admin")  # Verify the login before using its principal as an owner filter.
-        owner = secret(auth["usernameEnv"])
+        owner = self.credential("admin", "username")
         result = self.request("admin", "/v3/admin/ai/skills/list", {
             "owner": owner, "skillName": query, "search": "blur", "pageNo": page, "pageSize": limit})
         require(isinstance(result, dict) and isinstance(result.get("pageItems"), list)

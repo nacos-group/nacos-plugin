@@ -1,6 +1,6 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nacos UI 场景图册</title><style>
 *{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#171717;font:14px/1.5 system-ui,-apple-system,sans-serif}header{padding:16px 24px;background:#fff;border-bottom:1px solid #ddd;display:flex;gap:16px;align-items:center;justify-content:space-between}h1{font-size:20px;margin:0}header p{margin:4px 0 0;color:#626262;font-size:12px}.layout{display:grid;grid-template-columns:252px minmax(0,1fr)}nav{height:calc(100vh - 91px);overflow:auto;background:#fff;padding:12px}nav summary{padding:8px;cursor:pointer;font-weight:600}nav a{display:block;text-decoration:none;color:#444;padding:8px 12px;border-radius:6px;font-size:12px}nav a[aria-current=page]{background:#efefef;color:#171717;font-weight:600}main{min-width:0;padding:14px;overflow:auto;height:calc(100vh - 91px)}.screen svg{width:100%;height:auto;display:block;overflow:hidden}.actual .screen svg{width:1456px;max-width:none}button{background:#fff;border:1px solid #858585;border-radius:6px;padding:8px 12px;font:inherit;cursor:pointer}a:focus-visible,button:focus-visible{outline:2px solid #245edb;outline-offset:2px}[hidden]{display:none!important}.focused .layout{grid-template-columns:minmax(0,1fr)}.focused nav{display:none}@media(max-width:800px){.layout{grid-template-columns:1fr}nav{height:auto;max-height:160px}main{height:auto}}
-</style></head><body><header><div><h1>Nacos 资源中心 · 单状态交互图册</h1><p>每张图对应一个实际界面状态。点击 ⋯ 看浮层，点击动作逐步前进；右侧“设计分支”仅用于演示异常。输入为示例，不连接服务。</p></div><div style="display:flex;gap:8px;flex-shrink:0"><button id="focus">只看界面</button><button id="zoom">查看原始尺寸</button></div></header><div class="layout"><nav aria-label="设计场景"><details open><summary>从已接入开始</summary><a href="#01-connected">已接入 · 资源列表</a><a href="#02-resource-menus">Skill · 行内更多菜单</a><a href="#21-mcp-menu">MCP · 行内更多菜单</a><a href="#22-agent-menu">Agent · 行内更多菜单</a><a href="#03-skill-changes">Skill · 核对更新</a><a href="#23-update-conflict">Skill · 本地修改冲突</a><a href="#24-update-result">Skill · 更新完成</a><a href="#25-uninstall-confirm">Skill · 卸载确认</a><a href="#26-uninstalled">Skill · 卸载完成</a><a href="#20-disconnect">MCP · 解除接入确认</a><a href="#43-mcp-disconnected">MCP · 解除接入完成</a><a href="#42-agent-disconnect">Agent · 解除接入确认</a><a href="#44-agent-disconnected">Agent · 解除接入完成</a><a href="#50-skill-handoff">Skill · 已发送到当前对话</a><a href="#51-skill-verified">Skill · 文件检查结果</a></details><details><summary>发现与安装</summary><a href="#04-discover">发现资源 · 资源详情</a><a href="#40-install-target">Skill · 选择安装目标</a><a href="#41-install-confirm">Skill · 安装确认</a><a href="#05-install-result">Skill · 安装完成</a></details><details><summary>我的资源与发布</summary><a href="#06-owned">我的资源 · 版本列表</a><a href="#17-owned-menu">我的资源 · 行内更多菜单</a><a href="#07-publish">版本 · 提交确认</a><a href="#35-reviewing">版本 · 审核中</a><a href="#56-review-passed">版本 · 审核通过</a><a href="#55-publish-confirm">版本 · 发布确认</a><a href="#36-published">版本 · 已发布</a><a href="#37-owned-permission">我的资源 · 发布权限不足</a></details><details><summary>MCP 连接与工具</summary><a href="#54-mcp-overview">MCP · 服务概览</a><a href="#08-mcp-tools">MCP · 工具详情</a><a href="#09-mcp-connect">MCP · 连接设置</a><a href="#27-mcp-saved">MCP · 配置已保存</a><a href="#28-mcp-diagnosed">MCP · 诊断结果</a><a href="#52-mcp-handoff">MCP · 已发送到当前对话</a><a href="#63-discover-mcp">发现 MCP · 服务概览</a><a href="#64-discover-mcp-config">发现 MCP · 连接设置</a><a href="#65-discover-mcp-saved">发现 MCP · 配置已保存</a><a href="#66-discover-mcp-check">发现 MCP · 诊断结果</a><a href="#67-discover-mcp-tools">发现 MCP · 工具详情</a><a href="#68-discover-mcp-handoff">发现 MCP · 已交接对话</a></details><details><summary>Agent 接入与任务</summary><a href="#53-agent-capability">Agent · 能力概览</a><a href="#18-agent-connect">Agent · 接入设置</a><a href="#29-agent-bound">Agent · 接入完成</a><a href="#30-agent-connect-failed">Agent · 接入失败</a><a href="#71-connected-agent">Agent · 已接入能力详情</a><a href="#69-agent-edit-binding">Agent · 编辑已有接入</a><a href="#70-agent-binding-updated">Agent · 接入设置已更新</a><a href="#10-agent-compose">Agent · 任务输入</a><a href="#11-agent-task">Agent · 任务运行中</a><a href="#31-agent-completed">Agent · 任务已完成</a><a href="#32-agent-cancel-pending">Agent · 等待取消确认</a><a href="#33-agent-canceled">Agent · 任务已取消</a><a href="#34-agent-unknown">Agent · 发送结果未知</a></details><details><summary>本地技能与上传</summary><a href="#12-local-skills">本地技能 · 扫描结果</a><a href="#49-local-results">本地技能 · 跟踪结果</a><a href="#61-local-ignored">本地技能 · 忽略结果</a><a href="#13-upload">上传 · 文件预览</a><a href="#38-upload-conflict">上传 · 草稿冲突</a><a href="#58-upload-bind">上传 · 仅选择同名绑定</a><a href="#59-upload-overwrite">上传 · 仅选择草稿覆盖</a><a href="#57-upload-consent">上传 · 已选择冲突处理</a><a href="#19-upload-review">上传 · 保存确认</a><a href="#60-upload-replace">上传 · 覆盖草稿确认</a><a href="#39-draft-saved">上传 · 草稿已保存</a><a href="#15-operation-states">上传 · 结果待核对</a></details><details><summary>设置与窄侧栏</summary><a href="#14-settings">设置 · 连接摘要</a><a href="#45-settings-edit">设置 · 编辑认证</a><a href="#46-settings-saved">设置 · 保存完成</a><a href="#47-connection-error">设置 · 连接检查失败</a><a href="#62-pending-operations">待处理操作 · 当前上下文</a><a href="#16-compact-dark">窄侧栏 · 工具详情</a><a href="#48-compact-dark">窄侧栏 · 深色工具详情</a></details></nav><main id="viewer"><section id="01-connected" class="screen" hidden aria-label="已接入 · 资源列表"><svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="01-connected-title 01-connected-desc">
+</style></head><body><header><div><h1>Nacos 资源中心 · 单状态交互图册</h1><p>每张图对应一个实际界面状态。点击 ⋯ 看浮层，点击动作逐步前进；右侧“设计分支”仅用于演示异常。输入为示例，不连接服务。</p></div><div style="display:flex;gap:8px;flex-shrink:0"><button id="focus">只看界面</button><button id="zoom">查看原始尺寸</button></div></header><div class="layout"><nav aria-label="设计场景"><details open><summary>从已接入开始</summary><a href="#01-connected">已接入 · 资源列表</a><a href="#02-resource-menus">Skill · 行内更多菜单</a><a href="#21-mcp-menu">MCP · 行内更多菜单</a><a href="#22-agent-menu">Agent · 行内更多菜单</a><a href="#03-skill-changes">Skill · 核对更新</a><a href="#23-update-conflict">Skill · 本地修改冲突</a><a href="#24-update-result">Skill · 更新完成</a><a href="#25-uninstall-confirm">Skill · 卸载确认</a><a href="#26-uninstalled">Skill · 卸载完成</a><a href="#20-disconnect">MCP · 解除接入确认</a><a href="#43-mcp-disconnected">MCP · 解除接入完成</a><a href="#42-agent-disconnect">Agent · 解除接入确认</a><a href="#44-agent-disconnected">Agent · 解除接入完成</a><a href="#50-skill-handoff">Skill · 已发送到当前对话</a><a href="#51-skill-verified">Skill · 文件检查结果</a></details><details><summary>发现与安装</summary><a href="#04-discover">发现资源 · 资源详情</a><a href="#40-install-target">Skill · 选择安装目标</a><a href="#41-install-confirm">Skill · 安装确认</a><a href="#05-install-result">Skill · 安装完成</a></details><details><summary>我的资源与发布</summary><a href="#06-owned">我的资源 · 版本列表</a><a href="#17-owned-menu">我的资源 · 行内更多菜单</a><a href="#07-publish">版本 · 提交确认</a><a href="#35-reviewing">版本 · 审核中</a><a href="#56-review-passed">版本 · 审核通过</a><a href="#55-publish-confirm">版本 · 发布确认</a><a href="#36-published">版本 · 已发布</a><a href="#37-owned-permission">我的资源 · 发布权限不足</a></details><details><summary>MCP 连接与工具</summary><a href="#54-mcp-overview">MCP · 服务概览</a><a href="#08-mcp-tools">MCP · 工具详情</a><a href="#09-mcp-connect">MCP · 连接设置</a><a href="#27-mcp-saved">MCP · 配置已保存</a><a href="#28-mcp-diagnosed">MCP · 诊断结果</a><a href="#52-mcp-handoff">MCP · 已发送到当前对话</a><a href="#63-discover-mcp">发现 MCP · 服务概览</a><a href="#64-discover-mcp-config">发现 MCP · 连接设置</a><a href="#65-discover-mcp-saved">发现 MCP · 配置已保存</a><a href="#66-discover-mcp-check">发现 MCP · 诊断结果</a><a href="#67-discover-mcp-tools">发现 MCP · 工具详情</a><a href="#68-discover-mcp-handoff">发现 MCP · 已交接对话</a></details><details><summary>Agent 接入与任务</summary><a href="#53-agent-capability">Agent · 能力概览</a><a href="#18-agent-connect">Agent · 接入设置</a><a href="#29-agent-bound">Agent · 接入完成</a><a href="#30-agent-connect-failed">Agent · 接入失败</a><a href="#71-connected-agent">Agent · 已接入能力详情</a><a href="#69-agent-edit-binding">Agent · 编辑已有接入</a><a href="#70-agent-binding-updated">Agent · 接入设置已更新</a><a href="#10-agent-compose">Agent · 任务输入</a><a href="#11-agent-task">Agent · 任务运行中</a><a href="#31-agent-completed">Agent · 任务已完成</a><a href="#32-agent-cancel-pending">Agent · 等待取消确认</a><a href="#33-agent-canceled">Agent · 任务已取消</a><a href="#34-agent-unknown">Agent · 发送结果未知</a></details><details><summary>本地技能与上传</summary><a href="#12-local-skills">本地技能 · 扫描结果</a><a href="#49-local-results">本地技能 · 跟踪结果</a><a href="#61-local-ignored">本地技能 · 忽略结果</a><a href="#13-upload">上传 · 文件预览</a><a href="#38-upload-conflict">上传 · 草稿冲突</a><a href="#58-upload-bind">上传 · 仅选择同名绑定</a><a href="#59-upload-overwrite">上传 · 仅选择草稿覆盖</a><a href="#57-upload-consent">上传 · 已选择冲突处理</a><a href="#19-upload-review">上传 · 保存确认</a><a href="#60-upload-replace">上传 · 覆盖草稿确认</a><a href="#39-draft-saved">上传 · 草稿已保存</a><a href="#15-operation-states">上传 · 结果待核对</a></details><details><summary>设置与窄侧栏</summary><a href="#14-settings">设置 · 连接摘要</a><a href="#45-settings-edit">设置 · 编辑认证</a><a href="#72-settings-page-login">设置 · 页面填写登录凭据</a><a href="#73-settings-page-saved">设置 · 凭据已保存</a><a href="#74-settings-page-token">设置 · 页面填写令牌</a><a href="#46-settings-saved">设置 · 保存完成</a><a href="#47-connection-error">设置 · 连接检查失败</a><a href="#62-pending-operations">待处理操作 · 当前上下文</a><a href="#16-compact-dark">窄侧栏 · 工具详情</a><a href="#48-compact-dark">窄侧栏 · 深色工具详情</a></details></nav><main id="viewer"><section id="01-connected" class="screen" hidden aria-label="已接入 · 资源列表"><svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="01-connected-title 01-connected-desc">
 <title id="01-connected-title">已接入 · 资源列表</title><desc id="01-connected-desc">主视图 · 点击 ⋯ 在原页面上展开菜单。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
 <!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
 <style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
@@ -6876,10 +6876,213 @@
 <text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">搜索中的配置保留搜索结果；已接入中的</text>
 <text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">设置保留接入列表。</text>
 <text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：71-connected-agent</text>
-</svg></section></main></div><script>
-const meta={"01-connected": {"kind": "page"}, "02-resource-menus": {"kind": "menu", "origin": "01-connected"}, "21-mcp-menu": {"kind": "menu", "origin": "01-connected"}, "22-agent-menu": {"kind": "menu", "origin": "01-connected"}, "06-owned": {"kind": "page"}, "17-owned-menu": {"kind": "menu", "origin": "06-owned"}, "03-skill-changes": {"kind": "detail"}, "23-update-conflict": {"kind": "detail"}, "24-update-result": {"kind": "detail"}, "50-skill-handoff": {"kind": "detail"}, "51-skill-verified": {"kind": "detail"}, "25-uninstall-confirm": {"kind": "modal", "origin": "01-connected"}, "20-disconnect": {"kind": "modal", "origin": "01-connected"}, "42-agent-disconnect": {"kind": "modal", "origin": "01-connected"}, "26-uninstalled": {"kind": "detail"}, "43-mcp-disconnected": {"kind": "detail"}, "44-agent-disconnected": {"kind": "detail"}, "04-discover": {"kind": "page"}, "40-install-target": {"kind": "detail"}, "41-install-confirm": {"kind": "detail"}, "05-install-result": {"kind": "detail"}, "07-publish": {"kind": "detail"}, "35-reviewing": {"kind": "detail"}, "56-review-passed": {"kind": "detail"}, "55-publish-confirm": {"kind": "detail"}, "36-published": {"kind": "detail"}, "37-owned-permission": {"kind": "detail"}, "08-mcp-tools": {"kind": "detail"}, "09-mcp-connect": {"kind": "detail"}, "27-mcp-saved": {"kind": "detail"}, "28-mcp-diagnosed": {"kind": "detail"}, "52-mcp-handoff": {"kind": "detail"}, "54-mcp-overview": {"kind": "detail"}, "18-agent-connect": {"kind": "detail"}, "29-agent-bound": {"kind": "detail"}, "30-agent-connect-failed": {"kind": "detail"}, "53-agent-capability": {"kind": "detail"}, "10-agent-compose": {"kind": "detail"}, "11-agent-task": {"kind": "detail"}, "31-agent-completed": {"kind": "detail"}, "32-agent-cancel-pending": {"kind": "detail"}, "33-agent-canceled": {"kind": "detail"}, "34-agent-unknown": {"kind": "detail"}, "12-local-skills": {"kind": "page"}, "49-local-results": {"kind": "page"}, "61-local-ignored": {"kind": "page"}, "13-upload": {"kind": "page"}, "38-upload-conflict": {"kind": "page"}, "57-upload-consent": {"kind": "page"}, "58-upload-bind": {"kind": "page"}, "59-upload-overwrite": {"kind": "page"}, "19-upload-review": {"kind": "page"}, "60-upload-replace": {"kind": "page"}, "39-draft-saved": {"kind": "page"}, "15-operation-states": {"kind": "page"}, "14-settings": {"kind": "page"}, "45-settings-edit": {"kind": "page"}, "46-settings-saved": {"kind": "page"}, "47-connection-error": {"kind": "page"}, "16-compact-dark": {"kind": "compact"}, "48-compact-dark": {"kind": "compact"}, "62-pending-operations": {"kind": "page"}, "63-discover-mcp": {"kind": "detail"}, "64-discover-mcp-config": {"kind": "detail"}, "65-discover-mcp-saved": {"kind": "detail"}, "66-discover-mcp-check": {"kind": "detail"}, "67-discover-mcp-tools": {"kind": "detail"}, "68-discover-mcp-handoff": {"kind": "detail"}, "69-agent-edit-binding": {"kind": "detail"}, "70-agent-binding-updated": {"kind": "detail"}, "71-connected-agent": {"kind": "detail"}};
+</svg></section><section id="72-settings-page-login" class="screen" hidden aria-label="设置 · 页面填写登录凭据"><svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="72-settings-page-login-title 72-settings-page-login-desc">
+<title id="72-settings-page-login-title">设置 · 页面填写登录凭据</title><desc id="72-settings-page-login-desc">设置子页 · 隐藏主导航，返回恢复原工作区。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
+<rect x="0" y="0" width="1456" height="1040" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="42" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" fill="#171717" font-weight="600">72  设置 · 页面填写登录凭据</text>
+<text x="24" y="72" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">设置子页 · 隐藏主导航，返回恢复原工作区。</text>
+<text x="24" y="104" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">设计状态 · 通用示例 · 点击链接仅切换图稿，不执行真实操作</text>
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<rect x="1152" y="128" width="280" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1172" y="162" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">设计说明</text>
+<text x="1172" y="190" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">左侧只展示一个界面状态。本栏属于图册，</text>
+<text x="1172" y="213" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">不进入产品。</text>
+<g data-layer="underlay">
+<a data-settings-back="true" href="#01-connected" aria-label="‹ 返回资源中心"><title>‹ 返回资源中心</title>
+<text x="48" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">‹ 返回资源中心</text>
+</a>
+<text x="48" y="218" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="22" fill="#171717" font-weight="600">设置</text>
+<text x="118" y="218" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<line x1="48" y1="246" x2="1104" y2="246" stroke="#E5E5E5"/>
+<rect x="48" y="279" width="224" height="44" rx="6" fill="#F5F5F5" stroke="none"/>
+<a href="#14-settings" aria-label="连接与认证"><title>连接与认证</title>
+<text x="64" y="307" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">连接与认证</text>
+</a>
+<a href="#12-local-skills" aria-label="技能目录"><title>技能目录</title>
+<text x="64" y="355" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">技能目录</text>
+</a>
+<text x="330" y="306" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">连接与认证</text>
+<text x="330" y="340" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">已填入对话提供的连接信息，请核对后保存。</text>
+<text x="330" y="376" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">连接名称</text>
+<rect x="330" y="386" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="410" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">团队资源库</text>
+<text x="330" y="438" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">Nacos API 地址</text>
+<rect x="330" y="448" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="472" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">https://registry.example.org/nacos</text>
+<text x="330" y="500" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">命名空间</text>
+<rect x="330" y="510" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="534" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">workspace</text>
+<a href="#74-settings-page-token" aria-label="认证方式"><title>认证方式</title><text x="330" y="562" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">认证方式</text>
+<rect x="330" y="572" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="596" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">Nacos 用户名与密码</text>
+<text x="920" y="596" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">⌄</text>
+</a>
+<a href="#45-settings-edit" aria-label="凭据提供方式"><title>凭据提供方式</title><text x="330" y="624" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">凭据提供方式</text>
+<rect x="330" y="634" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="658" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">在页面填写</text>
+<text x="920" y="658" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">⌄</text>
+</a>
+<text x="330" y="695" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">保存到 macOS 钥匙串。请由本人填写，不要发送到聊天中。</text>
+<text x="330" y="730" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">用户名</text>
+<rect x="330" y="740" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="764" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#858585" font-weight="400">输入用户名</text>
+<text x="330" y="792" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">密码</text>
+<rect x="330" y="802" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="826" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#858585" font-weight="400">输入密码（遮罩显示）</text>
+<a href="#14-settings" aria-label="取消"><title>取消</title><rect x="330" y="870" width="128" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="344" y="895" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">取消</text>
+</a>
+<a href="#73-settings-page-saved" aria-label="保存配置"><title>保存配置</title><rect x="722" y="870" width="228" height="38" rx="6" fill="#171717" stroke="#858585"/>
+<text x="736" y="895" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#fff" font-weight="600">保存配置</text>
+</a>
+</g>
+<text x="1172" y="266" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">仅非敏感草稿</text>
+<text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">对话可以填写地址、命名空间和认证选项。</text>
+<text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">真实凭据由用户在页面输入并点击保存。</text>
+<text x="1172" y="396" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">秘密与普通草稿分开</text>
+<text x="1172" y="425" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">取消、离开或切换认证会清空秘密输入。</text>
+<text x="1172" y="447" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">非敏感草稿保留；不回读已有密码。</text>
+<text x="1172" y="526" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">保存不等于连接成功</text>
+<text x="1172" y="555" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">保存后单独检查连接；失败不假报成功。</text>
+<text x="1172" y="577" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">环境变量仍可选，其他系统暂用该路径。</text>
+<text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：72-settings-page-login</text>
+</svg>
+</section><section id="73-settings-page-saved" class="screen" hidden aria-label="设置 · 凭据已保存"><svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="73-settings-page-saved-title 73-settings-page-saved-desc">
+<title id="73-settings-page-saved-title">设置 · 凭据已保存</title><desc id="73-settings-page-saved-desc">设置子页 · 隐藏主导航，返回恢复原工作区。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
+<rect x="0" y="0" width="1456" height="1040" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="42" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" fill="#171717" font-weight="600">73  设置 · 凭据已保存</text>
+<text x="24" y="72" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">设置子页 · 隐藏主导航，返回恢复原工作区。</text>
+<text x="24" y="104" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">设计状态 · 通用示例 · 点击链接仅切换图稿，不执行真实操作</text>
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<rect x="1152" y="128" width="280" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1172" y="162" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">设计说明</text>
+<text x="1172" y="190" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">左侧只展示一个界面状态。本栏属于图册，</text>
+<text x="1172" y="213" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">不进入产品。</text>
+<g data-layer="underlay">
+<a data-settings-back="true" href="#01-connected" aria-label="‹ 返回资源中心"><title>‹ 返回资源中心</title>
+<text x="48" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">‹ 返回资源中心</text>
+</a>
+<text x="48" y="218" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="22" fill="#171717" font-weight="600">设置</text>
+<text x="118" y="218" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<line x1="48" y1="246" x2="1104" y2="246" stroke="#E5E5E5"/>
+<rect x="48" y="279" width="224" height="44" rx="6" fill="#F5F5F5" stroke="none"/>
+<a href="#14-settings" aria-label="连接与认证"><title>连接与认证</title>
+<text x="64" y="307" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">连接与认证</text>
+</a>
+<a href="#12-local-skills" aria-label="技能目录"><title>技能目录</title>
+<text x="64" y="355" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">技能目录</text>
+</a>
+<text x="330" y="306" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">连接与认证</text>
+<text x="330" y="345" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">已保存，尚未检查连接。</text>
+<text x="330" y="405" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">连接名称</text>
+<text x="330" y="431" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">团队资源库</text>
+<text x="330" y="470" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">Nacos API 地址</text>
+<text x="330" y="496" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">https://registry.example.org/nacos</text>
+<text x="330" y="535" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">命名空间</text>
+<text x="330" y="561" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">workspace</text>
+<text x="330" y="600" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">认证方式</text>
+<text x="330" y="626" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">Nacos 用户名与密码</text>
+<rect x="330" y="660" width="186" height="28" rx="6" fill="#F5F5F5" stroke="#F5F5F5"/>
+<text x="342" y="679" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#171717" font-weight="400">已保存到本机钥匙串</text>
+<text x="330" y="724" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">已有凭据不回填用户名、密码或令牌。</text>
+<a href="#72-settings-page-login" aria-label="编辑连接"><title>编辑连接</title><rect x="330" y="778" width="176" height="38" rx="6" fill="#171717" stroke="#858585"/>
+<text x="344" y="803" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#fff" font-weight="600">编辑连接</text>
+</a>
+<a href="#47-connection-error" aria-label="检查连接"><title>检查连接</title><rect x="526" y="778" width="176" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="540" y="803" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">检查连接</text>
+</a>
+</g>
+<text x="1172" y="266" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">仅非敏感草稿</text>
+<text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">对话可以填写地址、命名空间和认证选项。</text>
+<text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">真实凭据由用户在页面输入并点击保存。</text>
+<text x="1172" y="396" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">秘密与普通草稿分开</text>
+<text x="1172" y="425" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">取消、离开或切换认证会清空秘密输入。</text>
+<text x="1172" y="447" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">非敏感草稿保留；不回读已有密码。</text>
+<text x="1172" y="526" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">保存不等于连接成功</text>
+<text x="1172" y="555" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">保存后单独检查连接；失败不假报成功。</text>
+<text x="1172" y="577" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">环境变量仍可选，其他系统暂用该路径。</text>
+<text x="1172" y="680" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">编辑后可更换或清除凭据。</text>
+<text x="1172" y="704" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">清除需确认，点击保存配置后生效。</text>
+<text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：73-settings-page-saved</text>
+</svg>
+</section><section id="74-settings-page-token" class="screen" hidden aria-label="设置 · 页面填写令牌"><svg xmlns="http://www.w3.org/2000/svg" width="1456" height="1040" viewBox="0 0 1456 1040" role="group" aria-labelledby="74-settings-page-token-title 74-settings-page-token-desc">
+<title id="74-settings-page-token-title">设置 · 页面填写令牌</title><desc id="74-settings-page-token-desc">设置子页 · 隐藏主导航，返回恢复原工作区。 图内按钮和链接可逐步打开相关设计状态。仅为设计稿，所有数据是通用示例。</desc>
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
+<style>a{cursor:pointer}a:hover text{text-decoration:underline}a:focus{outline:2px solid #245EDB}</style>
+<rect x="0" y="0" width="1456" height="1040" rx="0" fill="#F5F5F5" stroke="none"/>
+<text x="24" y="42" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="26" fill="#171717" font-weight="600">74  设置 · 页面填写令牌</text>
+<text x="24" y="72" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#626262" font-weight="400">设置子页 · 隐藏主导航，返回恢复原工作区。</text>
+<text x="24" y="104" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">设计状态 · 通用示例 · 点击链接仅切换图稿，不执行真实操作</text>
+<rect x="24" y="128" width="1104" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<rect x="1152" y="128" width="280" height="840" rx="10" fill="#fff" stroke="#E5E5E5"/>
+<text x="1172" y="162" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="16" fill="#171717" font-weight="600">设计说明</text>
+<text x="1172" y="190" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">左侧只展示一个界面状态。本栏属于图册，</text>
+<text x="1172" y="213" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">不进入产品。</text>
+<g data-layer="underlay">
+<a data-settings-back="true" href="#01-connected" aria-label="‹ 返回资源中心"><title>‹ 返回资源中心</title>
+<text x="48" y="166" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">‹ 返回资源中心</text>
+</a>
+<text x="48" y="218" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="22" fill="#171717" font-weight="600">设置</text>
+<text x="118" y="218" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">团队资源库 · workspace</text>
+<line x1="48" y1="246" x2="1104" y2="246" stroke="#E5E5E5"/>
+<rect x="48" y="279" width="224" height="44" rx="6" fill="#F5F5F5" stroke="none"/>
+<a href="#14-settings" aria-label="连接与认证"><title>连接与认证</title>
+<text x="64" y="307" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">连接与认证</text>
+</a>
+<a href="#12-local-skills" aria-label="技能目录"><title>技能目录</title>
+<text x="64" y="355" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">技能目录</text>
+</a>
+<text x="330" y="306" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="20" fill="#171717" font-weight="600">连接与认证</text>
+<text x="330" y="340" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">已填入对话提供的连接信息，请核对后保存。</text>
+<text x="330" y="376" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">连接名称</text>
+<rect x="330" y="386" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="410" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">团队资源库</text>
+<text x="330" y="438" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">Nacos API 地址</text>
+<rect x="330" y="448" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="472" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">https://registry.example.org/nacos</text>
+<text x="330" y="500" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">命名空间</text>
+<rect x="330" y="510" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="534" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">workspace</text>
+<a href="#72-settings-page-login" aria-label="认证方式"><title>认证方式</title><text x="330" y="562" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">认证方式</text>
+<rect x="330" y="572" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="596" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">访问令牌</text>
+<text x="920" y="596" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">⌄</text>
+</a>
+<a href="#45-settings-edit" aria-label="凭据提供方式"><title>凭据提供方式</title><text x="330" y="624" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">凭据提供方式</text>
+<rect x="330" y="634" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="658" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">在页面填写</text>
+<text x="920" y="658" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">⌄</text>
+</a>
+<text x="330" y="695" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="13" fill="#626262" font-weight="400">保存到 macOS 钥匙串。请由本人填写，不要发送到聊天中。</text>
+<text x="330" y="730" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">访问令牌</text>
+<rect x="330" y="740" width="620" height="36" rx="6" fill="#fff" stroke="#858585"/>
+<text x="342" y="764" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#858585" font-weight="400">输入令牌（遮罩显示）</text>
+<a href="#14-settings" aria-label="取消"><title>取消</title><rect x="330" y="870" width="128" height="38" rx="6" fill="#fff" stroke="#858585"/>
+<text x="344" y="895" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="400">取消</text>
+</a>
+<a href="#73-settings-page-saved" aria-label="保存配置"><title>保存配置</title><rect x="722" y="870" width="228" height="38" rx="6" fill="#171717" stroke="#858585"/>
+<text x="736" y="895" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#fff" font-weight="600">保存配置</text>
+</a>
+</g>
+<text x="1172" y="266" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">仅非敏感草稿</text>
+<text x="1172" y="295" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">对话可以填写地址、命名空间和认证选项。</text>
+<text x="1172" y="317" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">真实凭据由用户在页面输入并点击保存。</text>
+<text x="1172" y="396" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">秘密与普通草稿分开</text>
+<text x="1172" y="425" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">取消、离开或切换认证会清空秘密输入。</text>
+<text x="1172" y="447" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">非敏感草稿保留；不回读已有密码。</text>
+<text x="1172" y="526" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="14" fill="#171717" font-weight="600">保存不等于连接成功</text>
+<text x="1172" y="555" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">保存后单独检查连接；失败不假报成功。</text>
+<text x="1172" y="577" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="12" fill="#626262" font-weight="400">环境变量仍可选，其他系统暂用该路径。</text>
+<text x="48" y="1008" font-family="PingFang SC,Heiti SC,Arial,sans-serif" font-size="11" fill="#626262" font-weight="400">示意数据不代表已完成的运行验收。当前页：74-settings-page-token</text>
+</svg>
+</section></main></div><script>
+const meta={"72-settings-page-login":{"kind":"page"},"73-settings-page-saved":{"kind":"page"},"74-settings-page-token":{"kind":"page"},"01-connected": {"kind": "page"}, "02-resource-menus": {"kind": "menu", "origin": "01-connected"}, "21-mcp-menu": {"kind": "menu", "origin": "01-connected"}, "22-agent-menu": {"kind": "menu", "origin": "01-connected"}, "06-owned": {"kind": "page"}, "17-owned-menu": {"kind": "menu", "origin": "06-owned"}, "03-skill-changes": {"kind": "detail"}, "23-update-conflict": {"kind": "detail"}, "24-update-result": {"kind": "detail"}, "50-skill-handoff": {"kind": "detail"}, "51-skill-verified": {"kind": "detail"}, "25-uninstall-confirm": {"kind": "modal", "origin": "01-connected"}, "20-disconnect": {"kind": "modal", "origin": "01-connected"}, "42-agent-disconnect": {"kind": "modal", "origin": "01-connected"}, "26-uninstalled": {"kind": "detail"}, "43-mcp-disconnected": {"kind": "detail"}, "44-agent-disconnected": {"kind": "detail"}, "04-discover": {"kind": "page"}, "40-install-target": {"kind": "detail"}, "41-install-confirm": {"kind": "detail"}, "05-install-result": {"kind": "detail"}, "07-publish": {"kind": "detail"}, "35-reviewing": {"kind": "detail"}, "56-review-passed": {"kind": "detail"}, "55-publish-confirm": {"kind": "detail"}, "36-published": {"kind": "detail"}, "37-owned-permission": {"kind": "detail"}, "08-mcp-tools": {"kind": "detail"}, "09-mcp-connect": {"kind": "detail"}, "27-mcp-saved": {"kind": "detail"}, "28-mcp-diagnosed": {"kind": "detail"}, "52-mcp-handoff": {"kind": "detail"}, "54-mcp-overview": {"kind": "detail"}, "18-agent-connect": {"kind": "detail"}, "29-agent-bound": {"kind": "detail"}, "30-agent-connect-failed": {"kind": "detail"}, "53-agent-capability": {"kind": "detail"}, "10-agent-compose": {"kind": "detail"}, "11-agent-task": {"kind": "detail"}, "31-agent-completed": {"kind": "detail"}, "32-agent-cancel-pending": {"kind": "detail"}, "33-agent-canceled": {"kind": "detail"}, "34-agent-unknown": {"kind": "detail"}, "12-local-skills": {"kind": "page"}, "49-local-results": {"kind": "page"}, "61-local-ignored": {"kind": "page"}, "13-upload": {"kind": "page"}, "38-upload-conflict": {"kind": "page"}, "57-upload-consent": {"kind": "page"}, "58-upload-bind": {"kind": "page"}, "59-upload-overwrite": {"kind": "page"}, "19-upload-review": {"kind": "page"}, "60-upload-replace": {"kind": "page"}, "39-draft-saved": {"kind": "page"}, "15-operation-states": {"kind": "page"}, "14-settings": {"kind": "page"}, "45-settings-edit": {"kind": "page"}, "46-settings-saved": {"kind": "page"}, "47-connection-error": {"kind": "page"}, "16-compact-dark": {"kind": "compact"}, "48-compact-dark": {"kind": "compact"}, "62-pending-operations": {"kind": "page"}, "63-discover-mcp": {"kind": "detail"}, "64-discover-mcp-config": {"kind": "detail"}, "65-discover-mcp-saved": {"kind": "detail"}, "66-discover-mcp-check": {"kind": "detail"}, "67-discover-mcp-tools": {"kind": "detail"}, "68-discover-mcp-handoff": {"kind": "detail"}, "69-agent-edit-binding": {"kind": "detail"}, "70-agent-binding-updated": {"kind": "detail"}, "71-connected-agent": {"kind": "detail"}};
 const pages=[...document.querySelectorAll('.screen')],links=[...document.querySelectorAll('nav a')],viewer=document.querySelector('#viewer');let current=null,pendingSource=null,catalogClick=false;const triggers=new Map();const originals=new Map(pages.map(p=>[p.id,p.querySelector('[data-layer="underlay"]').innerHTML]));const origins=new Map();
-const settingsPages=new Set(["14-settings","45-settings-edit","46-settings-saved","47-connection-error"]);let settingsOrigin="01-connected";
+const settingsPages=new Set(["72-settings-page-login","73-settings-page-saved","74-settings-page-token","14-settings","45-settings-edit","46-settings-saved","47-connection-error"]);let settingsOrigin="01-connected";
 function show(){const previous=current;const requested=location.hash.slice(1),key=meta[requested]?requested:pages[0].id,next=document.getElementById(key),m=meta[key];if(settingsPages.has(key)){if(catalogClick)settingsOrigin='01-connected';else if(pendingSource===current&&current&&!settingsPages.has(current))settingsOrigin=origins.get(current)||current;next.querySelector('[data-settings-back]').setAttribute('href','#'+settingsOrigin);}if(catalogClick&&(m.kind==='menu'||m.kind==='modal')){next.querySelector('[data-layer="underlay"]').innerHTML=originals.get(key);origins.delete(key);}if(pendingSource===current&&current&&current!==key&&(m.kind==='menu'||m.kind==='modal')){const base=origins.get(current)||current;origins.set(key,base);next.querySelector('[data-layer="underlay"]').innerHTML=document.getElementById(current).querySelector('[data-layer="underlay"]').innerHTML;}if(m.kind==='menu'||m.kind==='modal'){for(const a of next.querySelectorAll('[data-layer="underlay"] a'))a.setAttribute('tabindex','-1');for(const a of next.querySelectorAll('[data-layer="overlay"] a')){if(a.getAttribute('aria-label')==='取消'||a.querySelector('[data-close]'))a.setAttribute('href','#'+(origins.get(key)||m.origin));}}for(const page of pages)page.hidden=page.id!==key;for(const a of links)a.setAttribute('aria-current',a.hash.slice(1)===key?'page':'false');viewer.scrollTop=0;viewer.scrollLeft=0;current=key;pendingSource=null;catalogClick=false;document.title='Nacos UI · '+next.getAttribute('aria-label');if(previous&&key===(origins.get(previous)||meta[previous]?.origin)){const trigger=triggers.get(previous);if(trigger&&trigger.getBoundingClientRect().width)trigger.focus();}else if(m.kind==='modal'){next.querySelector('[data-layer="overlay"] a[aria-label="取消"]')?.focus();}else if(m.kind==='menu'){next.querySelector('[data-layer="overlay"] a:not([aria-label="关闭更多菜单"])')?.focus();}}
 addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;pendingSource=a.closest('section')?current:null;catalogClick=!!a.closest('nav');const target=a.getAttribute('href')?.slice(1);if(meta[target]&&(meta[target].kind==='menu'||meta[target].kind==='modal'))triggers.set(target,triggers.get(current)||a);});addEventListener('hashchange',show);addEventListener('keydown',e=>{const m=meta[current];if(e.key==='Escape'&&(m.kind==='menu'||m.kind==='modal')){e.preventDefault();location.hash=origins.get(current)||m.origin;}});show();document.querySelector('#zoom').onclick=e=>{const actual=viewer.classList.toggle('actual');e.target.textContent=actual?'适应窗口宽度':'查看原始尺寸'};
 document.querySelector('#focus').onclick=e=>{const focused=document.body.classList.toggle('focused');for(const p of pages)p.querySelector('svg').setAttribute('viewBox',focused?'24 128 1104 840':'0 0 1456 1040');e.target.textContent=focused?'显示图册导航':'只看界面';};

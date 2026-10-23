@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import re
+import struct
 import subprocess
 import sys
 import tempfile
@@ -41,13 +42,29 @@ with tempfile.TemporaryDirectory() as folder:
     manifest = json.loads((folder / "plugin.json").read_text())
     overlay = json.loads((folder / ".codex-plugin/plugin.json").read_text())
     assert manifest["version"] == overlay["version"] == version
-    assert len(manifest["extensions"]["com.openai"]["interface"]["shortDescription"]) <= 30
+    presentation = manifest["extensions"]["com.openai"]["interface"]
+    assert overlay["interface"] == presentation
+    assert manifest["extensions"]["com.openai"]["requires_local_executor"] is True
+    assert overlay["requires_local_executor"] is True
+    assert len(presentation["shortDescription"]) <= 30
+    packaged_icons = {}
+    for field in ("logo", "composerIcon"):
+        relative = presentation[field]
+        icon = (folder / relative).resolve()
+        assert icon.is_relative_to(folder) and icon.is_file(), (field, relative)
+        data = icon.read_bytes()
+        assert data[:8] == b"\x89PNG\r\n\x1a\n" and len(data) <= 5 * 1024 * 1024
+        width, height = struct.unpack(">II", data[16:24])
+        assert width == height and 48 <= width <= 4096, (field, width, height)
+        assert (folder / "codex" / relative).read_bytes() == data
+        packaged_icons[relative] = data
     assert (folder / manifest["extensions"]["com.openai"]["onboardingSkill"]).is_file()
     native = json.loads((folder / manifest["extensions"]["com.openai"]["mcpServers"]).read_text())["mcpServers"]["nacos-ai-registry"]
     portable = json.loads((folder / "mcp.json").read_text())["mcpServers"]["nacos-ai-registry"]
     assert {k: native[k] for k in ("command", "args", "cwd")} == {k: portable[k] for k in ("command", "args", "cwd")}
     assert "env" not in native and "NACOS_PLUGIN_HOME" in native["env_vars"]
-    assert all(re.fullmatch(r"NACOS_PLUGIN_[A-Z_]+", name) for name in native["env_vars"])
+    assert "CODEX_HOME" in native["env_vars"]
+    assert all(name == "CODEX_HOME" or re.fullmatch(r"NACOS_PLUGIN_[A-Z_]+", name) for name in native["env_vars"])
     check_document_links(folder)
     env = {k: v for k, v in os.environ.items() if k not in ("PYTHONPATH", "NACOS_PLUGIN_HOME")}
     result = subprocess.run([sys.executable, "-I", "-S", str(folder / "server/nacos-registry.pyz"), "--state-dir", str(folder / "state"), "status"], cwd=folder, env=env, check=True, capture_output=True, text=True)
@@ -66,6 +83,8 @@ with tempfile.TemporaryDirectory() as folder:
         page = json.loads(line)["result"]["contents"][0]
         assert page["mimeType"] == "text/html;profile=mcp-app" and "Nacos 资源中心" in page["text"]
         assert page["uri"] == tool["_meta"]["ui"]["resourceUri"]
+        assert page["_meta"]["ui"]["csp"]["connectDomains"] == []
+        assert "NacosCredentialCrypto" in page["text"]
         assert '"entrypoint": "' + tool["_meta"]["openai/ui"]["entrypoints"][0]["type"] + '"' in page["text"]
     runtime = (folder / "server/nacos-registry.pyz").read_bytes()
     source_hash = json.loads((folder / "build-info.json").read_text())["sourceTreeSha256"]
@@ -115,5 +134,8 @@ with tempfile.TemporaryDirectory() as folder:
     subprocess.run([sys.executable, "scripts/build.py"], cwd=folder / "codex", env=env, check=True, capture_output=True, text=True)
     rebuilt = folder / "codex/dist/nacos-ai-registry"
     assert (rebuilt / "server/nacos-registry.pyz").read_bytes() == runtime
+    for relative, data in packaged_icons.items():
+        assert (rebuilt / relative).read_bytes() == data
+    assert json.loads((rebuilt / "plugin.json").read_text())["extensions"]["com.openai"]["interface"] == presentation
     assert json.loads((rebuilt / "build-info.json").read_text())["sourceTreeSha256"] == source_hash
-print("PASS: archives, manifests, checksums, documentation links, isolated source rebuild, clean CLI and stdio MCP, live pages after bundle removal")
+print("PASS: archives, manifests, icons, checksums, documentation links, isolated source rebuild, clean CLI and stdio MCP, live pages after bundle removal")

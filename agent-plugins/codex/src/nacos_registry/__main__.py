@@ -15,7 +15,7 @@ def main():
     parser = argparse.ArgumentParser(description="Nacos AI Registry local tools")
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument("--state-dir", help="Private local state directory")
-    parser.add_argument("action", choices=["serve", *(name for name in DEFINITIONS if name not in UI_TOOLS)], nargs="?", default="serve")
+    parser.add_argument("action", choices=["serve", *(name for name in DEFINITIONS if name not in UI_TOOLS and not name.startswith("credentials_"))], nargs="?", default="serve")
     parser.add_argument("--input", help="JSON argument file, or - for stdin; use environment references for credentials")
     args = parser.parse_args()
     service = Service(Store(args.state_dir))

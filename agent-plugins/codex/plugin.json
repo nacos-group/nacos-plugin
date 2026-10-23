@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "nacos-ai-registry",
-  "version": "0.1.0-dev.10",
+  "version": "0.1.0-dev.15",
   "description": "Discover, manage and use Nacos AI Registry resources from your agent.",
   "repository": "https://github.com/nacos-group/nacos-plugin",
   "license": "Apache-2.0",
@@ -13,7 +13,19 @@
       "interface": {
         "displayName": "Nacos AI Registry",
         "shortDescription": "Connect to Nacos resources",
-        "capabilities": []
+        "longDescription": "Connect Codex to your Nacos AI Registry to discover and manage Skills, connect existing MCP tools, and use remote Agents. Includes an interactive resource center. Requires Python 3.11+ and a local desktop executor; configure your registry connection after installation.",
+        "developerName": "Nacos Group",
+        "category": "Developer Tools",
+        "websiteURL": "https://nacos.io/",
+        "supportURL": "https://github.com/nacos-group/nacos-plugin/issues",
+        "logo": "./assets/nacos-icon.png",
+        "composerIcon": "./assets/nacos-icon.png",
+        "defaultPrompt": [
+          "在本地 Codex 中初始化 Nacos AI Registry，先检查插件工具是否可用。",
+          "打开 Nacos 资源中心。",
+          "查找 Nacos 中可用的技能、MCP 工具和远端 Agent。"
+        ],
+        "capabilities": ["Interactive"]
       }
     }
   }

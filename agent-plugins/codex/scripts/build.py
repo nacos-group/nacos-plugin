@@ -27,7 +27,7 @@ def build():
     assert manifest["version"] == __version__
     license_path = next(path for path in (ROOT / "LICENSE", AGENT_ROOT / "LICENSE", AGENT_ROOT.parent / "LICENSE") if path.is_file())
     # Export only this adapter and the shared specs, preserving their sibling layout.
-    sources = sorted(p for directory in ("src", "skills", "tests", "scripts", "docs", "specs", "examples") for p in (ROOT / directory).rglob("*") if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc")
+    sources = sorted(p for directory in ("src", "skills", "assets", "tests", "scripts", "docs", "specs", "examples") for p in (ROOT / directory).rglob("*") if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc")
     sources += [ROOT / name for name in ("README.md", "requirements-build.txt", ".gitignore", "plugin.json", "mcp.json", ".mcp.json")]
     sources += sorted((AGENT_ROOT / "specs").rglob("*.md"))
     sources += [AGENT_ROOT / "README.md"]
@@ -60,6 +60,7 @@ def build():
         for name in ("plugin.json", "mcp.json", ".mcp.json"):
             shutil.copy(ROOT / name, bundle / name)
         shutil.copytree(ROOT / "skills", bundle / "skills")
+        shutil.copytree(ROOT / "assets", bundle / "assets")
         (bundle / "server").mkdir()
         # Fixed metadata and sorted members yield repeatable archives across build times.
         with zipfile.ZipFile(bundle / "server/nacos-registry.pyz", "w", zipfile.ZIP_DEFLATED) as archive:
@@ -107,7 +108,7 @@ def build():
         if market.exists(): shutil.rmtree(market)
         shutil.copytree(bundle, market / "plugins/nacos-ai-registry")
         (market / ".agents/plugins").mkdir(parents=True)
-        (market / ".agents/plugins/marketplace.json").write_text(json.dumps({"name": "local-nacos-registry", "interface": {"displayName": "Local Nacos Registry"}, "plugins": [{"name": "nacos-ai-registry", "source": {"source": "local", "path": "./plugins/nacos-ai-registry"}, "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"}, "category": "Productivity"}]}, indent=2) + "\n")
+        (market / ".agents/plugins/marketplace.json").write_text(json.dumps({"name": "local-nacos-registry", "interface": {"displayName": "Local Nacos Registry"}, "plugins": [{"name": "nacos-ai-registry", "source": {"source": "local", "path": "./plugins/nacos-ai-registry"}, "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"}, "category": manifest["extensions"]["com.openai"]["interface"]["category"]}]}, indent=2) + "\n")
         print(output)
         print(checksum)
 

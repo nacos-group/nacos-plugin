@@ -11,6 +11,9 @@ import tempfile
 import time
 
 from .errors import PluginError, require
+from .credentials import Keychain, reference as credential_reference
+from .credential_service import CredentialMixin, references
+from .hosts.codex import local_defaults
 from . import package
 from .registry import Registry
 from .remote import RemoteMixin
@@ -53,10 +56,11 @@ def file_changes(before, after):
             "modified": sorted(x for x in before.keys() & after.keys() if before[x] != after[x])}
 
 
-class Service(RemoteMixin):
-    def __init__(self, store=None, registry_factory=Registry):
+class Service(RemoteMixin, CredentialMixin):
+    def __init__(self, store=None, registry_factory=Registry, vault=None):
         self.store = store or Store()
         self.registry_factory = registry_factory
+        self.vault = vault or Keychain(self.store.root)
 
     def invoke(self, action, arguments=None, expected_context=None):
         require(action in ACTIONS, "Unknown action", "unsupported")
@@ -76,7 +80,8 @@ class Service(RemoteMixin):
         return p
 
     def registry(self, scope="read"):
-        return self.registry_factory(self.profile(scope))
+        p = self.profile(scope)
+        return Registry(p, self.resolve_credentials) if self.registry_factory is Registry else self.registry_factory(p)
 
     def reference(self, resource_type, name):
         p = self.profile()
@@ -87,9 +92,14 @@ class Service(RemoteMixin):
         return digest(ref)
 
     def configure(self, profile):
+        p = self.validate_profile(profile)
+        self.validate_references(p)
+        return self.persist_profile(p)
+
+    def validate_profile(self, profile):
         require(isinstance(profile, dict), "Profile must be an object")
         allowed = {"id", "displayName", "identityId", "namespaceId", "clientUrl", "adminUrl", "clientAuth", "adminAuth", "allowedOperations", "scanRoots", "installRoots", "codexConfig"}
-        require(set(profile) <= allowed, "Profile has unknown fields; credentials must use environment references")
+        require(set(profile) <= allowed, "Profile has unknown fields; use credential references only")
         p = copy.deepcopy(profile)
         for field in ("id", "identityId", "namespaceId"):
             require(isinstance(p.get(field), str) and p[field].strip(), "Profile requires id, identityId and namespaceId")
@@ -99,6 +109,10 @@ class Service(RemoteMixin):
         for field in ("clientAuth", "adminAuth"):
             auth = p.setdefault(field, {"type": "none"})
             kind = auth.get("type")
+            if auth.get("source") == "local":
+                require(kind in ("login", "token") and set(auth) <= {"type", "source", "credentialRef"}, "Invalid local credential reference")
+                if "credentialRef" in auth: credential_reference(auth["credentialRef"])
+                continue
             keys = {"none": {"type"}, "token": {"type", "tokenEnv"}, "login": {"type", "usernameEnv", "passwordEnv"}}.get(kind)
             require(keys is not None and set(auth) == keys, "Invalid registry auth references")
             for key in keys - {"type"}:
@@ -110,14 +124,21 @@ class Service(RemoteMixin):
             config = safe_path(p["codexConfig"])
             require(config.name == "config.toml", "Expected Codex config.toml")
             p["codexConfig"] = str(config)
+        return p
+
+    def persist_profile(self, p, created=()):
+        self.validate_references(p, created)
         previous = self.data["profile"]
         if previous and digest(previous) != digest(p):
             # Keep history and installations; invalidate plans/scan selections on context changes.
             # Retain old plans for recovery; context fingerprints prevent their use here.
             self.data["onboarding"] = {"status": "not_started"}
         self.data["profile"] = p
+        garbage = set(self.data.get("credentialGarbage", [])) | (references(previous) - references(p))
+        self.data["credentialGarbage"] = sorted(garbage - references(p))
         self.store.save()
-        return {"status": "configured", "connection": "unverified", "profile": p}
+        pending = self.cleanup_credentials()
+        return {"status": "configured", "connection": "unverified", "profile": p, "credentialCleanupPending": pending}
 
     def allowed_root(self, value):
         p = safe_path(value)
@@ -131,7 +152,9 @@ class Service(RemoteMixin):
         p = self.data["profile"]
         current = lambda x: p and x.get("context") == digest(p)
         scan = self.data["scans"].get(self.data["onboarding"].get("scanId"))
-        return {"profile": p, "context": digest(p), "onboarding": self.data["onboarding"],
+        return {"profile": p, "context": digest(p), "defaults": local_defaults(self.allowed_root), "onboarding": self.data["onboarding"],
+                "credentialStorage": self.vault.capabilities(), "credentials": self.credential_status(),
+                "credentialCleanupPending": bool(self.data.get("credentialGarbage")),
                 "scan": scan if scan and current(scan) else None,
                 "installations": [x for x in self.data["installations"].values() if current(x)],
                 "bindings": [x for x in self.data["bindings"].values() if current(x)],
