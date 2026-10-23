@@ -55,3 +55,10 @@
 - [ ] 后续新增应用时独立完成 UIX 能力清单、主题/组件映射及实际入口验收；Qoder、WorkBuddy 仍未实现。
 
 本节完成的是设计归纳，不代表通用 UI 库或其他应用插件已经交付。
+
+## 5. 初始化与凭据通用化
+
+- [x] 提取[逐步初始化与设置交接](onboarding-spec.md)，包括默认目录、本地标识及已有配置保留。
+- [x] 提取[凭据管理](credential-management-spec.md)与[macOS 系统实现](platforms/macos-credential-store.md)，分离应用输入入口、传输通道与系统存储。
+- [x] 建立 [ONB/CRED/DEF 验收场景](onboarding-acceptance-spec.md)；Codex 保留工具映射、具体路径、视觉参数和执行结论。
+- [ ] 各后续适配按实际应用/操作系统逐项验证并记录限制；复用规范不等于继承支持状态，也不默认共享凭据。

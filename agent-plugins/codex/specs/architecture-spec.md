@@ -1,18 +1,4 @@
-<!--
-  Copyright 1999-2026 Alibaba Group Holding Ltd.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
+<!-- Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 -->
 
 # Codex 适配与实现规范
 
@@ -21,47 +7,32 @@
 
 ## 1. 插件与资源加载
 
-Codex 插件包含工作流 Skills 和本地 stdio MCP 入口。MCP 入口向模型提供确定性的操作，
-共享核心完成实际同步。资源中心采用 MCP Apps 作为页面方案；全局导航和会话侧面板
-作为独立宿主能力验证后启用。页面与自然语言入口复用同一工具和操作状态，详见
-[通用 UI 交互](../../specs/resource-center-ui-spec.md)与[Codex UI 设计](resource-center-ui-spec.md)。
-官方 UI 文档与具体 Codex 版本的支持范围
-不能直接等同，验证边界见[可行性分析](feasibility-spec.md)。
+Codex 插件包含工作流 Skills 和本地 stdio MCP 入口，资源中心采用 MCP Apps。
+全局导航和会话侧面板分别适配；页面入口、工具和对话交接映射见
+[Codex UI 设计](resource-center-ui-spec.md)，具体版本的验证边界见[可行性分析](feasibility-spec.md)。
 
-- 本地 Skills 使用目标 Codex 版本支持的项目或用户目录；安装位置由适配器发现和选择，
-  不把 nacos-cli 默认下载目录视为宿主已经加载的位置。
-- 插件内置 Skills 随插件包升级；从 Nacos 下载的用户资源存放在单独的托管位置，
-  不改写 Codex 的插件安装缓存。
-- MCP 首先使用宿主原生连接方式；动态代理作为显式运行模式，见[装配与更新](../../specs/assembly-sync-spec.md)。
-- 配置变更通过解析后的最小修改保留其他配置；不得重写整个配置文件或覆盖用户工具策略。
-- 热加载、新会话加载和重启是不同能力。适配器必须读取或验证当前加载结果，
-  仅有配置文件写入成功时返回“待加载”。
-- 不能直接访问本机的宿主使用远端接入部署方式；该方式不能承诺本地文件装配能力。
+Skill 路径与配置文件由 `hosts/codex.py` 发现，具体默认值见 UI 规格。
+资源身份、缓存归属、最小配置修改和加载证据遵循[通用装配契约](../../specs/assembly-sync-spec.md)；
+不在本文件另定义一套安装、刷新或权限规则。
 
-初始化使用已验证的 onboarding skill 入口。资源盘点与候选提醒由本地核心维护，可选
-Hooks 仅提供事件输入；安装插件不等于 Hooks 已获信任，也不等于存在全局 Skill 创建事件。
-详见[本地资源托管](../../specs/local-resource-onboarding-spec.md)。
-
-Codex 是具体适配器，不能把整个产品的资源模型限定为 Codex plugin manifest。
-其他 coding agent 和 personal agent 的名称与支持版本在实现验证后加入矩阵。
+初始化入口为 `skills/setup/SKILL.md`。问答、非敏感预填、默认值保留和诊断顺序遵循
+[通用初始化](../../specs/onboarding-spec.md)，工具映射见[初始化适配](credential-onboarding-spec.md)。
+当前不提供 Hooks 或后台同步；可选 Hooks 的 Codex 研究记录保留在可行性分析中。
 
 ## 2. 当前实现选择
 
-共享核心采用 Python 3.11+，直接适配固定版本的 HTTP 契约；PyYAML 使用安全解析模式，
-锁定依赖并随 zipapp 交付。运行时单独声明，安装不要求 Maven、Node 或联网安装 Python 包。
-本地 stdio MCP 与 CLI 复用核心；状态使用带 schemaVersion 的私有 JSON 文件、进程锁和
-原子替换，包快照与操作记录分离。每次修改先创建有版本、基线、作用域与副作用的计划，
-再显式应用；无服务端 CAS 时仍保留并发窗口说明。首期没有 Hooks 或后台同步进程。
+核心采用 Python 3.11+，直接适配固定版本的 HTTP 契约；PyYAML 使用安全解析模式，
+锁定依赖并随 zipapp 交付。安装不要求 Maven、Node 或联网安装 Python 包。
+本地 stdio MCP 与 CLI 复用核心；持久实现为带 schemaVersion 的私有 JSON 文件、进程锁
+和原子替换，包快照与操作记录分离。计划、授权、并发及恢复语义遵循通用规范。
 
-Nacos 认证支持原生 login/token 的环境变量引用、macOS 页面填写，以及明确配置的无认证模式；Client 和
-Admin 身份独立。下游 MCP 首批选择 Streamable HTTP，Agent 选择 A2A 0.3.0 JSON-RPC
-的非流式 message/send、tasks/get、tasks/cancel；流式、OAuth 和其他协议暂不声明支持。
-这些是实现选择，实际兼容性仍按 TODO 中的 P0/P1 验收，不把模拟端点等同于真实服务验收。
+Nacos 认证当前支持原生 login/token 的环境变量引用、macOS 页面填写和明确选择的
+无认证模式。页面采用[通用 MCP 加密信封方案](../../specs/credential-management-spec.md#6-可选的-mcp-加密信封方案)
+及[macOS 存储实现](../../specs/platforms/macos-credential-store.md)，具体映射与平台限制见凭据适配。
 
-dev.14 的[页面凭据与初始化扩展](credential-onboarding-spec.md)将凭据提供方式从认证类型中
-分离。页面凭据加密后经一次性 MCP 通道到达本机 Keychain；工具参数只含密文，普通状态只
-保存不透明引用；环境变量保持兼容。无可用系统存储时关闭页面填写，不回退明文。
-本扩展仅用于 Nacos 连接，下游 MCP/Agent 继续使用独立环境变量认证。
+下游 MCP 首批选择 Streamable HTTP，Agent 选择 A2A 0.3.0 JSON-RPC 的非流式
+message/send、tasks/get、tasks/cancel；流式、OAuth 和其他协议暂不声明支持。
+下游认证当前仍使用独立环境变量，实际兼容性按 TODO 的 P0/P1 验收。
 
 ## 3. AgentSpec profile（后续能力）
 
@@ -71,14 +42,10 @@ Codex profile 需遵循[通用装配契约](../../specs/assembly-sync-spec.md)�
 
 ## 4. 执行服务化（后续能力）
 
-使用 Codex 官方支持的 SDK 或 app-server 接口创建和管理执行会话，优先通过本机受控
-进程连接，由网关提供对外协议。不得将未经保护的宿主控制端口直接暴露为公共 Agent 服务。
+拟使用 Codex 官方支持的 SDK 或 app-server 接口创建和管理执行会话，通过本机受控进程
+连接，由网关提供对外协议。会话启动/继续、事件、审批、取消和关闭需要按 Codex 接口验证。
 
-执行适配必须验证会话启动/继续、事件流、审批、取消和关闭的实际行为；模型访问权限与
-调用额度使用部署方合法配置的账号或服务身份。个人桌面会话与网关会话分别管理，
-不默认复用个人的所有项目权限。
-
-服务发现、身份隔离与运行活性遵循[Agent 互联规范](../../specs/agent-interoperability-spec.md)。
+身份隔离、控制入口保护、发现及运行活性遵循[Agent 互联规范](../../specs/agent-interoperability-spec.md)。
 服务化属于 P3，不是当前消费插件的启动或安装依赖。
 
 ## 5. 源码布局
@@ -87,6 +54,6 @@ Codex profile 需遵循[通用装配契约](../../specs/assembly-sync-spec.md)�
 该目录；`src/`、`tests/`、`scripts/`、`docs/` 与 `specs/` 分别保存实现、测试、构建、
 使用说明和专属设计。`src/nacos_registry/hosts/codex.py` 是运行时配置适配模块。
 
-通用规范维护在 `agent-plugins/specs/`。未来新增 Agent 应用时，在 `agent-plugins/`
-下增加同级目录；通用资源模型不依赖某种 manifest 或配置语法。当前代码随 Codex 组件
-交付，后续若实际复用实现，再提取公共代码，避免各适配目录复制后各自演进。
+通用契约在 `agent-plugins/specs/`，系统存储实现在其中的 `platforms/` 记录；
+Codex 目录保留实现映射、视觉规格和验收结果。规范归属不决定共享源码必须放在哪里，
+实际代码复用按通用架构记录来源与边界。

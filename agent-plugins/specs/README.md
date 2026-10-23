@@ -53,6 +53,10 @@ Nacos 负责资源的统一管理与治理；插件负责把这些资源接入�
 | 完整功能范围与验收约束 | [功能规范](functional-spec.md) |
 | 模块职责、资源身份和应用扩展边界 | [架构与应用适配](architecture-spec.md) |
 | 个人接入、企业入口、身份和权限 | [接入与治理](connection-governance-spec.md) |
+| 初始化问答、执行位置、页面交接、默认目录与本地标识 | [初始化与设置交接](onboarding-spec.md) |
+| 安全输入、凭据来源、隔离、保存/替换/清除和可选加密通道 | [凭据管理](credential-management-spec.md) |
+| 跨应用复用的系统凭据存储实现 | [macOS 系统钥匙串](platforms/macos-credential-store.md) |
+| 初始化、凭据生命周期与默认值的公共测试场景 | [通用验收](onboarding-acceptance-spec.md) |
 | 首次资源盘点、托管选择与创建后提示 | [本地资源托管](local-resource-onboarding-spec.md) |
 | 已接入、发现、我的资源、设置与本地技能的交互规则 | [资源中心 UI 与交互](resource-center-ui-spec.md) |
 | 逐项操作的入口、状态、执行影响、返回与异常；跨应用复用 | [资源中心通用操作与状态](resource-center-interaction-spec.md) |
@@ -66,3 +70,7 @@ Nacos 负责资源的统一管理与治理；插件负责把这些资源接入�
 UI 规范与操作规范共同定义跨应用行为；`<agent>/specs/` 负责实际能力、视觉风格和工具映射。
 后续 Qoder、WorkBuddy 可以采用贴近各自应用的 CSS 与组件，保持操作语义一致；无需照搬
 Codex 图稿的颜色、尺寸或技术栈。当前 SVG 是 Codex 的设计基线，不是各应用支持证明。
+
+初始化与凭据按三层维护：本目录定义通用流程和行为；`platforms/` 定义操作系统实现；
+`<agent>/specs/` 记录应用入口、工具/字段映射、具体路径、视觉设计和验收结果。
+复用系统存储实现不默认共享各应用的凭据，复用验收场景不继承其他应用的通过状态。

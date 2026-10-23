@@ -206,7 +206,10 @@ UI11 的首次连接三步向导及 UI08 的完整内嵌验证继续保留，未
 
 用户已选定贴近 Codex 的简洁工作台。通用交互在[共享规范](../../specs/resource-center-ui-spec.md)，
 逐项入口、状态与返回在[通用操作规范](../../specs/resource-center-interaction-spec.md)，
-具体布局、设计变量、组件、工具缺口和 CUI-01–CUI-12 用例在[Codex UI 设计](resource-center-ui-spec.md)。
+Codex 布局、设计变量、工具缺口和 CUI-01–CUI-12 映射在[Codex UI 设计](resource-center-ui-spec.md)。
+初始化与凭据规则已提取到[通用初始化](../../specs/onboarding-spec.md)、
+[凭据管理](../../specs/credential-management-spec.md)及[通用验收场景](../../specs/onboarding-acceptance-spec.md)；
+以下 UI16/UI17 和 TM24–TM28 继续记录 Codex 实现结果，提取不改变已完成或待验状态。
 以下是 T18 的实施分解，保留原编号；本轮已实现 UI02–UI07，验收按[测试矩阵](test-matrix.md)分层记录。
 
 - [x] UI01 完成通用与 Codex 专属文字规范、宽窄布局和单状态[图册](ui-storyboard.md)；将已选定 SVG 的操作归入 UIX-01–UIX-14 并逐项映射，明确菜单、步骤、危险确认、独立设置与来源恢复；规范跨应用行为复用及随应用风格变化的主题/组件适配。
@@ -223,7 +226,7 @@ UI11 的首次连接三步向导及 UI08 的完整内嵌验证继续保留，未
 - [x] UI14 以工具绑定的独立页面资源传递 global/thread 入口，补齐 `toolInfo` 与对话 ID 同时缺失时的侧栏判断；包检查验证两个资源各自的入口，明确左侧导航属于全局页。真实会话发送仍待验。
 - [x] UI15 保留运行中连接的页面快照，修复升级清理旧包后的页面读取退出；缺失资源返回可操作错误，补齐真实子进程移除包的回归及断连/旧卡片恢复说明。已断开的旧连接仍须重建。
 - [ ] UI11 补齐文字 spec 的首次连接三步向导，目前通过设置表单初始化；完成对应页面回归后更新 CUI-01。
-- [x] UI16a dev.14 实现[初始化与页面凭据设计](credential-onboarding-spec.md)：本地逐项引导、非敏感草稿预填、认证/来源选择、一次性 JWE 加密 MCP 提交、macOS Keychain 保存/替换/清除与环境变量兼容；补充 SVG 72–74 和 TM24–TM27。合成浏览器保存/取消、新进程读取、普通状态与 MCP 请求无明文秘密验证通过；修复 dev.13 被 Codex CSP 阻止保存的问题。
+- [x] UI16a dev.14 实现[Codex 初始化与凭据适配](credential-onboarding-spec.md)：本地逐项引导、非敏感草稿预填、认证/来源选择、一次性 JWE 加密 MCP 提交、macOS Keychain 保存/替换/清除与环境变量兼容；补充 SVG 72–74 和 TM24–TM27。合成浏览器保存/取消、新进程读取、普通状态与 MCP 请求无明文秘密验证通过；修复 dev.13 被 Codex CSP 阻止保存的问题。
 - [x] UI16b macOS 实际 Codex 页面账号密码填写与保存已获用户确认可用。
 - [ ] UI16c 钥匙串拒绝/重试、关闭重开及应用重启后的真实连接仍需分别验收；不把一次保存、浏览器合成夹具或核心通过当作这些项完成。
 - [x] UI17 dev.15 增加本机默认 Skill 目录、hostname/系统用户名标签与 CODEX_HOME 配置路径；已有配置保持，支持追加默认目录；初始化提供默认/自定义选择，核心、JS 与浏览器保存/取消/重开回归通过，真实应用目录引导待验，详见 TM28。

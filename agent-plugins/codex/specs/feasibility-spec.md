@@ -47,11 +47,10 @@ Codex app-server 提供会话创建/继续、事件与取消等接口，可作�
 
 ## 4. 页面与扩展入口
 
-MCP Apps 把 UI 作为 MCP 服务暴露的资源，与工具关联。宿主读取页面，在隔离容器中运行，
-通过桥接传递工具结果和页面请求。因此列表、搜索框、详情和操作按钮可以复用现有核心，
-无需把整个 Nacos 控制台嵌入宿主。轻量页面可以是单个 HTML 产物；页面持久状态仍由核心
-维护。依据：[MCP Apps UI 指南](https://developers.openai.com/plugins/build/chatgpt-ui)和
-[官方 Quickstart](https://developers.openai.com/plugins/build/app-quickstart)。
+页面与核心分离的原理见[通用可行性](../../specs/feasibility-spec.md#7-页面与核心为何能够分离)。
+本适配选择 MCP Apps；下表保留 Codex 设计阶段对
+[MCP Apps UI 指南](https://developers.openai.com/plugins/build/chatgpt-ui)和
+[官方 Quickstart](https://developers.openai.com/plugins/build/app-quickstart)的证据判断。
 
 截至 2026-10-19 的核对日期，需要区分标准能力、产品支持与本插件的可用性：
 
@@ -70,9 +69,9 @@ CLI 等无页面宿主仍可使用相同工具，不承担图形页面交付。
 
 ## 5. 初始化和可选提醒
 
-本地插件可在获准范围内读取 Skill 元数据和文件，维护清单、内容摘要及远端映射，因此
-“已有资源盘点”和“变化后生成上传候选”不需要 Nacos 增加新的事件接口。目标环境必须
-实际允许文件访问；云端插件不能据此获得用户本机资源。
+初始化流程见[通用初始化](../../specs/onboarding-spec.md)，资源盘点和可选提醒原理见
+[通用可行性](../../specs/feasibility-spec.md#8-初始化与本地盘点为何能够实现)。
+本节只保留 Codex 的入口、事件候选和平台限制依据。
 
 | 机制 | 已有依据 | 能证明与不能证明的内容 |
 | --- | --- | --- |
