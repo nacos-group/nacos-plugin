@@ -53,10 +53,15 @@ Codex 是具体适配器，不能把整个产品的资源模型限定为 Codex p
 原子替换，包快照与操作记录分离。每次修改先创建有版本、基线、作用域与副作用的计划，
 再显式应用；无服务端 CAS 时仍保留并发窗口说明。首期没有 Hooks 或后台同步进程。
 
-Nacos 认证首批实现原生 login/token 环境变量引用，以及明确配置的无认证模式；Client 和
+Nacos 认证支持原生 login/token 的环境变量引用、macOS 页面填写，以及明确配置的无认证模式；Client 和
 Admin 身份独立。下游 MCP 首批选择 Streamable HTTP，Agent 选择 A2A 0.3.0 JSON-RPC
 的非流式 message/send、tasks/get、tasks/cancel；流式、OAuth 和其他协议暂不声明支持。
 这些是实现选择，实际兼容性仍按 TODO 中的 P0/P1 验收，不把模拟端点等同于真实服务验收。
+
+dev.14 的[页面凭据与初始化扩展](credential-onboarding-spec.md)将凭据提供方式从认证类型中
+分离。页面凭据加密后经一次性 MCP 通道到达本机 Keychain；工具参数只含密文，普通状态只
+保存不透明引用；环境变量保持兼容。无可用系统存储时关闭页面填写，不回退明文。
+本扩展仅用于 Nacos 连接，下游 MCP/Agent 继续使用独立环境变量认证。
 
 ## 3. AgentSpec profile（后续能力）
 

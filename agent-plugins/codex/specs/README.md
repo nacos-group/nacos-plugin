@@ -7,6 +7,7 @@
 | --- | --- |
 | 资源加载、运行时、模板与执行适配 | [架构与实现](architecture-spec.md) |
 | 页面信息架构、布局、视觉、交互与验收 | [资源中心 UI 设计](resource-center-ui-spec.md) |
+| 本地对话初始化、侧栏预填、页面凭据与环境变量选择（dev.14；真实侧栏验收待完成） | [初始化与页面凭据设计](credential-onboarding-spec.md) |
 | 跨 Agent 应用复用的入口、操作步骤、返回及状态语义 | [通用操作与状态规范](../../specs/resource-center-interaction-spec.md) |
 | 已接入、我的资源、类型详情、行内浮层与单步操作结果 | [单状态 SVG 场景与交互规则](ui-storyboard.md) · [可点击图册](assets/ui/index.html) |
 | manifest、产物、安装与发布渠道 | [打包与分发](distribution-spec.md) |

@@ -18,11 +18,26 @@
     updateHandoffButtons();
     const insets = context.safeAreaInsets;
     if (insets) for (const side of ['top', 'right', 'bottom', 'left']) root.style.setProperty('--safe-' + side, Math.max(0, Number(insets[side]) || 0) + 'px');
-  }, NacosBuild.entrypoint);
+  }, NacosBuild.entrypoint, () => { if (model.state) acceptLaunch(); });
   const preferences = NacosSettings.create({state: () => model.state,
     locale: () => bridge.host.hostContext?.locale || navigator.language, version: NacosBuild.version,
     busy: () => model.busy.size > 0, changed: () => { if (model.subpage === 'settings') render(); },
-    diagnose: () => call('diagnose'), configure: profile => mutation('configure', {profile})});
+    diagnose: () => call('diagnose'), reload: load, configure: profile => mutation('configure', {profile}),
+    configureCredentials: (profile, changes) => model.exclusive('configure', async () => {
+      locks();
+      try { const value = await bridge.saveCredentials(profile, changes, model.context); await load(); return value; }
+      finally { locks(); }
+    }).finally(locks)});
+  let launchId = null;
+  function acceptLaunch() {
+    const value = bridge.launch;
+    if (!value || value.launchId === launchId) return;
+    if (model.busy.size) return notify('收到新的设置草稿，请等待当前保存完成后重新打开。', true);
+    launchId = value.launchId;
+    enterSettings();
+    if (value.context !== model.context) return notify(preferences.t('changedContext'), true);
+    if (value.draft) preferences.receiveDraft(value.draft);
+  }
   const canHandoff = () => bridge.canMessageCurrentConversation();
   const handoffLabel = () => canHandoff() ? '在当前对话中使用' : '复制使用说明';
   function updateHandoffButtons() {
@@ -102,7 +117,7 @@
     return f;
   }
   function readable(error) {
-    return ({permission: '没有操作权限，请核对身份和本地操作范围。', authentication: '认证失败，请检查所引用的环境变量。',
+    return ({permission: '没有操作权限，请核对身份和本地操作范围。', authentication: '认证失败，请检查已保存的凭据或所引用的环境变量。',
       not_found: '当前上下文中未找到该资源。', conflict: '输入、文件或远端状态发生变化，请核对后重新规划。',
       network: '无法连接服务，已有输入保持不变。', review_rejected: '审核未通过，不能发布。', review_unverified: '无法核实审核通过，不能发布。',
       unsupported: '当前适配尚不支持这项能力。', configuration: '需要先完成连接、目录或服务配置。'})[error.kind] || error.message;
@@ -115,6 +130,7 @@
   }
   function captureView() { workspaces[model.view] = {detail: model.detail, stack: [...model.stack], scroll: scrollY}; }
   function navigate(view) {
+    if (model.subpage === 'settings') preferences.leave();
     U.closeOverlay(false); captureView(); model.subpage = null; model.origin = null; model.origins = []; model.view = view; navigationId++;
     const prior = workspaces[view]; model.detail = prior?.detail || null; model.stack = prior?.stack || [];
     render(); scrollTo(0, prior?.scroll || 0);
@@ -125,6 +141,7 @@
     model.enter('settings', scrollY); navigationId++; render();
   }
   function leaveSubpage() {
+    if (model.subpage === 'settings') preferences.leave();
     const position = model.leave(); navigationId++; render(); scrollTo(0, position); restoreFocus();
   }
   function enterLocal() {
@@ -697,7 +714,7 @@
     add(main, raw(op));
   }
   async function start() {
-    try { await bridge.initialize(); await load(); notify(''); render(); }
+    try { await bridge.initialize(); await load(); notify(''); render(); acceptLaunch(); }
     catch (error) { notify('资源中心连接失败：' + readable(error), true); $('#main').replaceChildren(button('重试连接', start)); }
   }
   start();

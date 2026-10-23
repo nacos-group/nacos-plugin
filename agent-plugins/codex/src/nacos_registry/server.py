@@ -8,6 +8,8 @@ from . import __version__
 from .errors import PluginError, require
 from .service import Service
 from .ui import render_ui
+from .credential_channel import CredentialChannel
+from .store import new_id
 
 STRING = {"type": "string"}
 STRINGS = {"type": "array", "items": STRING}
@@ -25,20 +27,29 @@ def obj(properties, required=()):
 
 
 AUTH = obj({"type": {"type": "string", "enum": ["none", "bearer"]}, "tokenEnv": STRING}, ["type"])
-REGISTRY_AUTH = obj({"type": {"type": "string", "enum": ["none", "token", "login"]}, "tokenEnv": STRING, "usernameEnv": STRING, "passwordEnv": STRING}, ["type"])
+REGISTRY_AUTH = obj({"type": {"type": "string", "enum": ["none", "token", "login"]},
+                     "source": {"type": "string", "enum": ["local"]}, "credentialRef": STRING,
+                     "tokenEnv": STRING, "usernameEnv": STRING, "passwordEnv": STRING}, ["type"])
 PROFILE = obj({"id": STRING, "displayName": STRING, "identityId": STRING, "namespaceId": STRING,
                "clientUrl": STRING, "adminUrl": STRING, "clientAuth": REGISTRY_AUTH, "adminAuth": REGISTRY_AUTH,
                "allowedOperations": STRINGS, "scanRoots": STRINGS, "installRoots": STRINGS, "codexConfig": STRING},
               ["id", "identityId", "namespaceId", "clientUrl", "adminUrl", "allowedOperations"])
+PREFILL_AUTH = obj({k: v for k, v in REGISTRY_AUTH["properties"].items() if k != "credentialRef"}, ["type"])
+PREFILL = obj({"displayName": STRING, "namespaceId": STRING, "clientUrl": STRING, "adminUrl": STRING,
+               "clientAuth": PREFILL_AUTH, "adminAuth": PREFILL_AUTH, "allowedOperations": STRINGS,
+               "scanRoots": STRINGS, "installRoots": STRINGS, "codexConfig": STRING})
+OPEN = obj({"route": {"type": "string", "enum": ["settings"]}, "draft": PREFILL})
 
 # Each mutation has a specific workflow entry; there is no arbitrary HTTP, command or path tool.
 DEFINITIONS = {
-    "open_center": ("Open the Nacos resource center with installed resources, search, owned Skills and configuration.", obj({})),
-    "open_center_panel": ("Open the resource center alongside this conversation.", obj({})),
+    "open_center": ("Open the Nacos resource center. Optionally open Settings with a nonsecret draft; opening never saves configuration.", OPEN),
+    "open_center_panel": ("Open the resource center alongside this LOCAL conversation. For setup use route=settings and a nonsecret draft. The user enters credentials and saves in the page; never pass passwords or tokens.", OPEN),
+    "credentials_begin": ("Issue a short-lived one-use public encryption key for page credentials. No secret values in tool arguments or results.", obj({})),
+    "credentials_save": ("Save a one-use JWE encrypted by the page. Accepts ciphertext only; never send plaintext credentials.", obj({"envelope": STRING}, ["envelope"])),
     "my_skills": ("List only Skills owned by the authenticated native Admin login. Does not infer ownership from local identity labels or visibility.", obj({"query": STRING, "page": INTEGER, "limit": INTEGER})),
     "upload_preview": ("Inspect selected local Skill filenames and sizes before authorizing a precheck transfer. No network access.", obj({"scanId": STRING, "candidateId": STRING}, ["scanId", "candidateId"])),
-    "configure": ("Configure one registry, independent credential environment references and explicit local roots. Does not probe permissions or upload content.", obj({"profile": PROFILE}, ["profile"])),
-    "status": ("Read local setup, installations, bindings and unfinished operations. Cached state does not prove current remote access.", obj({})),
+    "configure": ("Configure one registry with environment references or retain existing local credential references. Never accepts secret values. Does not probe permissions or upload content.", obj({"profile": PROFILE}, ["profile"])),
+    "status": ("Read local setup and suggested Codex defaults (hostname, OS user, personal Skill roots, config.toml). Suggestions do not change saved settings or scan files. Cached state does not prove current remote access.", obj({})),
     "diagnose": ("Read-only Client search probe. Does not create resources or test write permissions.", obj({})),
     "search": ("Find Skill/MCP/Agent candidates. Preserve opaque pagination; use exact reads before installation/calls.", obj({"query": STRING, "resourceTypes": STRINGS, "cursor": STRING, "limit": INTEGER, "tagsAll": STRINGS})),
     "scan": ("List Skill metadata only in configured, user-selected roots; no network transfer, scripts, recursive machine scan or package precheck.", obj({"roots": STRINGS})),
@@ -88,9 +99,9 @@ def validate(value, schema):
 
 def tools_list():
     result = [{"name": "nacos_" + name, "description": description, "inputSchema": schema,
-             "_meta": {"ui": {"visibility": ["app", "model"]}},
+             "_meta": {"ui": {"visibility": ["app"] if name in {"credentials_begin", "credentials_save"} else ["app", "model"]}},
              "annotations": {"readOnlyHint": name in READ_ONLY, "destructiveHint": name not in READ_ONLY,
-                             "idempotentHint": name in READ_ONLY, "openWorldHint": name not in {"status", "scan", "select", "onboarding", "inspect_operation", "upload_preview", *UI_TOOLS}}}
+                             "idempotentHint": name in READ_ONLY, "openWorldHint": name not in {"status", "scan", "select", "onboarding", "inspect_operation", "upload_preview", "credentials_begin", "credentials_save", *UI_TOOLS}}}
             for name, (description, schema) in DEFINITIONS.items()]
     for tool in result:
         name = tool["name"][6:]
@@ -114,6 +125,7 @@ def serve(service=None, source=None, sink=None):
             pass
     ui_unavailable = "Page assets could not be loaded. Restart Codex and open the resource center again from the current conversation."
     initialized = False
+    credentials = CredentialChannel(service)
     while True:
         line = source.readline(2 * 1024 * 1024 + 1)
         if not line: break
@@ -162,9 +174,20 @@ def serve(service=None, source=None, sink=None):
                     context = args.pop("_context", None)
                     if name in UI_TOOLS and name not in ui_pages:
                         raise PluginError("ui_unavailable", ui_unavailable)
-                    value = {"status": "ready", "version": __version__, "entrypoint": UI_ENTRYPOINTS[name]} if name in UI_TOOLS else service.invoke(name, args, expected_context=context)
+                    metadata = None
+                    if name in UI_TOOLS:
+                        value = {"status": "ready", "version": __version__, "entrypoint": UI_ENTRYPOINTS[name],
+                                 "launchId": new_id(), "context": service.invoke("status")["context"], **args}
+                    elif name == "credentials_begin":
+                        metadata = {"nacos/credentialChannel": credentials.begin(context)}
+                        value = {"status": "ready"}
+                    elif name == "credentials_save":
+                        value = credentials.save(args["envelope"], context)
+                    else:
+                        value = service.invoke(name, args, expected_context=context)
                     failed = isinstance(value, dict) and value.get("status") in ("failed", "result_unknown", "recovery_required")
                     result = {"content": [{"type": "text", "text": json.dumps(value, ensure_ascii=False)}], "structuredContent": value, "isError": failed}
+                    if metadata: result["_meta"] = metadata
                 except PluginError as exc:
                     result = {"content": [{"type": "text", "text": json.dumps(exc.result())}], "isError": True}
                 except (OSError, ValueError, TypeError, KeyError, UnicodeError, AttributeError, RecursionError):
@@ -177,3 +200,4 @@ def serve(service=None, source=None, sink=None):
             response = {"jsonrpc": "2.0", "id": req.get("id") if isinstance(req, dict) else None, "error": {"code": -32600, "message": "Invalid request"}}
         sink.write(json.dumps(response, ensure_ascii=False) + "\n")
         sink.flush()
+    credentials.close()

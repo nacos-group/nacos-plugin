@@ -1,52 +1,118 @@
-# 本地安装与使用
+# 安装与使用
 
-这是开发预览包。先准备 Python 3.11+，并检查 `python3 --version` 能从宿主的环境执行。
-从与源码对应的 ZIP 安装，校验随包提供的 SHA-256。发布包不包含 Nacos 地址、身份或用户资源。
+使用发布 ZIP 无需构建源码，也无需手写配置文件。运行环境需要 macOS 或 Linux、Python 3.11+，
+并确保桌面应用能够找到 `python3`。
 
-## 安装到 Codex
+## 桌面页面安装
 
-源码构建会生成 `dist/marketplace/`，内有一个完整插件和 `.agents/plugins/marketplace.json`。
-使用目标 Codex 支持的本地 marketplace 流程：
+1. 下载 Release 中的 `nacos-ai-registry-<version>.zip`。
+2. 打开 **插件** 页面，在创建或更多菜单中选择 **上传插件包 / Upload plugin archive**。
+3. 选择 ZIP，点击 **添加插件 / Add plugin**，再在详情中完成安装（若显示安装按钮）。
+4. 打开 **本地 Codex 对话**，通过 `@` 选择 Nacos AI Registry，检查 `nacos_status` 并打开资源中心。
+
+此入口需账户具备上传权限；它会上传插件包到账户。若插件页没有该入口，直接使用下面的本地安装。
+插件包会保存在账户中，安装时再下载到本机。上传、共享、发布到目录是独立操作，
+上传不等于对所有用户公开；可见范围请在插件详情的共享设置中查看。
+安装成功后仍需检查本地工具，不能将“上传成功”视为“工具可用”。
+官方[插件管理说明](https://help.openai.com/en/articles/20001256-plugins-in-chatgpt)介绍了上传权限、
+账户插件和仅桌面可用的组件；[公开目录提交](https://developers.openai.com/plugins/deploy/desktop-only)
+是另一个流程，不是使用者安装的前置步骤。
+
+## 让 Codex 自动安装
+
+将下面一句话发到本地 Codex 对话，替换 ZIP 路径即可：
+
+```text
+请把 /absolute/path/nacos-ai-registry.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 的说明完成本地安装和验证，保留已有插件配置及私有数据。
+```
+
+CLI 用户可以直接执行：
 
 ```sh
-codex plugin marketplace add /absolute/path/to/marketplace
-codex plugin add nacos-ai-registry@local-nacos-registry
+codex '请把 /absolute/path/nacos-ai-registry.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 的说明完成本地安装和验证，保留已有插件配置及私有数据。'
 ```
 
-也可以在桌面插件目录选择对应本地 marketplace 并安装。若当前 CLI 不支持某个命令，以
-`codex plugin --help` 和 [官方本地插件说明](https://developers.openai.com/plugins/build/plugins)
-为准。安装后确认 `nacos_status` 可调用；需要时打开新会话或重启。账户目录记录、包解析和
-本地 MCP 启动是不同结果。不要直接编辑宿主插件缓存。
+这是一条启动安装协助对话的命令，需要已登录且可执行本地命令的 Codex CLI，
+不是原生 ZIP 安装子命令。当前 `codex plugin add` 只接受 marketplace 中的插件选择器。
+Codex 会完成解压、本地清单登记和安装；这些细节见[高级本地安装说明](local-installation.md)。
+如 CLI 不可用，参见[官方 CLI 安装说明](https://developers.openai.com/codex/cli/)。
 
-只有安装包时，将 ZIP 解压为 marketplace 根下的 `plugins/nacos-ai-registry/`，创建：
+## 安装后验证
 
-```json
-{
-  "name": "local-nacos-registry",
-  "interface": {"displayName": "Local Nacos Registry"},
-  "plugins": [{
-    "name": "nacos-ai-registry",
-    "source": {"source": "local", "path": "./plugins/nacos-ai-registry"},
-    "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
-    "category": "Productivity"
-  }]
-}
-```
+`nacos_status` 在尚未配置 Nacos 时返回未初始化状态是正常的，说明工具已启动。
+确认工具和资源中心都能打开后，再按下文配置连接。
+工具未出现时先确认对话连接的是本机执行环境，再尝试新建本地对话；入口仍旧或缺失时，
+完整退出并重新打开应用。
+具体入口和排查步骤见[资源中心](resource-center.md)。
 
-将该文件保存为 marketplace 根下的 `.agents/plugins/marketplace.json`。不要把外层
-marketplace 打进单插件 ZIP。源码只用于开发；先在 `agent-plugins/codex/` 构建，再安装产物。
+### 设置按钮打开了对话，但提示工具未加载
 
-安装或更新后完整退出并重新打开桌面应用，让插件工具和页面入口重新加载。页面打开方式、
-三个主视图、独立设置与新版内嵌验收见[资源中心](resource-center.md)。
+初始化 Skill 是操作说明，本地 MCP 才负责读取配置和连接 Nacos。自动设置入口可能创建
+云端对话，能读取 Skill 却没有连接本机 MCP；此时设置尚未执行，不代表插件未安装。
+
+“帮我设置”由桌面客户端发起，插件的 `onboardingSkill` 只指定运行哪份初始化说明。
+本包已声明 `requires_local_executor: true`，但仍需确认自动创建的对话连接了本机工具；
+该声明不能代替会话的执行环境选择。当前公开的初始化声明没有指定本地会话的参数，
+不应通过添加未定义字段承诺修复客户端路由。
+
+1. 返回桌面应用的 **Codex**，选择本地项目，新建对话时选择 **本地 / Local** 执行环境。
+2. 在输入框通过 `@` 选择已安装的 **Nacos AI Registry**。
+3. 发送：`初始化 Nacos AI Registry，先调用 nacos_status 检查本地工具。`
+
+已有能调用工具的本地对话也可以直接继续设置。先不卸载插件，也无需为这个提示重新上传 ZIP。
+偏好页面操作时，可以直接打开 **Nacos AI Registry → 资源中心 → 设置** 配置连接；
+页面使用本机 MCP，不依赖自动设置对话。macOS 可在页面自行填写凭据，也可选择环境变量，见下文。
+如果本地对话同样没有工具，再检查插件是否启用、应用能否找到 Python 3.11+，并尝试新对话或重启。
+安装弹窗的设置按钮没有响应时，可选“稍后再说”，按上述步骤继续；持续失败时查看应用日志中的
+插件详情、下载或启动错误，区分账户服务问题与本地 MCP 启动问题。
 
 ## 初始化
 
-运行 **nacos-registry-setup**，或直接说“初始化 Nacos AI Registry”。某些宿主不会展示
+在本地对话运行 **nacos-registry-setup**，或直接说“初始化 Nacos AI Registry”。某些应用不会展示
 manifest 的 setup 入口，此时显式调用已列出的初始化 Skill。初始化不会在安装时自动扫描。
 
-向导需要 Client/Admin 完整 base URL、namespace、身份引用和操作范围。认证支持原生
-login、token 引用和明确选定的无认证模式。秘密在进程环境中输入，配置只保存环境变量名；
-启动 Codex 的进程需具有这些变量；本地 MCP 还需要显式透传。包通过 OpenAI 扩展引用
+对话会复用已有信息，逐项确认 Nacos API 地址、命名空间和用途，随后让你选择无需认证、
+用户名密码或访问令牌。通常只需一个地址；管理入口不同时才单独配置。
+
+引导会询问是否自定义技能安装目录和已有技能目录；新配置选择“不需要”时，使用下列本机默认值：
+
+| 设置 | 默认值及用途 |
+| --- | --- |
+| 技能安装目录 | `~/.agents/skills`，供 Codex 发现个人技能；实际安装时才创建不存在的目录。 |
+| 已有技能目录 | 已存在的 `~/.agents/skills` 和 `$CODEX_HOME/skills`；后者通常为 `~/.codex/skills`。不存在的目录不会列为扫描候选。 |
+| 本地连接标识 | 当前 hostname，用于关联本地记录；不是服务器地址。 |
+| 本地身份标签 | 当前系统用户名，用于区分本地记录；不是 Nacos 登录用户名，也不授予权限。 |
+| Codex 配置文件 | `$CODEX_HOME/config.toml`，未设置 `CODEX_HOME` 时为 `~/.codex/config.toml`；接入 MCP 服务时使用。 |
+
+具体路径会展示在草稿中，保存前可以修改。已有连接不会因主机名变化或版本升级而重命名，
+已有自定义目录也不会被替换。“设置 → 技能目录 → 编辑目录 → 添加默认目录”可追加缺少的
+默认目录；高级设置中的“使用默认配置文件”可补充配置路径。保存路径本身不会创建目录、
+改写 Codex 配置或扫描技能；实际 MCP 接入仍需确认计划，本地技能盘点另行选择。
+
+凭据有两种提供方式。
+
+### 在页面填写（macOS）
+
+1. 选择“在页面填写”，Codex 在当前对话侧栏打开资源中心的设置页，并预填已提供的连接信息。
+2. 在页面亲自输入用户名、密码或 Token，点击“保存配置”。不要把凭据发到聊天中。
+3. 看到“已保存到本机钥匙串”后，告诉对话“已保存，继续”，或点击“检查连接”。
+
+凭据在页面加密后，经本地插件写入 macOS 钥匙串，普通配置只保存引用。系统可能请求
+钥匙串访问权限；保存不需要页面访问本机网络端口。保存不会自动上传
+资源，也不等于已经通过连接检查。日常更换凭据、重开对话不依赖终端环境或重启 Codex。
+“编辑连接”可更换或清除已保存凭据；修改目标地址需重新填写。取消或离开编辑会清空秘密输入。
+
+目前其他系统使用环境变量；安全存储不可用时不会退回明文文件。页面通道失败时先重新打开
+设置核对保存状态，再重试，不在对话里补发密码。升级到新版后若仍显示旧页面，关闭旧页面、
+重新加载插件连接，必要时重启应用；这是代码升级，与日常凭据更新不同。
+
+dev.13 的页面保存受 Codex 内容安全策略阻止；请更新到 dev.14 或更新版本。仅重启
+旧版不能修复该问题。失败提示不代表密码错误，先核对保存状态，再在新版页面重新填写。
+
+### 使用环境变量
+
+适用于已有环境配置、自动化或不使用页面的情况。配置只保存变量名；启动 Codex 的进程
+需具有这些变量，本地 MCP 还需要显式透传。包通过 OpenAI 扩展引用
 `.mcp.json`，仅放行以下变量名，不包含值，也不继承全部环境：
 
 | 用途 | 变量名 |
@@ -60,18 +126,18 @@ profile 的 `usernameEnv`、`passwordEnv`、`tokenEnv` 使用对应变量名。�
 无需设置变量。需要额外的下游身份时，在自己维护的插件源码 `.mcp.json` 的 `env_vars`
 中增加变量名，重建并重新加载；不要将值写入该文件或编辑安装缓存。portable `mcp.json`
 保留通用启动声明，Codex 的变量透传以专用声明为准。
-修改凭据或身份后重新加载连接并诊断，不在聊天中粘贴密码/token。
+采用环境变量时，修改变量后重新加载插件连接并诊断，不在聊天中粘贴密码/token。
 普通消费身份只需 Client 读取权限及目标资源的可见性授权，不要求 Admin 权限。
 登录或空搜索成功不证明私有资源授权有效；服务端未开启鉴权时也不能证明撤权有效。
 
-明确选择盘点目录和安装目录，例如项目的 `.agents/skills/` 或宿主支持的个人 Skill 根目录。
+明确选择盘点目录和安装目录，例如项目的 `.agents/skills/` 或应用支持的个人 Skill 根目录。
 配置需要绝对路径；插件把系统临时目录别名规范化，拒绝用户资源中的符号链接。
 可以跳过盘点，再从初始化入口重新进入。扫描仅列元数据；上传预检会传输 ZIP，因此必须
 先选中资源与目标。忽略、仅跟踪、本次上传草稿、提交/发布是不同动作。
 
 ## 日常使用
 
-- 说“查找并安装某个 Skill”：搜索、核验确切版本、查看计划、应用，再验证宿主发现与使用。
+- 说“查找并安装某个 Skill”：搜索、核验确切版本、查看计划、应用，再验证 Codex 发现与使用。
 - 说“上传这个 Skill 的修改”：对选中的候选创建上传计划，处理版本与草稿冲突，再应用。
 - 说“发布这个版本”：查看实际可见性、审核状态与计划。submit 可能直接上线；草稿不自动 submit。
 - 说“更新或卸载已安装 Skill”：仅处理本插件拥有的内容，本地修改会阻止覆盖。
@@ -92,5 +158,6 @@ CLI 的动作参数从 `--input /absolute/path/arguments.json` 或 `--input -` �
 MCP 工具一致。不要在参数文件中放秘密值。传输或进程失败后，先按 operation ID 检查状态，
 不要盲目重试。Skill 本地恢复只恢复已知快照，且会重新核验远端读取权限；不回滚远端发布。
 
-升级后保留状态目录。卸载插件使用宿主支持的 remove/uninstall 流程；这不会删除远端资源。
+升级后保留状态目录。卸载插件使用应用支持的 remove/uninstall 流程；这不会删除远端资源。
+如不再保留页面凭据，在卸载前从设置中清除并保存；插件卸载不会自动删除系统钥匙串记录。
 本地托管 Skill 与 MCP 连接应先按归属单独解除，不要删除整个个人 Skill 或 Codex 配置目录。

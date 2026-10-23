@@ -1,11 +1,17 @@
 /* Copyright 2026 Alibaba Group Holding Ltd. SPDX-License-Identifier: Apache-2.0 */
 'use strict';
 globalThis.NacosBridge = class {
-  constructor(onContext, entrypoint = 'unknown') {
+  constructor(onContext, entrypoint = 'unknown', onLaunch = () => {}) {
     this.sequence = 0; this.pending = new Map(); this.host = {}; this.entrypoint = entrypoint;
     window.addEventListener('message', event => {
       if (event.source !== parent || event.data?.jsonrpc !== '2.0') return;
       const message = event.data;
+      if (message.method === 'ui/notifications/tool-result') {
+        const value = message.params?.structuredContent;
+        if (value?.status === 'ready' && value.launchId && (value.route === 'settings' || value.draft)) {
+          this.launch = value; onLaunch(value);
+        }
+      }
       if (message.method === 'ui/notifications/host-context-changed') {
         this.host.hostContext = {...this.host.hostContext, ...message.params}; onContext(message.params);
       }
@@ -57,6 +63,9 @@ globalThis.NacosBridge = class {
   async call(action, args = {}, context) {
     const response = await this.rpc('tools/call', {name: 'nacos_' + action,
       arguments: {...args, ...(context ? {_context: context} : {})}});
+    return this.value(response);
+  }
+  value(response) {
     let value = response.structuredContent;
     if (value === undefined) {
       try { value = JSON.parse(response.content?.find(x => x.type === 'text')?.text || '{}'); }
@@ -66,5 +75,18 @@ globalThis.NacosBridge = class {
     if (response.isError && ['failed', 'result_unknown', 'recovery_required'].includes(value?.status)) return value;
     if (response.isError || value?.error) throw Object.assign(new Error(value.message || '操作未完成'), {kind: value.error, value});
     return value;
+  }
+  async saveCredentials(profile, changes, context) {
+    // Only the encrypted JWE enters postMessage/MCP; this page never fetches localhost.
+    const response = await this.rpc('tools/call', {name: 'nacos_credentials_begin', arguments: {_context: context}});
+    this.value(response);
+    const envelope = await NacosCredentialCrypto.seal(response._meta?.['nacos/credentialChannel'], {profile, changes});
+    try {
+      const result = await this.call('credentials_save', {envelope}, context);
+      if (result?.status !== 'configured') throw new Error();
+      return result;
+    } catch (error) {
+      throw Object.assign(new Error('无法确认凭据保存结果，请重新读取已保存设置核对。'), {kind: error.kind || 'credential_channel'});
+    }
   }
 };

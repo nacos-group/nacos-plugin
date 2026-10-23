@@ -5,6 +5,7 @@
       "args": ["${PLUGIN_ROOT}/server/nacos-registry.pyz", "serve"],
       "cwd": "${PLUGIN_ROOT}",
       "env_vars": [
+        "CODEX_HOME",
         "NACOS_PLUGIN_HOME",
         "NACOS_PLUGIN_CLIENT_USERNAME",
         "NACOS_PLUGIN_CLIENT_PASSWORD",

@@ -22,6 +22,34 @@ globalThis.NacosSettingsModel = (() => {
     none: ['无需认证', 'No authentication'],
     login: ['Nacos 用户名与密码', 'Nacos username & password'],
     token: ['访问令牌', 'Access token'],
+    source: ['凭据提供方式', 'Credential source'],
+    local: ['在页面填写', 'Enter in this page'],
+    environment: ['使用环境变量', 'Use environment variables'],
+    username: ['用户名', 'Username'],
+    password: ['密码', 'Password'],
+    secretToken: ['访问令牌', 'Access token'],
+    localHelp: ['凭据在页面加密后保存到 macOS 钥匙串，明文不写入对话或普通配置。系统可能询问钥匙串访问权限。', 'Credentials are encrypted in this page and saved to macOS Keychain. Plaintext is not included in chat or ordinary configuration. macOS may ask for Keychain access.'],
+    localUnavailable: ['当前系统尚不支持页面凭据存储，请选择环境变量或稍后继续。', 'Page credential storage is unavailable on this system. Use environment variables or continue later.'],
+    credentialSaved: ['已保存到本机钥匙串', 'Saved in local Keychain'],
+    credentialMissing: ['尚未保存凭据', 'Credentials not saved'],
+    replaceCredential: ['更换凭据', 'Replace credentials'],
+    clearCredential: ['清除已保存凭据…', 'Clear saved credentials…'],
+    clearConfirm: ['清除这条连接的凭据？', 'Clear credentials for this connection?'],
+    clearHelp: ['点击“保存配置”后生效。随后需要重新填写凭据才能访问 Nacos。', 'Takes effect when you save configuration. You will need to enter credentials again to access Nacos.'],
+    clearStaged: ['保存配置后清除凭据', 'Clear credentials on save'],
+    confirmClear: ['确认清除', 'Confirm clear'],
+    refill: ['请重新填写凭据。非敏感输入已保留。', 'Enter credentials again. Nonsecret fields have been kept.'],
+    credentialError: ['无法访问系统钥匙串，请检查钥匙串权限后重试。', 'Cannot access system Keychain. Check Keychain permissions and retry.'],
+    channelError: ['未能确认保存结果。请重新读取已保存设置核对；若刚升级插件，请关闭旧页面并重新打开。不要在聊天中发送凭据。', 'Save could not be confirmed. Reload saved settings to check. If you just updated the plugin, close the old page and reopen it. Do not send credentials in chat.'],
+    encryptionError: ['页面无法安全加密凭据，本次未提交。请更新插件并重新打开资源中心，再填写凭据。', 'The page could not encrypt credentials safely; nothing was submitted. Update the plugin, reopen the resource center and enter credentials again.'],
+    reloadSaved: ['放弃草稿并重新读取', 'Discard draft and reload'],
+    scopeError: ['地址或身份已改变，请为新目标重新填写凭据。', 'The URL or identity changed. Enter credentials again for the new destination.'],
+    cleanupPending: ['配置已保存，但旧凭据尚未清除。请检查钥匙串权限，再编辑并保存以重试清理。', 'Configuration saved, but old credentials have not been cleared. Check Keychain permissions, then edit and save to retry cleanup.'],
+    prefilled: ['已填入对话提供的连接信息，请核对并填写凭据后保存。', 'Connection details from the conversation are ready. Review them, enter credentials and save.'],
+    incomingDraft: ['对话提供了新的连接草稿。当前编辑尚未保存。', 'The conversation supplied new connection details. Your current edits are not saved.'],
+    useDraft: ['使用新草稿', 'Use new draft'],
+    keepDraft: ['继续当前编辑', 'Keep current edits'],
+    changedContext: ['连接已被其他页面修改。请重新读取已保存设置后核对。', 'Another page changed the connection. Reload saved settings to review.'],
     usernameEnv: ['用户名环境变量名', 'Username environment variable'],
     passwordEnv: ['密码环境变量名', 'Password environment variable'],
     tokenEnv: ['令牌环境变量名', 'Token environment variable'],
@@ -47,16 +75,23 @@ globalThis.NacosSettingsModel = (() => {
     callHelp: ['接入 MCP 或 Agent，并执行授权调用。', 'Connect MCP or Agent services and make authorized calls.'],
     advanced: ['高级', 'Advanced'],
     connectionId: ['本地连接标识', 'Local connection ID'],
-    connectionIdHelp: ['插件用它关联安装、接入和操作记录，不是 Nacos 服务端 ID。已有连接保持不变。', 'Links local installations, connections and operations. This is not a Nacos server ID. Keep it unchanged for an existing connection.'],
+    connectionIdHelp: ['新连接默认使用本机 hostname，关联本地安装、接入和操作记录；不是 Nacos 服务端 ID。已有连接保持不变。', 'New connections default to this computer’s hostname. Links local records, not a Nacos server ID. Existing IDs stay unchanged.'],
     identityId: ['本地身份标签', 'Local identity label'],
-    identityIdHelp: ['用于隔离不同账号的本地记录，不是登录用户名，也不赋予权限。切换 Nacos 账号时请使用不同标签。', 'Separates local records for different accounts. This is not a login username and grants no permissions. Use a different label when switching Nacos accounts.'],
+    identityIdHelp: ['新连接默认使用当前系统用户名，仅作本地标签，不代表 Nacos 登录账号或权限。切换 Nacos 账号时请使用不同标签。', 'New connections default to the OS username as a local label, not a Nacos account or permission. Use a different label when switching Nacos accounts.'],
     config: ['Codex 配置文件', 'Codex configuration file'],
-    configHelp: ['接入 MCP 时使用的 config.toml 完整路径。', 'Full path to the config.toml file used for MCP connections.'],
+    configHelp: ['接入 MCP 工具服务时写入的 Codex 用户配置文件，默认位于 CODEX_HOME（通常是 ~/.codex）。保存此路径不会修改文件，接入计划确认后才写入受管配置。', 'Codex user configuration for MCP tool services, under CODEX_HOME (normally ~/.codex). Saving this path does not modify the file; a confirmed connection plan writes managed entries.'],
     advancedHelp: ['本地记录与应用适配信息，日常连接无需修改。', 'Local record identifiers and app configuration, usually left unchanged.'],
     scanRoots: ['扫描目录', 'Scan directories'],
     scanHelp: ['从这些目录中盘点可跟踪或上传的技能。保存目录不会自动扫描或上传。', 'Find skills to track or upload in these directories. Saving does not scan or upload files.'],
     installRoots: ['技能安装目录', 'Skill installation directories'],
     installHelpPath: ['安装技能时可选择的目标目录。', 'Available destinations when installing a skill.'],
+    addDefaults: ['添加默认目录', 'Add default directories'],
+    useDefaultConfig: ['使用默认配置文件', 'Use default configuration file'],
+    defaultDirectoryHelp: ['默认安装到 ~/.agents/skills；扫描建议只包含已存在的个人技能目录及 Codex 历史技能目录。保存不会扫描、上传或创建目录。', 'Install defaults to ~/.agents/skills. Scan suggestions include existing personal and legacy Codex skill directories only. Saving does not scan, upload or create directories.'],
+    defaultSkillsUnavailable: ['个人技能默认目录不可用，请指定其他目录。符号链接及系统缓存目录不作为受管目标。', 'The personal skill directory is unavailable. Choose another directory; symlinks and system caches cannot be managed.'],
+    defaultConfigUnavailable: ['未能确定安全的 Codex 配置路径，请核对 CODEX_HOME 或手动填写。', 'A safe Codex configuration path could not be determined. Check CODEX_HOME or enter it manually.'],
+    defaultScanUnavailable: ['部分 Codex 历史技能目录无法作为扫描目录，请按需指定其他目录。', 'Some legacy Codex skill directories cannot be scanned. Specify another directory if needed.'],
+    defaultIdentityUnavailable: ['未能读取完整的本机标签，已使用通用初始值；可在高级设置修改。', 'Local labels could not be fully detected. Generic initial values are editable in Advanced settings.'],
     directory: ['目录', 'Directory'],
     pathPlaceholder: ['完整目录路径', 'Full directory path'],
     addDirectory: ['添加目录', 'Add directory'],
@@ -64,7 +99,7 @@ globalThis.NacosSettingsModel = (() => {
     unset: ['未设置', 'Not configured'],
     directoriesHelp: ['这里只配置目录。盘点和上传请从“我的资源 → 本地技能”进入。', 'Configure directories here. To scan or upload, open “My resources → Local skills”.'],
     saved: ['已保存，尚未检查连接。', 'Saved. Connection not checked yet.'],
-    cancelled: ['已取消编辑。输入已暂存，可重新编辑继续。', 'Editing canceled. Your draft is kept for when you resume.'],
+    cancelled: ['已取消编辑。非敏感输入已暂存；秘密输入已清空。', 'Editing canceled. Nonsecret fields are kept; secret inputs have been cleared.'],
     draftKept: ['有未保存的输入，点击编辑可继续。', 'An unsaved draft is available. Select Edit to resume.'],
     save: ['保存配置', 'Save configuration'],
     saving: ['正在保存…', 'Saving…'],
@@ -80,10 +115,10 @@ globalThis.NacosSettingsModel = (() => {
     checkPassed: ['Nacos 已成功响应资源读取请求。', 'Nacos successfully responded to the resource read request.'],
     checkedAt: ['检查时间', 'Checked at'],
     invalidResult: ['未取得可核实的读取结果，请重新检查。', 'No verifiable read result was returned. Please check again.'],
-    authenticationError: ['认证失败，请核对所引用的用户名、密码或令牌环境变量。', 'Authentication failed. Check the referenced username, password or token variables.'],
+    authenticationError: ['认证失败，请核对已保存的凭据或所引用的环境变量。', 'Authentication failed. Check saved credentials or the referenced environment variables.'],
     networkError: ['无法连接 Nacos，请检查地址、网络及服务是否启动。', 'Cannot reach Nacos. Check the URL, network and whether the service is running.'],
     permissionError: ['当前身份无法读取资源，请检查 Nacos 权限。', 'This identity cannot read resources. Check Nacos permissions.'],
-    requestError: ['请求失败，输入已保留。请检查配置后重试。', 'The request failed. Your input is preserved. Check the configuration and retry.'],
+    requestError: ['请求失败，非敏感输入已保留，秘密输入已清空。请核对已保存设置后重试。', 'The request failed. Nonsecret fields are preserved; secret inputs are cleared. Review saved settings before retrying.'],
     details: ['错误详情', 'Error details'],
     version: ['插件版本', 'Plugin version'],
     invalidUrl: ['请输入有效的 HTTP(S) API 地址，不要包含用户名或密码。', 'Enter a valid HTTP(S) API URL without a username or password.'],
@@ -96,13 +131,13 @@ globalThis.NacosSettingsModel = (() => {
   const scopes = ['read', 'install', 'develop', 'publish', 'call'];
   function sameAuth(a, b) {
     a ||= {type: 'none'}; b ||= {type: 'none'};
-    return ['type', 'usernameEnv', 'passwordEnv', 'tokenEnv'].every(key => a[key] === b[key]);
+    return ['type', 'source', 'credentialRef', 'usernameEnv', 'passwordEnv', 'tokenEnv'].every(key => a[key] === b[key]);
   }
   function isSeparate(p) { return p.adminUrl !== p.clientUrl || !sameAuth(p.clientAuth, p.adminAuth); }
-  function draft(profile) {
-    const p = structuredClone(profile || {id: 'primary', displayName: '', identityId: 'current-user', namespaceId: 'public',
+  function draft(profile, defaults = {}) {
+    const p = structuredClone(profile || {id: defaults.id || 'primary', displayName: '', identityId: defaults.identityId || 'current-user', namespaceId: 'public',
       clientUrl: '', adminUrl: '', clientAuth: {type: 'none'}, adminAuth: {type: 'none'}, allowedOperations: ['read'],
-      scanRoots: [], installRoots: [], codexConfig: ''});
+      scanRoots: defaults.scanRoots || [], installRoots: defaults.installRoots || [], codexConfig: defaults.codexConfig || ''});
     return {profile: p, separateAdmin: !!profile && isSeparate(p)};
   }
   function serialize(d) {
@@ -114,7 +149,7 @@ globalThis.NacosSettingsModel = (() => {
     if (!p.codexConfig) delete p.codexConfig;
     return p;
   }
-  function validate(p, original = p) {
+  function validate(p, original = p, changes = {}) {
     const errors = {};
     for (const key of ['id', 'identityId', 'namespaceId']) if (!p[key]) errors[key] = 'missing';
     for (const key of ['clientUrl', 'adminUrl']) {
@@ -125,6 +160,14 @@ globalThis.NacosSettingsModel = (() => {
     }
     for (const key of ['clientAuth', 'adminAuth']) {
       const auth = p[key];
+      if (auth.source === 'local') {
+        const change = changes[key.replace('Auth', '')];
+        if (change?.clear) continue;
+        if (!change && auth.credentialRef) continue;
+        for (const name of auth.type === 'login' ? ['username', 'password'] : ['token'])
+          if (!change?.[name]) errors[key + '.' + name] = 'missing';
+        continue;
+      }
       for (const field of auth.type === 'login' ? ['usernameEnv', 'passwordEnv'] : auth.type === 'token' ? ['tokenEnv'] : [])
         if (!/^[A-Z][A-Z0-9_]{0,127}$/.test(auth[field] || '')) errors[key + '.' + field] = 'invalidEnv';
     }
@@ -133,5 +176,25 @@ globalThis.NacosSettingsModel = (() => {
     if (p.codexConfig && !/^(\/|[A-Za-z]:[\\/])/.test(p.codexConfig)) errors.codexConfig = 'invalidPath';
     return errors;
   }
-  return {language, t, scopes, draft, serialize, validate, isSeparate};
+  function prefill(profile, patch, defaults = {}) {
+    const d = draft(profile, defaults), keys = ['displayName', 'namespaceId', 'clientUrl', 'adminUrl', 'clientAuth', 'adminAuth', 'allowedOperations', 'scanRoots', 'installRoots', 'codexConfig'];
+    for (const key of keys) if (Object.hasOwn(patch, key)) d.profile[key] = structuredClone(patch[key]);
+    for (const surface of ['client', 'admin']) if (profile && d.profile[surface + 'Url'] !== profile[surface + 'Url'])
+      delete d.profile[surface + 'Auth'].credentialRef;
+    if (patch.adminUrl !== undefined || patch.adminAuth !== undefined) d.separateAdmin = true;
+    return d;
+  }
+  function addDefaultRoots(d, key, defaults = {}) {
+    const current = d.profile[key].map(x => x.trim()).filter(Boolean);
+    d.profile[key] = [...new Set([...current, ...(defaults[key] || [])])].slice(0, 16);
+  }
+  function credentialChanges(d, edits) {
+    const changes = {};
+    for (const surface of ['client', 'admin']) {
+      const key = (surface === 'admin' && !d.separateAdmin ? 'client' : surface) + 'Auth';
+      if (d.profile[key].source === 'local' && edits[key]) changes[surface] = structuredClone(edits[key]);
+    }
+    return changes;
+  }
+  return {language, t, scopes, draft, serialize, validate, isSeparate, prefill, addDefaultRoots, credentialChanges};
 })();

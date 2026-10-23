@@ -13,6 +13,6 @@ def render_ui(entrypoint="global"):
     html = root.joinpath("center.html").read_text(encoding="utf-8")
     css = root.joinpath("theme.css").read_text(encoding="utf-8")
     scripts = "\n".join(root.joinpath(name + ".js").read_text(encoding="utf-8")
-                        for name in ("model", "bridge", "components", "settings-model", "settings", "app"))
+                        for name in ("model", "credential-crypto", "bridge", "components", "settings-model", "settings", "app"))
     scripts = "globalThis.NacosBuild = " + json.dumps({"version": __version__, "entrypoint": entrypoint}) + ";\n" + scripts
     return html.replace("/* APP_STYLE */", css).replace("/* APP_SCRIPT */", scripts)
