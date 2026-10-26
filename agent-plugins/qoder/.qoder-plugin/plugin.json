@@ -1,0 +1,10 @@
+{
+  "name": "nacos-ai-registry",
+  "displayName": "Nacos AI Registry",
+  "version": "0.1.0-dev.6",
+  "description": "Discover, manage and use Nacos Skills, MCP tools and remote Agents in local Qoder. Requires Python 3.11+.",
+  "author": {"name": "Nacos Group"},
+  "license": "Apache-2.0",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}
