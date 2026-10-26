@@ -1549,6 +1549,12 @@ class QoderTests(unittest.TestCase):
         for phrase in ("默认命名空间（ID `public`）", "系统钥匙串（推荐）", "环境变量（高级备用）",
                        "无需命令行或重启", "nacos_credentials", "不回填 credentialRef", "cleanupPending"):
             self.assertIn(phrase, instructions)
+        recovery = instructions.split("3. 保存返回 configured/unverified", 1)[1].split("4. 凭据就绪后", 1)[0]
+        for phrase in ("重新核对最新 status 的 `credentialStorage.available`",
+                       "只有为 true 时才提供“打开安全输入”或\n     “改用系统钥匙串”",
+                       "安全入口不可用时说明原因，不调用 credentials enter，不自动改用环境变量",
+                       "修改认证仍须明确选择来源", "始终提供“设置后再检查”“暂时结束”"):
+            self.assertIn(phrase, recovery)
         self.assertNotIn("公共命名空间", instructions)
         self.assertNotIn("推荐环境变量名", instructions)
         example = json.loads(instructions.split("```json\n", 1)[1].split("\n```", 1)[0])

@@ -8,6 +8,14 @@
   "contracts": "../../specs",
   "contractsRevision": {"branch": "develop", "commit": "e32e6d8", "scope": "agent-plugins/specs"},
   "workspaceContractUpdates": ["onboarding-spec.md structured nonsecret input priority and explicit fallback", "ONB-02 native custom input/cancellation/fallback and ONB-03 secret separation"],
+  "unreleasedContractReview": {
+    "date": "2026-10-26",
+    "baseline": "develop e32e6d8; preserve native-priority ONB-02/03 additions",
+    "adaptations": ["Recheck secure-input availability in credential recovery before offering entry or switching source", "CRED-03: classify SecItem errSecNotAvailable (-25291) as unavailable, separately from missing/denied", "CRED-02/04/10: journal expected bindings and verify ownership before cleanup or rollback; retain unverifiable legacy refs and denied/unavailable reads as cleanupPending"],
+    "scope": "Source changes only; previously installed and archived dev.6 packages are unchanged. No page, optional encrypted envelope, new platform or cross-plugin abstraction added",
+    "validation": "158 checkout and actual extracted temporary source ZIP tests passed (82 adapter/core, 58 credentials, 18 packaging); synthetic stores/dialogs only. Temporary package checksums/full-source/isolated CLI/stdio and byte-identical offline rebuilds passed; qodercli 1.1.46 strict validation zero errors/warnings",
+    "remainingAcceptance": "Actual updated native guidance, real Keychain permissions/lifecycle/restart, real Nacos/downstream and configured uninstall remain pending"
+  },
   "setupInteraction": {
     "version": "0.1.0-dev.6",
     "status": "local-contract-verified; installed-host-acceptance-pending",
@@ -16,6 +24,7 @@
     "nativeInput": "AskUserQuestion required for nonsecret enumerations and preferred for API URL, custom namespace, directory and environment-variable names; built-in Other input, one custom value per turn; no fabricated candidates or select-then-chat detour",
     "fallback": "Only when native question tool is absent or actual invocation reports unsupported/unavailable; explain reason and ask one nonsecret text value; refusal/cancellation is not unavailability and cannot be bypassed; restore native interaction when available",
     "secretBoundary": "Password/Token and login username remain in the OS credential dialog, never ordinary questions or Other input",
+    "credentialRecovery": "Recheck latest credentialStorage.available after saving or a credential failure; offer secure input or switching to Keychain only when true. Otherwise explain unavailability, do not invoke credentials enter or automatically select environment credentials; retain explicitly selected environment retry/end choices",
     "validation": "155 dev.6 checkout tests and all 155 from the actual extracted source ZIP passed, including native-priority guidance and parsed first-URL/downstream-choice examples, complete combined choice and scope boundaries. Package/checksum/strict validation and byte-identical offline rebuilds passed; installation checks and actual dev.6 question rendering remain pending"
   },
   "firstRelease": {

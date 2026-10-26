@@ -122,8 +122,10 @@ description: 在本地 Qoder 用原生分步选项初始化或重新配置 Nacos
    修订冲突或结果未知先重新读取状态，不自动重试。
 3. 保存返回 configured/unverified 只表示本地配置已保存。重新调用 status 并检查 `credentialStatus`：
    - 必需凭据为 missing/reenter/denied/unavailable 时，不得调用 `nacos_diagnose`，不得降级为无认证。
-     钥匙串来源用原生选项提供“打开安全输入”“修改认证”“暂时结束”；选稍后配置则结束凭据步骤。
-     环境变量来源说明缺少哪些**变量名**，提供“改用系统钥匙串”“设置后再检查”“暂时结束”。
+     重新核对最新 status 的 `credentialStorage.available`；只有为 true 时才提供“打开安全输入”或
+     “改用系统钥匙串”。钥匙串来源可提供“修改认证”“暂时结束”；选稍后配置则结束凭据步骤。
+     安全入口不可用时说明原因，不调用 credentials enter，不自动改用环境变量；修改认证仍须明确选择来源。
+     环境变量来源只说明缺少哪些**变量名**，始终提供“设置后再检查”“暂时结束”。
    - 只有用户确认安全输入后，说明将弹出本机对话框，使用最新 `_context` 调用
      `nacos_credentials(action: "enter", surface: "client" 或 "admin")`。等待用户在该对话框输入，
      不把账号密码或 Token 发到聊天，不用 AskUserQuestion 收集秘密。共用 Client/Admin 只输入一次；

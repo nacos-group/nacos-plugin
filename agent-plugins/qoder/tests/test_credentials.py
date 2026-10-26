@@ -233,8 +233,20 @@ class CredentialTests(unittest.TestCase):
         self.assertEqual(self.puts(), [])
 
     def test_shared_save_is_one_scoped_entry_and_reload_uses_same_vault(self):
-        result = self.credentials(surface="admin")
+        original_put = self.vault.put
+        def put(ref, payload):
+            durable = self.durable()
+            self.assertEqual(durable.get("credentialGarbage"), [ref])
+            self.assertEqual(durable.get("credentialGarbageBindings"),
+                             {ref: binding(durable["profile"], "admin")},
+                             "Expected binding must be durable before vault put")
+            self.assertNotIn(ref, self.vault.entries)
+            original_put(ref, payload)
+        with patch.object(self.vault, "put", side_effect=put):
+            result = self.credentials(surface="admin")
         profile = self.durable()["profile"]
+        self.assertEqual(self.durable().get("credentialGarbage", []), [])
+        self.assertEqual(self.durable().get("credentialGarbageBindings", {}), {})
         self.assertEqual(len(refs(profile)), 1)
         ref = profile["clientAuth"]["credentialRef"]
         self.assertEqual(profile["adminAuth"]["credentialRef"], ref)
@@ -329,10 +341,13 @@ class CredentialTests(unittest.TestCase):
         new = self.puts()[-1]
         self.assertEqual(self.durable()["profile"], before["profile"])
         self.assertEqual(self.vault.entries, entries)
-        self.assertIn(("delete", new), self.vault.calls)
-        # Rollback may retain the durable journal; a later save must retry it.
+        self.assertIn(("get", new), self.vault.calls)
+        self.assertNotIn(("delete", new), self.vault.calls)
+        self.assertNotIn(new, self.durable().get("credentialGarbage", []))
+        self.assertNotIn(new, self.durable().get("credentialGarbageBindings", {}))
         self.configure({"displayName": "Retry denied-put cleanup"})
         self.assertNotIn(new, self.durable().get("credentialGarbage", []))
+        self.assertNotIn(("delete", new), self.vault.calls)
         self.assertEqual(self.vault.entries, entries)
 
     def test_unavailable_vault_or_prompt_fails_before_dialog_with_environment_fallback(self):
@@ -566,6 +581,7 @@ class CredentialTests(unittest.TestCase):
         def after_put(ref):
             durable = self.durable()
             self.assertIn(ref, durable.get("credentialGarbage", []), "Journal must be durable before vault put")
+            self.assertEqual(durable.get("credentialGarbageBindings"), {ref: binding(before["profile"], "client")})
             self.assertNotIn(ref, refs(durable["profile"]))
             raise PluginError("credential_store", "Synthetic put failed after creating entry")
         self.vault.after_put = after_put
@@ -705,9 +721,91 @@ class CredentialTests(unittest.TestCase):
         self.assertEqual(self.durable().get("credentialGarbage", []), [])
         self.assertEqual(self.resolve(), VALUES["login"])
 
+    def test_clear_mismatched_binding_keeps_pending_entry_until_safe_retry(self):
+        self.credentials()
+        previous = self.durable()["profile"]
+        ref = next(iter(refs(previous)))
+        expected = binding(previous, "client")
+        self.vault.entries[ref]["binding"]["profileId"] = "foreign-profile"
+        entry = copy.deepcopy(self.vault.entries[ref])
+        self.vault.calls.clear()
+        self.vault.before_delete = self.reject_referenced_delete
+        result = self.credentials("clear")
+        self.assertEqual(result["status"], "cleared")
+        self.assertTrue(result["cleanupPending"])
+        self.assertFalse(refs(self.durable()["profile"]))
+        self.assertEqual(self.vault.entries[ref], entry)
+        self.assertEqual(self.durable().get("credentialGarbage"), [ref])
+        self.assertEqual(self.durable().get("credentialGarbageBindings"), {ref: expected})
+        self.assertIn(("get", ref), self.vault.calls)
+        self.assertNotIn(("delete", ref), self.vault.calls)
+        self.assert_no_secrets(result, self.durable())
+        self.vault.entries[ref]["binding"] = copy.deepcopy(expected)
+        self.vault.calls.clear()
+        self.configure({"displayName": "Retry corrected binding cleanup"})
+        self.assertEqual(self.vault.calls, [("get", ref), ("delete", ref)])
+        self.assertNotIn(ref, self.vault.entries)
+        self.assertEqual(self.durable().get("credentialGarbage", []), [])
+        self.assertEqual(self.durable().get("credentialGarbageBindings", {}), {})
+
+    def test_cleanup_unknown_ownership_and_legacy_journal_keep_entries_pending(self):
+        self.credentials()
+        profile = self.durable()["profile"]
+        live = next(iter(refs(profile)))
+        foreign, legacy = "e" * 32, "f" * 32
+        self.vault.entries[foreign] = {"binding": {**binding(profile, "client"), "profileId": "foreign-profile"},
+                                       "secret": VALUES["login"]}
+        self.vault.entries[legacy] = {"binding": binding(profile, "client"), "secret": VALUES["login"]}
+        entries = copy.deepcopy(self.vault.entries)
+        with self.service.store.locked():
+            self.service.data["credentialGarbage"] = [foreign, legacy]
+            self.service.data.pop("credentialGarbageBindings", None)
+            self.service.store.save()
+        self.vault.calls.clear()
+        for attempt in range(2):
+            with self.subTest(attempt=attempt):
+                self.configure({"displayName": "Keep unknown journal entries " + str(attempt)})
+                self.assertEqual(refs(self.durable()["profile"]), {live})
+                self.assertEqual(self.vault.entries, entries)
+                self.assertEqual(self.durable().get("credentialGarbage"), [foreign, legacy])
+                self.assertEqual(self.durable().get("credentialGarbageBindings", {}), {})
+                for ref in (foreign, legacy):
+                    self.assertNotIn(("delete", ref), self.vault.calls)
+        self.assert_no_secrets(self.durable(), self.status())
+
+    def test_cleanup_get_denied_or_unavailable_keeps_entry_and_binding_for_retry(self):
+        for kind in ("credential_store", "secure_store_unavailable"):
+            with self.subTest(kind=kind):
+                self.credentials()
+                previous = self.durable()["profile"]
+                ref = next(iter(refs(previous)))
+                expected = binding(previous, "client")
+                entry = copy.deepcopy(self.vault.entries[ref])
+                self.vault.fail["get"] = kind
+                self.vault.calls.clear()
+                self.vault.before_delete = self.reject_referenced_delete
+                result = self.credentials("clear")
+                self.assertEqual(result["status"], "cleared")
+                self.assertTrue(result["cleanupPending"])
+                self.assertFalse(refs(self.durable()["profile"]))
+                self.assertEqual(self.vault.entries[ref], entry)
+                self.assertEqual(self.durable().get("credentialGarbage"), [ref])
+                self.assertEqual(self.durable().get("credentialGarbageBindings"), {ref: expected})
+                self.assertIn(("get", ref), self.vault.calls)
+                self.assertNotIn(("delete", ref), self.vault.calls)
+                self.assert_no_secrets(result, self.durable())
+                self.vault.fail.clear()
+                self.vault.calls.clear()
+                self.configure({"displayName": "Retry restored cleanup read " + kind})
+                self.assertEqual(self.vault.calls, [("get", ref), ("delete", ref)])
+                self.assertNotIn(ref, self.vault.entries)
+                self.assertEqual(self.durable().get("credentialGarbage", []), [])
+                self.assertEqual(self.durable().get("credentialGarbageBindings", {}), {})
+
     def test_failed_cleanup_is_journaled_and_retried_after_later_save(self):
         self.credentials()
-        old = next(iter(refs(self.durable()["profile"])))
+        previous = self.durable()["profile"]
+        old = next(iter(refs(previous)))
         self.vault.fail["delete"] = "credential_store"
         self.vault.before_delete = self.reject_referenced_delete
         result = self.credentials()
@@ -716,10 +814,12 @@ class CredentialTests(unittest.TestCase):
         self.assertEqual(set(self.vault.entries), {old, new})
         self.assertIn(old, self.durable().get("credentialGarbage", []))
         self.assertNotIn(new, self.durable().get("credentialGarbage", []))
+        self.assertEqual(self.durable().get("credentialGarbageBindings"), {old: binding(previous, "client")})
         self.vault.fail.clear()
         self.configure({"displayName": "Retry cleanup on save"})
         self.assertEqual(set(self.vault.entries), {new})
         self.assertEqual(self.durable().get("credentialGarbage", []), [])
+        self.assertEqual(self.durable().get("credentialGarbageBindings", {}), {})
         self.assertEqual(result["status"], "saved")
 
     def test_put_rollback_delete_denial_keeps_journal_for_retry(self):
@@ -744,6 +844,7 @@ class CredentialTests(unittest.TestCase):
         live = next(iter(refs(self.durable()["profile"])))
         with self.service.store.locked():
             self.service.data["credentialGarbage"] = [live]
+            self.service.data["credentialGarbageBindings"] = {live: binding(self.service.data["profile"], "client")}
             self.service.store.save()
         self.vault.before_delete = self.reject_referenced_delete
         self.configure({"displayName": "Keep owned entry"})
@@ -751,6 +852,7 @@ class CredentialTests(unittest.TestCase):
         self.assertNotIn(("delete", live), self.vault.calls)
         self.assertEqual(self.resolve(), VALUES["login"])
         self.assertEqual(self.durable().get("credentialGarbage", []), [])
+        self.assertEqual(self.durable().get("credentialGarbageBindings", {}), {})
 
     def test_keychain_login_diagnosis_uses_native_identity_without_environment_secrets(self):
         self.credentials()
@@ -989,11 +1091,21 @@ class NativeKeychainTests(unittest.TestCase):
         with self.assertRaises(PluginError) as missing:
             vault.get(ref)
         self.assertEqual(missing.exception.kind, "credential_missing")
-        vault.sec.SecItemCopyMatching = lambda *args: -25293
-        with self.assertRaises(PluginError) as denied:
-            vault.get(ref)
-        self.assertEqual(denied.exception.kind, "credential_store")
-        self.assertNotIn(TOKEN, str(denied.exception))
+        for code, kind, message in (
+                (-25293, "credential_store", "Keychain denied the operation; allow access and retry"),
+                (-25308, "credential_store", "Keychain denied the operation; allow access and retry"),
+                (-25291, "secure_store_unavailable",
+                 "System Keychain is currently unavailable; retry later")):
+            for action, method, operation in (
+                    ("get", "SecItemCopyMatching", lambda: vault.get(ref)),
+                    ("put", "SecItemAdd", lambda: vault.put(ref, payload)),
+                    ("delete", "SecItemDelete", lambda: vault.delete(ref))):
+                with self.subTest(code=code, action=action), patch.object(vault.sec, method, return_value=code):
+                    with self.assertRaises(PluginError) as caught:
+                        operation()
+                    self.assertEqual(caught.exception.result(), {"error": kind, "message": message})
+                    for value in (USER, PASSWORD, TOKEN, ref, vault.service, str(code)):
+                        self.assertNotIn(value, str(caught.exception))
         before = len(requests)
         with self.assertRaises(PluginError):
             vault.delete("invalid-reference")

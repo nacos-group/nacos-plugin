@@ -120,6 +120,7 @@ class Keychain:
                 if action == "delete":
                     return None
                 raise PluginError("credential_missing", "Saved credential is missing from Keychain; enter it again")
+            require(code != -25291, "System Keychain is currently unavailable; retry later", "secure_store_unavailable")
             require(code == 0, "Keychain denied the operation; allow access and retry", "credential_store")
             if action == "get":
                 length = self.cf.CFDataGetLength(result)

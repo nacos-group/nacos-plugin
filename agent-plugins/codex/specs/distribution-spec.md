@@ -40,17 +40,13 @@ OpenAI 专有信息放在 portable manifest 的 `extensions.com.openai` 下。
 不能仅验证 ZIP 可以解压。格式依据见
 [官方打包说明](https://developers.openai.com/plugins/build/plugins)。
 
-单个插件压缩包只包含该插件，不包含 marketplace 外层目录或其他插件。源码发布包与
-安装包可以分别提供，二者不能混淆。许可证、依赖说明和必要运行文件随对应产物分发；
-个人缓存、连接配置、token、私有资源和无关工作区文件不进入包。
-
-页面构建产物与 MCP UI 资源声明必须一致，来自同一发布版本；本地包无需开发服务器即可
-提供页面所需资源。UI 与工具的协议版本需兼容，升级后过期页面应刷新或重新打开。
-单独记录工具可用、MCP Apps 页面可用和 Extension 入口可用的宿主矩阵，不将其中一项
-测试结果外推到其他项。若采用远端托管页面，另行声明部署、网络和版本配套要求。
+包内容边界、源码关联、私有文件排除、页面与工具版本配套统一遵循
+[通用分发规范](../../specs/distribution-spec.md)。本版页面构建为包内 HTML，并声明两份
+Codex global/thread UI 资源；实际入口支持范围见本适配兼容记录。
 
 初始化工作流可通过 `extensions.com.openai.onboardingSkill` 声明；必须验证用户运行
-setup 后能进入配置和盘点流程，而不是把声明字段当成安装后的自动执行回调。
+setup 后进入[通用初始化](../../specs/onboarding-spec.md)及可选盘点流程；本字段是
+Codex 入口映射，具体工具见[初始化适配](credential-onboarding-spec.md)。
 
 自动提醒的 Hook 增强可按渠道生成独立构建变体，共享同一源码与核心：基础包不依赖 Hooks，
 手动安装的桌面增强包才包含已验证的事件配置。含 Hooks 的包受当前公开目录限制；基础包

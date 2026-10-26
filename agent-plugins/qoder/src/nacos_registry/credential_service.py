@@ -67,20 +67,34 @@ class CredentialMixin:
 
     def journal_dropped_refs(self, previous, profile):
         garbage = self.data.setdefault("credentialGarbage", [])
-        garbage.extend(ref for ref in sorted(credential_refs(previous) - credential_refs(profile)) if ref not in garbage)
+        dropped = credential_refs(previous) - credential_refs(profile)
+        garbage.extend(ref for ref in sorted(dropped) if ref not in garbage)
+        owners = self.data.setdefault("credentialGarbageBindings", {})
+        for surface in ("client", "admin"):
+            ref = (previous or {}).get(surface + "Auth", {}).get("credentialRef")
+            if ref in dropped:
+                owners.setdefault(ref, binding(previous, surface))
 
     def cleanup_credentials(self):
         pending = self.data.get("credentialGarbage", [])
+        owners = self.data.get("credentialGarbageBindings", {})
         live, kept = credential_refs(self.data["profile"]), []
         for ref in pending:
             if ref in live:
                 continue
             try:
-                self.vault.delete(reference(ref))
-            except (PluginError, OSError):
+                value = self.vault.get(reference(ref))
+                require(ref in owners and isinstance(value, dict) and value.get("binding") == owners[ref],
+                        "Credential cleanup ownership could not be verified", "credential_scope")
+                self.vault.delete(ref)
+            except PluginError as exc:
+                if exc.kind != "credential_missing":
+                    kept.append(ref)
+            except OSError:
                 kept.append(ref)
         if kept != pending:
             self.data["credentialGarbage"] = kept
+            self.data["credentialGarbageBindings"] = {ref: owners[ref] for ref in kept if ref in owners}
             self.store.save()
         return kept
 
@@ -123,6 +137,7 @@ class CredentialMixin:
         validate_secret(p[surfaces[0] + "Auth"]["type"], value)
         ref = new_id()
         self.data.setdefault("credentialGarbage", []).append(ref)
+        self.data.setdefault("credentialGarbageBindings", {})[ref] = binding(p, surfaces[0])
         try:
             self.store.save()
             self.vault.put(ref, {"binding": binding(p, surfaces[0]), "secret": value})
@@ -137,7 +152,7 @@ class CredentialMixin:
                 durable = json.loads(safe_path(self.store.file).read_text())
                 self.store.data = durable
                 if ref not in credential_refs(durable.get("profile")):
-                    self.vault.delete(ref)
+                    self.cleanup_credentials()
             except (PluginError, OSError, ValueError):
                 pass
             raise
