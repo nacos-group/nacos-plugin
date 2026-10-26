@@ -1,0 +1,3 @@
+# Only the initial checkout needs this dependency; exported sources vendor it.
+# The runtime uses pure Python PyYAML, including its upstream LICENSE.
+PyYAML==6.0.3
