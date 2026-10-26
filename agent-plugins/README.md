@@ -37,7 +37,7 @@ Qoder 所需源码全部位于自身目录，运行、测试和构建不依赖 C
 | 跨应用演进与分工 | [通用路线图](specs/TODO.md) |
 | Codex 安装、开发与兼容范围 | [Codex 插件](codex/README.md) |
 | Codex 实现与验收状态 | [Codex TODO](codex/specs/TODO.md) |
-| Qoder 源码、安装与验证 | [Qoder 开发预览](#qoder-开发预览)、[能力与兼容记录](qoder/specs/compatibility.json) |
+| Qoder 源码、安装与验证 | [Qoder 开发预览](#qoder-开发预览)、能力与兼容记录 `qoder/specs/compatibility.json` |
 
 各适配独立构建和发布，不加入根 Maven 构建。插件源码、内置工作流与合成样例可以随包
 交付；用户资源、凭据、私有测试环境配置及操作记录留在用户环境。
@@ -63,7 +63,7 @@ MCP 和 A2A 0.3.0 JSONRPC Agent 的发现与调用工具；dev.6 沿用 dev.4 �
 `nacos_credentials` 本机安全录入/清除入口。macOS 原生系统对话框与 Keychain 存储已实现，
 但安装插件中的真实录入、真实 Keychain 读写及 Nacos 认证尚待用户验收；不表示首版全部通过。
 本版仍为对话工作流与 MCP 工具，未实现浏览器设置页、侧边页或资源中心。
-[兼容与能力记录](qoder/specs/compatibility.json)区分实现、隔离验证与真实环境验收。
+兼容与能力记录 `qoder/specs/compatibility.json` 区分实现、隔离验证与真实环境验收。
 
 ### 首版范围与剩余门槛
 
@@ -95,7 +95,7 @@ Keychain，不要求把账号密码或 Token 发到聊天、工具参数、仓�
 Keychain 生命周期及系统对话框取消/失败边界已纳入 CRED 映射，验收仍待完成。
 
 ONB-01–ONB-08、CRED-01–CRED-10、DEF-01–DEF-06 的逐项映射及未通过项保存在
-[兼容记录](qoder/specs/compatibility.json)；真实宿主、真实 Nacos、系统存储和隔离测试分层记录。
+兼容记录 `qoder/specs/compatibility.json`；真实宿主、真实 Nacos、系统存储和隔离测试分层记录。
 
 ### 构建和验证
 
