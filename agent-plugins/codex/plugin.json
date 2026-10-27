@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "nacos-ai-registry",
-  "version": "0.1.0-dev.21",
+  "version": "0.1.0",
   "description": "Find reusable Skills, tools and specialist Agents in Nacos to help complete your task.",
   "repository": "https://github.com/nacos-group/nacos-plugin",
   "license": "Apache-2.0",

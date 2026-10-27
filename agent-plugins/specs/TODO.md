@@ -33,8 +33,8 @@
 
 | 应用 | 源码与专属规范 | 当前状态 |
 | --- | --- | --- |
-| Codex | [源码](../codex/README.md)、[专属规范](../codex/specs/README.md)、[TODO](../codex/specs/TODO.md) | 开发预览；具体能力与剩余门槛见该适配记录。 |
-| Qoder | [安装与首版范围](../README.md#qoder-开发预览)、适配边界 `qoder/specs/README.md`、兼容与验收 `qoder/specs/compatibility.json` | dev.6 对话适配已实现，页面未实现；新通用发现策略、无安装试用和同会话刷新尚待适配。版本证据和剩余验收在专属记录维护，不继承 Codex 结论。 |
+| Codex | [源码](../codex/README.md)、[专属规范](../codex/specs/README.md)、[TODO](../codex/specs/TODO.md) | 源码版本 0.1.0；具体能力、支持范围与剩余门槛见该适配记录。 |
+| Qoder | [安装与首版范围](../README.md#qoder-开发预览)、适配边界 `qoder/specs/README.md`、兼容与验收 `qoder/specs/compatibility.json` | dev.8 已实现对话适配、意图发现、免安装试用与交互式复用询问；页面未实现，同会话原生加载仍依赖应用接口并待实际验收。版本证据和剩余验收在专属记录维护，不继承 Codex 结论。 |
 | WorkBuddy | 后续使用 `agent-plugins/workbuddy/` 与其 `specs/`。 | 尚无实现或兼容承诺。 |
 
 新增适配时先验证应用能力，建立独立的 manifest、安装路径、刷新方式、运行依赖、
