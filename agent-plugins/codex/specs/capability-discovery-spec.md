@@ -1,7 +1,7 @@
 # Codex 能力发现适配
 
 通用触发、搜索预算、资源选择、安装策略、交互询问与当前会话优先使用原则，由
-[能力发现规范 §2–3.4](../../specs/capability-discovery-spec.md)定义；本页记录 Codex 的具体映射。
+[能力发现规范 §2–3.5](../../specs/capability-discovery-spec.md)定义；本页记录 Codex 的具体映射。
 
 ## 1. 入口与设置（dev.20）
 
@@ -22,29 +22,27 @@
 | 通用动作 | 工具与行为 |
 | --- | --- |
 | 状态/发现 | `nacos_status` → `nacos_search`，后续携带返回的 `_context`。上下文改变拒绝旧操作。 |
-| Skill 不安装使用 | `nacos_preview_skill` 通过 Client API 下载、校验确切包并返回一个 UTF-8 文件及文件目录；默认 SKILL.md，引用文件继续用确切版本读取。不落入自动发现目录，不执行脚本。 |
+| Skill 不安装使用 | `nacos_preview_skill` 通过 Client API 下载、校验确切包并返回一个 UTF-8 文件及文件目录；默认 SKILL.md，单文件上限 256 KiB，引用文件用返回的确切版本读取。 |
 | MCP 不安装使用 | `nacos_mcp_trial` 不传 tool 时枚举，传当前目录中的工具名与授权参数时调用。每次核对 Nacos 可见性、端点、独立认证与工具目录；最多 5 页/500 工具，不接收任意 URL。 |
 | Agent 不保存绑定使用 | `nacos_agent_trial` 读取声明的 A2A 0.3.0 JSONRPC 服务，按任务授权发送；不加入 connections。异步任务保留必要的句柄和原端点快照，由 `nacos_agent_task` 查询/取消。 |
 | 持久 Skill | `nacos_install_plan` → `nacos_apply` → `nacos_verify_skill`；原目录、归属、版本、冲突保护不变。 |
 | 持久 MCP/Agent | `nacos_connection_plan` → `nacos_apply`；保存 native MCP 受管 TOML 块或 Agent 绑定，凭据独立，原有策略保留。 |
 
-不安装试用不是原生工具注入。MCP 结果明确返回 `route=registry_mcp_adapter`、`saved=false`、
-`hostLoaded=not_claimed`，它是真正的 MCP tools/call，与 Skill/HTTP 路线和 Codex 原生调用分开。
-服务响应不能覆盖这些本地字段。已有相同 URL 的 native server 被禁用或工具受到
-`enabled_tools/disabled_tools` 限制时，试用不能绕过；应用的其他拒绝与安全限制也不得通过降级规避。
-工具调用可能产生外部影响，按原任务授权执行。默认不重试未知结果，操作记录只留输入摘要及必要状态，
-不记录任务正文、参数明文、凭据或业务响应。必要的审计/任务句柄不等于永久接入。
+试用边界、未知结果处理和记录最小化统一见[通用 §3.5](../../specs/capability-discovery-spec.md#35-无安装试用的调用契约)。
+Codex 将通用事实维度映射为 `route`、`saved`、`hostLoaded`、`currentTurnTools` 和 `realUse`。
+MCP 试用返回 `route=registry_mcp_adapter`、`saved=false`、`hostLoaded=not_claimed`；
+Agent 试用使用 `route=registry_a2a_adapter`。MCP 执行的是 tools/call，不计为 Codex 原生工具注入。
+本地限制读取相同 URL 的 native server 的 `enabled`、`enabled_tools/disabled_tools`；
+没有已保存原生配置时仍保留插件操作范围及任务授权检查。
 
 三个消费 Skill 共用 [task-completion](../skills/nacos-find-capabilities/references/task-completion.md)：
-先交付任务结果，再遵守偏好。`ask` 优先调用当前可用的 `request_user_input_async`；其他模式只使用
-该模式允许的选择工具，不可用时才用会话文字。未答复不写入，资源可独立选择，既有决定不重复问。
-`auto` 只在选中资源有效帮助完成任务后安装，`never` 不安装也不主动询问。用户显式安装独立处理。
+执行通用 §3.2–3.3。Codex 的 `ask` 映射到当前可用的 `request_user_input_async`；
+其他模式只使用该模式允许的选择工具，不可用时才用会话文字。
 
 隐式发现生成的持久计划传 `discoveryReuse=automatic` 或 `confirmed`，计划与 apply 都检查当前偏好。
 `automatic` 只允许 auto，`confirmed` 表示已经获得用户选择且策略不能为 never。
 显式管理省略标记；不得为绕过拒绝而省略。状态服务不推断模型意图，也无法独立证明用户确认和业务价值，
 由工作流判断并遵守授权；这是执行前的策略保护，不是替代模型行为验收的完整授权系统。
-偏好变化不撤销已完成操作，完成计划维持幂等；已有资源不因偏好变更被清理。
 
 ### 2.1 原生 MCP 服务名称（dev.21）
 
@@ -52,12 +50,11 @@
 资源名转小写，保留 ASCII 字母、数字、连字符、下划线，其他连续字符替换为连字符，
 去除首尾分隔符并限制为 32 字符；没有可保留字符时使用 `mcp`。完整名称最多 51 字符，
 仅使用 TOML 裸键及原生工具名称可安全使用的字符；资源中心仍显示完整原始资源名。
-摘要来自完整资源身份，因此不同 registry/namespace 的同名服务保持独立，名称冲突必须拒绝覆盖。
+完整资源身份摘要和冲突保护遵循[通用连接命名与迁移](../../specs/assembly-sync-spec.md#61-原生连接名称与安全迁移)。
 
-已有 `nacos_<20 位摘要>` 配置和旧计划继续兼容。升级、状态读取和试用不自动迁移；
-用户明确重新保存连接时，计划展示旧/新名称，核对旧受管块完整、目标名称未占用以及配置基线，
-一次原子写入完成替换，不留下重复服务。保留无关配置；有用户修改或冲突时拒绝，恢复操作可还原旧名称。
-重命名不会自动更新已加载会话的工具名，仍按第 3 节验证应用加载，不要求用户重新安装远程服务。
+已有 `nacos_<20 位摘要>` 配置和旧计划继续兼容。用户明确重新保存时，`hosts/codex.py`
+对 TOML 受管块执行通用迁移契约：计划携带旧/新名称与摘要，以单文件原子替换实现，恢复记录保留旧块。
+应用加载按第 3 节单独验证。
 
 ## 3. Codex 原生 MCP 刷新
 
