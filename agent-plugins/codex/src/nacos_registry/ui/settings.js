@@ -6,11 +6,12 @@ globalThis.NacosSettings = (() => {
     let group = 'connection', editing = false, draft = null, result = null, notice = null;
     let saving = false, generation = 0, errors = {}, failure = null, advanced = false;
     let secretDraft = {}, incoming = null, dirty = false;
+    let discoveryDraft = null, discoveryNotice = null, discoveryFailure = null;
     const locale = () => api.locale() || 'zh-CN', t = key => M.t(key, locale());
     const redraw = () => api.changed();
     const defaults = () => api.state()?.defaults || {};
     const clearSecrets = () => { secretDraft = {}; for (const input of document.querySelectorAll('[data-private-credential]')) input.value = ''; };
-    const reset = () => { clearSecrets(); generation++; draft = null; editing = false; result = null; notice = null; errors = {}; failure = null; incoming = null; dirty = false; };
+    const reset = () => { clearSecrets(); generation++; draft = null; editing = false; result = null; notice = null; errors = {}; failure = null; incoming = null; dirty = false; discoveryDraft = null; discoveryNotice = null; discoveryFailure = null; };
     window.addEventListener('pagehide', clearSecrets);
     function receiveDraft(value, replace = false) {
       if (draft && (dirty || Object.keys(secretDraft).length || saving) && !replace) { incoming = value; redraw(); return; }
@@ -76,6 +77,22 @@ globalThis.NacosSettings = (() => {
         h('section', {class: 'settings-directory-section'}, h('h3', {}, t(key)), help(t(hint)),
           p[key].length ? h('ul', {class: 'directory-list'}, p[key].map(path => h('li', {}, path))) : help(t('unset'))));
       section.append(h('div', {class: 'actions'}, button(t('editDirectories'), edit, {kind: 'primary', disabled: saving || api.busy()})));
+    }
+    function discoverySettings(section) {
+      const current = M.discoveryPolicy(api.state());
+      const choices = {ask: 'policyAsk', auto: 'policyAuto', never: 'policyNever'};
+      const control = select(t('discoveryPolicy'), 'discoveryInstallPolicy', M.discoveryPolicies.map(x => [x, t(choices[x])]), discoveryDraft ?? current);
+      control.querySelector('select').disabled = saving || api.busy();
+      control.querySelector('select').onchange = event => { discoveryDraft = event.target.value; discoveryNotice = null; redraw(); };
+      section.append(h('h2', {tabindex: '-1'}, t('discovery')), help(t('discoveryHelp')), control, help(t('discoveryLimits')));
+      if (discoveryNotice) section.append(h('p', {role: 'status'}, t(discoveryNotice)));
+      if (discoveryFailure) section.append(h('p', {class: 'error', role: 'alert'}, t(discoveryFailure)));
+      section.append(h('div', {class: 'actions settings-actions'}, button(t(saving ? 'saving' : 'save'), async () => {
+        saving = true; discoveryFailure = null; redraw();
+        try { await api.configureDiscovery(discoveryDraft ?? current); discoveryDraft = null; discoveryNotice = 'discoverySaved'; }
+        catch (error) { discoveryFailure = problem(error); }
+        finally { saving = false; redraw(); }
+      }, {kind: 'primary', disabled: saving || api.busy() || (discoveryDraft ?? current) === current})));
     }
     function editor(section, p) {
       draft ||= M.draft(p, defaults()); const d = draft.profile;
@@ -244,7 +261,7 @@ globalThis.NacosSettings = (() => {
     function render(main) {
       const p = api.state()?.profile;
       main.lang = M.language(locale());
-      const nav = h('nav', {class: 'settings-nav', 'aria-label': t('groups')}, ['connection', 'directories'].map(key => {
+      const nav = h('nav', {class: 'settings-nav', 'aria-label': t('groups')}, ['connection', 'directories', 'discovery'].map(key => {
         const node = button(t(key), () => { if (group !== key) clearSecrets(); group = key; redraw(); }, {kind: 'quiet', disabled: saving});
         node.setAttribute('aria-current', group === key ? 'page' : 'false'); return node;
       }));
@@ -252,9 +269,10 @@ globalThis.NacosSettings = (() => {
       if (incoming) section.append(h('section', {class: 'state-summary'}, h('p', {}, t('incomingDraft')),
         h('div', {class: 'actions'}, button(t('useDraft'), () => receiveDraft(incoming, true), {disabled: saving}),
           button(t('keepDraft'), () => { incoming = null; redraw(); }))));
-      if (notice) section.append(h('p', {class: 'settings-notice', role: 'status'}, t(notice)));
+      if (notice && group !== 'discovery') section.append(h('p', {class: 'settings-notice', role: 'status'}, t(notice)));
       else if (draft && dirty && !editing) section.append(help(t('draftKept')));
-      if (editing || !p) {
+      if (group === 'discovery') discoverySettings(section);
+      else if (editing || !p) {
         for (const warning of defaults().warnings || []) section.append(help(t(warning)));
         editor(section, p);
       }

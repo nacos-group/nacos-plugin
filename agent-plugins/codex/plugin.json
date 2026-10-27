@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "nacos-ai-registry",
-  "version": "0.1.0-dev.15",
-  "description": "Discover, manage and use Nacos AI Registry resources from your agent.",
+  "version": "0.1.0-dev.21",
+  "description": "Find reusable Skills, tools and specialist Agents in Nacos to help complete your task.",
   "repository": "https://github.com/nacos-group/nacos-plugin",
   "license": "Apache-2.0",
   "extensions": {
@@ -12,8 +12,8 @@
       "requires_local_executor": true,
       "interface": {
         "displayName": "Nacos AI Registry",
-        "shortDescription": "Connect to Nacos resources",
-        "longDescription": "Connect Codex to your Nacos AI Registry to discover and manage Skills, connect existing MCP tools, and use remote Agents. Includes an interactive resource center. Requires Python 3.11+ and a local desktop executor; configure your registry connection after installation.",
+        "shortDescription": "Discover reusable capabilities",
+        "longDescription": "Find reusable Skills, MCP tools and specialist Agents in your Nacos AI Registry for identification and lookup, business data, team rules, and domain workflows or automation. Discover help while planning a task or when an initial attempt yields no useful result; ordinary requests need not mention Nacos. Includes an interactive resource center for managing and using resources. Requires Python 3.11+ and a local desktop executor; configure your registry connection after installation. Automatic discovery depends on the application exposing the guidance and the model selecting it.",
         "developerName": "Nacos Group",
         "category": "Developer Tools",
         "websiteURL": "https://nacos.io/",

@@ -6,6 +6,15 @@ const crypto=require('node:crypto');
 const M=globalThis.NacosModel, state=context=>({context,profile:{id:'example'},installations:[],connections:[]});
 require('../src/nacos_registry/ui/settings-model.js');
 const S=globalThis.NacosSettingsModel;
+test('discovery preferences default to ask and keep connection configuration separate',()=>{
+ assert.equal(S.discoveryPolicy({}), 'ask');
+ assert.deepEqual(S.discoveryPolicies, ['ask','auto','never']);
+ for(const policy of S.discoveryPolicies){
+  assert.equal(S.discoveryPolicy({discovery:{installPolicy:policy}}),policy);
+  assert.ok(S.t({ask:'policyAsk',auto:'policyAuto',never:'policyNever'}[policy], 'en-US'));
+ }
+ const p=profile(),d=S.draft(p);S.serialize(d);assert.deepEqual(p,profile());
+});
 function profile(){return {id:'stable',displayName:'Team',identityId:'account-a',namespaceId:'public',
  clientUrl:'https://registry.example.org/nacos',adminUrl:'https://registry.example.org/nacos',
  clientAuth:{type:'login',usernameEnv:'CLIENT_USER',passwordEnv:'CLIENT_PASSWORD'},

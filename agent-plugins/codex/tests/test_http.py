@@ -30,6 +30,29 @@ class HttpContractTests(unittest.TestCase):
             self.assertEqual(args[2],{'accessToken':'client-test-value'})
             self.assertEqual(result['nextCursor'],'opaque')
 
+    def test_capability_search_defaults_to_all_types_and_preserves_filters(self):
+        payload = {"items": [{"name": "query-analyzer", "resourceType": "mcp"}], "nextCursor": "opaque+/="}
+        with patch('nacos_registry.registry.http', return_value=(200, {}, json.dumps({"code": 0, "data": payload}).encode())) as send:
+            first = self.registry.search(query="slow query", tagsAll=["database"])
+            self.registry.search(query="slow query", tagsAll=["database"], cursor=first["nextCursor"])
+        self.assertEqual(send.call_count, 2)
+        queries = []
+        for call in send.call_args_list:
+            url, method, headers, *_ = call.args
+            query = parse_qs(urlsplit(url).query)
+            self.assertEqual(urlsplit(url).netloc, "registry.example.org")
+            self.assertEqual(method, "GET")
+            self.assertEqual(headers, {"accessToken": "client-test-value"})
+            self.assertEqual(query["query"], ["slow query"])
+            self.assertEqual(query["namespaceId"], ["example"])
+            self.assertEqual(query["resourceTypes"], ["skill", "mcp", "agent"])
+            self.assertEqual(query["limit"], ["20"])
+            self.assertEqual(query["tagsAll"], ["database"])
+            queries.append(query)
+        self.assertEqual(queries[1].pop("cursor"), ["opaque+/="])
+        self.assertEqual(queries[0], queries[1])
+        self.assertEqual(first, payload)
+
     def test_upload_never_autopublishes(self):
         with patch('nacos_registry.registry.http', return_value=(200,{},b'{"code":0,"data":"sample"}')) as http:
             self.registry.upload(b'zip-data','CREATE_DRAFT','1.0.0','test')

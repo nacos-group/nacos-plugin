@@ -6,6 +6,7 @@
 | 阅读内容 | 入口 |
 | --- | --- |
 | 资源加载、运行时、模板与执行适配 | [架构与实现](architecture-spec.md) |
+| 普通需求触发资源搜索的 Skill、工具映射及实际验证边界 | [Codex 能力发现适配](capability-discovery-spec.md) |
 | Codex 页面入口、布局、主题、工具与验收映射 | [资源中心 UI 适配](resource-center-ui-spec.md) |
 | 本地对话、侧栏、加密桥接工具及平台支持状态 | [Codex 初始化与凭据适配](credential-onboarding-spec.md) |
 | 跨应用初始化问答、默认值与页面交接 | [通用初始化](../../specs/onboarding-spec.md) |

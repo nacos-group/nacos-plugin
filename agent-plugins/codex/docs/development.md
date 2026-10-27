@@ -65,8 +65,8 @@ node --test tests/test_ui_model.cjs
 RSA-OAEP-256 / A256CBC-HS512；临时 RSA 私钥不导出、不持久化，用后或到期释放。
 Linux 保留环境变量模式，不能用明文文件模拟钥匙串。
 
-82 项 Python 测试使用合成凭据和隔离存储，涵盖目录默认值、无副作用读取、已有配置保留、
-事务、信封边界、一次性/过期/上下文竞争及 RFC 7518 B.3 验证向量；32 项 JS 用例包括默认值与
+108 项 Python 测试使用合成凭据和隔离存储，涵盖 MCP 可读名称与受保护迁移、初始化说明、探针与原生加载的隔离、目录默认值、无副作用读取、已有配置保留、
+事务、信封边界、一次性/过期/上下文竞争及 RFC 7518 B.3 验证向量；33 项 JS 用例包括默认值与
 自定义目录合并、WebCrypto 与独立 Node 密码算法互通、桥接只传
 密文及加密不可用时拒绝提交。浏览器另需在 `connect-src 'none'` 条件验证保存，以覆盖
 Codex 禁止页面访问本机 HTTP 的情况。macOS 原生解密、真实钥匙串及真实内嵌页面单独验收，
@@ -75,3 +75,9 @@ Codex 禁止页面访问本机 HTTP 的情况。macOS 原生解密、真实钥�
 `hosts/codex.py` 从本机解析默认标签和路径，`nacos_status.defaults` 只返回建议，不迁移已保存
 配置。`.mcp.json` 明确透传 `CODEX_HOME`，不继承全部环境变量；安装默认个人 `.agents/skills`，
 已有 `$CODEX_HOME/skills` 仅作为扫描候选。MCP 工作目录是插件安装目录，不是当前对话项目。
+
+
+dev.20 增加 `discovery.py` 的偏好与 Skill 预览、`remote.py` 的不持久接入 MCP/A2A 试用、
+`hosts/native.py` 的现有 App Server Unix WebSocket 刷新。`test_discovery.py` 覆盖执行前策略、
+试用边界、协议错误与线程匹配。`NACOS_PLUGIN_CODEX_CONTROL_SOCKET` 仅供已提供控制入口的本地集成使用；
+插件不启动/重启应用，不通过新 App Server 伪装刷新桌面。工作流与实验边界见[适配规范](../specs/capability-discovery-spec.md)。

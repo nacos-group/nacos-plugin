@@ -7,6 +7,14 @@ globalThis.NacosSettingsModel = (() => {
     unconfigured: ['尚未配置资源中心', 'No connection configured'],
     connection: ['连接与认证', 'Connection & authentication'],
     directories: ['技能目录', 'Skill directories'],
+    discovery: ['能力发现', 'Capability discovery'],
+    discoveryPolicy: ['完成任务后的资源安装', 'Resource installation after a task'],
+    discoveryHelp: ['仅影响解决问题时自动发现的能力。先尝试使用并完成任务，再决定是否安装供下次使用；你主动要求安装时不受此设置影响。', 'Applies only to capabilities discovered while solving a task. Try them first, then decide whether to save them for reuse. Explicit installation requests are independent.'],
+    policyAsk: ['询问是否安装（默认）', 'Ask whether to install (default)'],
+    policyAuto: ['有效使用后自动安装', 'Install automatically after useful use'],
+    policyNever: ['不安装，也不主动询问', 'Do not install or offer installation'],
+    discoveryLimits: ['仅安装本次选中且有效的资源，不安装所有搜索结果。设置不会授权业务写操作、覆盖本地修改或自动提供凭据。MCP 和 Agent 保存的是连接信息。', 'Save only resources selected and used successfully, not every search result. This setting does not authorize business writes, overwrites or new credentials. MCP and Agent reuse saves connection information.'],
+    discoverySaved: ['能力发现偏好已保存。', 'Discovery preference saved.'],
     groups: ['设置分组', 'Settings sections'],
     edit: ['编辑连接', 'Edit connection'],
     editDirectories: ['编辑目录', 'Edit directories'],
@@ -196,5 +204,7 @@ globalThis.NacosSettingsModel = (() => {
     }
     return changes;
   }
-  return {language, t, scopes, draft, serialize, validate, isSeparate, prefill, addDefaultRoots, credentialChanges};
+  const discoveryPolicies = ['ask', 'auto', 'never'];
+  const discoveryPolicy = state => discoveryPolicies.includes(state?.discovery?.installPolicy) ? state.discovery.installPolicy : 'ask';
+  return {language, t, scopes, draft, serialize, validate, isSeparate, prefill, addDefaultRoots, credentialChanges, discoveryPolicies, discoveryPolicy};
 })();

@@ -13,6 +13,7 @@ import sys
 import tempfile
 import threading
 import zipfile
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 version = json.loads((ROOT / "plugin.json").read_text())["version"]
@@ -30,6 +31,24 @@ def check_document_links(root):
             assert target.is_relative_to(root) and target.exists(), (document, link)
 
 
+def check_skills(folder):
+    expected = {"nacos-find-capabilities", "nacos-registry-setup", "nacos-registry-skills", "nacos-registry-remote"}
+    found = set()
+    for skill in (folder / "skills").glob("*/SKILL.md"):
+        parts = skill.read_text().split("---", 2)
+        assert len(parts) == 3 and not parts[0].strip(), skill
+        metadata = yaml.safe_load(parts[1])
+        assert isinstance(metadata, dict) and isinstance(metadata.get("name"), str), skill
+        assert isinstance(metadata.get("description"), str) and metadata["description"].strip(), skill
+        assert metadata["name"] not in found, skill
+        found.add(metadata["name"])
+        assert (folder / "codex" / skill.relative_to(folder)).read_bytes() == skill.read_bytes()
+        policy = skill.parent / "agents/openai.yaml"
+        if metadata["name"] == "nacos-find-capabilities" and policy.exists():
+            assert yaml.safe_load(policy.read_text()).get("policy", {}).get("allow_implicit_invocation", True) is not False
+    assert found == expected, found
+
+
 with tempfile.TemporaryDirectory() as folder:
     folder = Path(folder).resolve()
     with zipfile.ZipFile(archive_path) as archive:
@@ -42,6 +61,7 @@ with tempfile.TemporaryDirectory() as folder:
     manifest = json.loads((folder / "plugin.json").read_text())
     overlay = json.loads((folder / ".codex-plugin/plugin.json").read_text())
     assert manifest["version"] == overlay["version"] == version
+    check_skills(folder)
     presentation = manifest["extensions"]["com.openai"]["interface"]
     assert overlay["interface"] == presentation
     assert manifest["extensions"]["com.openai"]["requires_local_executor"] is True
@@ -73,7 +93,12 @@ with tempfile.TemporaryDirectory() as folder:
     result = subprocess.run([sys.executable, "-I", "-S", str(folder / "server/nacos-registry.pyz"), "--state-dir", str(folder / "state"), "serve"], input="\n".join(map(json.dumps, calls)) + "\n", cwd=folder, env=env, check=True, capture_output=True, text=True)
     responses = [json.loads(x) for x in result.stdout.splitlines()]
     assert responses[0]["result"]["serverInfo"]["version"] == version
+    assert isinstance(responses[0]["result"].get("instructions"), str) and responses[0]["result"]["instructions"].strip()
     assert any(x["name"] == "nacos_scan" for x in responses[1]["result"]["tools"])
+    search_tool = next(x for x in responses[1]["result"]["tools"] if x["name"] == "nacos_search")
+    assert search_tool["annotations"]["readOnlyHint"] is True
+    assert search_tool["annotations"]["destructiveHint"] is False
+    assert "model" in search_tool["_meta"]["ui"]["visibility"]
     ui_tools = [x for x in responses[1]["result"]["tools"] if x["name"] in ("nacos_open_center", "nacos_open_center_panel")]
     assert len(ui_tools) == len({t["_meta"]["ui"]["resourceUri"] for t in ui_tools}) == 2
     for i, tool in enumerate(ui_tools, 3):
@@ -133,6 +158,7 @@ with tempfile.TemporaryDirectory() as folder:
     check_document_links(folder)
     subprocess.run([sys.executable, "scripts/build.py"], cwd=folder / "codex", env=env, check=True, capture_output=True, text=True)
     rebuilt = folder / "codex/dist/nacos-ai-registry"
+    check_skills(rebuilt)
     assert (rebuilt / "server/nacos-registry.pyz").read_bytes() == runtime
     for relative, data in packaged_icons.items():
         assert (rebuilt / relative).read_bytes() == data
