@@ -4,10 +4,21 @@ import json
 import sys
 
 from nacos_registry.errors import PluginError, require
-from nacos_registry.schema import DEFINITIONS, READ_ONLY, validate
+from nacos_registry.schema import DEFINITIONS, DISCOVERY_GUIDANCE, DISCOVERY_SEARCH, READ_ONLY, validate
 
 from . import __version__
 from .service import Service
+
+# Static hint only: no credentials, no local facts and no network access.
+INSTRUCTIONS = DISCOVERY_GUIDANCE + " " + DISCOVERY_SEARCH + (
+    " Finish the user's original task first. Read a Skill with nacos_preview_skill, try a tool with nacos_mcp_trial "
+    "or an Agent with nacos_agent_trial before saving anything; a trial writes no Skill files and saves no binding. "
+    "Only once a resource actually helped, follow status.discovery.installPolicy: ask (default) means asking the "
+    "user by actually calling the native question tool AskUserQuestion instead of listing options in chat, auto "
+    "means saving without asking, never means not saving. Do not change that preference yourself. Prefer finishing "
+    "in the current conversation: saved files or a saved binding are not loading, so ask the user to reload Skills "
+    "or register the native connector, then confirm the capability is really exposed before calling it usable."
+)
 
 
 def tools_list():
@@ -51,7 +62,8 @@ def serve(service=None, source=None, sink=None):
                 requested = params.get("protocolVersion")
                 protocol = requested if requested in ("2024-11-05", "2025-03-26", "2025-06-18") else "2025-03-26"
                 result = {"protocolVersion": protocol, "capabilities": {"tools": {}},
-                          "serverInfo": {"name": "nacos-ai-registry-qoder", "version": __version__}}
+                          "serverInfo": {"name": "nacos-ai-registry-qoder", "version": __version__},
+                          "instructions": INSTRUCTIONS}
                 initialized = True
             elif method == "ping":
                 result = {}

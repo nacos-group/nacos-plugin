@@ -17,9 +17,10 @@ class RemoteMixin:
         return {"ref": self.reference(resourceType, name), "version": detail.get("version"),
                 "description": detail.get("description"), "endpoints": endpoints(resourceType, detail), "checkedAt": time.time()}
 
-    def connection_plan(self, resourceType, name, auth=None, version=None, endpointIndex=0):
+    def connection_plan(self, resourceType, name, auth=None, version=None, endpointIndex=0, discoveryReuse=None):
         require(resourceType == "agent", "Agent binding required")
         self.profile("call")
+        self.check_discovery_reuse(discoveryReuse)
         found = self.discover(resourceType, name, version)
         require(isinstance(endpointIndex, int) and 0 <= endpointIndex < len(found["endpoints"]), "Invalid endpoint selection")
         selected = found["endpoints"][endpointIndex]
@@ -31,6 +32,7 @@ class RemoteMixin:
             require(not token or token not in self.nacos_secret_values(), "Use a separate downstream credential value")
         return self.plan("bind_agent", found["ref"], connectionId=digest(found["ref"]),
                          endpoint=selected, auth=auth, version=found["version"],
+                         discoveryReuse=discoveryReuse,
                          downstreamContext=self.store.authorization_context(auth),
                          previous=copy.deepcopy(self.data["connections"].get(digest(found["ref"]))))
 
@@ -73,6 +75,9 @@ class RemoteMixin:
     def agent_send(self, connectionId, text):
         item = self.connection(connectionId, "agent")
         require(isinstance(text, str) and 0 < len(text) <= 65536, "Invalid Agent message")
+        return self.send_agent(item, text)
+
+    def send_agent(self, item, text):
         operation = self.store.operation("agent_send", item["ref"])
         operation.update(endpoint=item["endpoint"], messageId=new_id(), inputDigest=digest(text))
         self.store.save()

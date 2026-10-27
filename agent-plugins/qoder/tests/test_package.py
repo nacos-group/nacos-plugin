@@ -150,7 +150,11 @@ class BuildContractTests(unittest.TestCase):
         self.parent = Path(self.temporary.name).resolve()
         self.root = self.parent / "qoder"
         self.root.mkdir()
-        manifest = {"name": "nacos-ai-registry", "version": VERSION,
+        manifest = {"name": "nacos-ai-registry", "displayName": "Nacos AI Registry", "version": VERSION,
+                    "description": "Fixture description", "descriptionZh": "夹具描述",
+                    "homepage": "https://nacos.io/", "repository": "https://example.org/fixture",
+                    "category": "developer-tools", "keywords": ["nacos"], "tags": ["skill"],
+                    "logo": "./assets/nacos-icon.png",
                     "skills": "./skills/", "mcpServers": "./.mcp.json"}
         mcp = {"mcpServers": {"nacos-ai-registry": {"command": "python3",
                "args": ["${QODER_PLUGIN_ROOT}/server/nacos-qoder.pyz", "serve"]}}}
@@ -162,6 +166,9 @@ class BuildContractTests(unittest.TestCase):
                    "src/nacos_qoder/host.py": "# fixture\n", "tests/test_package.py": "# fixture\n",
                    "skills/nacos-setup/SKILL.md": "---\nname: nacos-setup\n---\nSetup fixture\n",
                    "skills/nacos-registry/SKILL.md": "---\nname: nacos-registry\n---\nRegistry fixture\n",
+                   "skills/nacos-find-capabilities/SKILL.md":
+                       "---\nname: nacos-find-capabilities\n---\nDiscovery fixture\n",
+                   "skills/nacos-find-capabilities/references/task-completion.md": "Reuse fixture\n",
                    "skills/.metadata.json": "{}",
                    # The stub exercises dependency export; no installed dependency is needed by these tests.
                    "vendor/pyyaml/yaml/__init__.py": '__version__ = "6.0.3"\n',
@@ -177,6 +184,9 @@ class BuildContractTests(unittest.TestCase):
             target = self.root / name
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(data, encoding="utf-8")
+        icon = self.root / "assets/nacos-icon.png"
+        icon.parent.mkdir(exist_ok=True)
+        icon.write_bytes(b"\x89PNG\r\n\x1a\n" + b"fixture icon")
         for name in ("build.py", "check_package.py"):
             target = self.root / "scripts" / name
             target.parent.mkdir(exist_ok=True)

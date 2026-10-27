@@ -122,6 +122,17 @@ def check_manifest(entries, version, prefix=""):
             "Qoder manifest name/version mismatch")
     require(manifest.get("skills") == "./skills/" and manifest.get("mcpServers") == "./.mcp.json",
             "Manifest skills/MCP references are not portable")
+    require(manifest.get("logo") == "./assets/nacos-icon.png"
+            and entries[prefix + "assets/nacos-icon.png"].startswith(b"\x89PNG\r\n\x1a\n"),
+            "Manifest must declare the bundled PNG logo")
+    require(all(isinstance(manifest.get(field), str) and manifest[field].strip()
+                for field in ("displayName", "description", "descriptionZh", "homepage", "repository", "category")),
+            "Manifest is missing presentation metadata")
+    require(all(isinstance(manifest.get(field), list) and manifest[field]
+                and all(isinstance(item, str) and item.strip() for item in manifest[field])
+                for field in ("keywords", "tags")), "Manifest keywords/tags must be non-empty strings")
+    require(all(not manifest.get(field, "").startswith("http://") for field in ("homepage", "repository")),
+            "Manifest links must not use plain HTTP")
     for text in strings(manifest):
         require("${" not in text and "{{" not in text and not text.startswith(("/", "~", "file:")),
                 "Manifest contains an unresolved placeholder/absolute local path")
@@ -216,14 +227,14 @@ def check_packages(archive_path, source_path):
     require(source_entries(install) == sources, "Installer does not contain the same complete source")
     check_manifest(install, version)
     check_manifest(source, version, "qoder/")
-    for prefix in (".qoder-plugin/", "skills/"):
+    for prefix in (".qoder-plugin/", "skills/", "assets/"):
         copied = {name: data for name, data in install.items() if name.startswith(prefix)}
         originals = {name[len("qoder/"):]: data for name, data in sources.items()
                      if name.startswith("qoder/" + prefix)}
         require(copied == originals, f"Installation/source copy mismatch: {prefix}")
     require(install[".mcp.json"] == sources["qoder/.mcp.json"], "Installation/source MCP mismatch")
     extras = {"build-info.json", "server/nacos-qoder.pyz", ".mcp.json", "THIRD_PARTY_NOTICES.txt"}
-    require(all(name in sources or name in extras or name.startswith((".qoder-plugin/", "skills/"))
+    require(all(name in sources or name in extras or name.startswith((".qoder-plugin/", "skills/", "assets/"))
                 for name in install), "Unexpected installer member/host manifest")
     runtime = install["server/nacos-qoder.pyz"]
     runtime_files = read_archive(io.BytesIO(runtime), checksum=False)

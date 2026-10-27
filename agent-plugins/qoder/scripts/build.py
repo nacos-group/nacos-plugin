@@ -21,15 +21,17 @@ PY_YAML_VERSION = "6.0.3"
 TIMESTAMP = (2026, 1, 1, 0, 0, 0)
 FILE_MODE = 0o100644
 ENTRYPOINT = b"from nacos_qoder.__main__ import main\nmain()\n"
-SOURCE_DIRS = ("src", "scripts", "tests", "skills", ".qoder-plugin", "specs")
+SOURCE_DIRS = ("src", "scripts", "tests", "skills", "assets", ".qoder-plugin", "specs")
 SOURCE_FILES = (".mcp.json", "requirements-build.txt", ".gitignore")
 CORE_MODULES = ("__init__", "schema", "service", "registry", "remote", "package", "store",
-                "errors", "transport", "downstream", "credentials", "credential_service")
+                "errors", "transport", "downstream", "discovery", "credentials", "credential_service")
 REQUIRED = tuple("qoder/src/nacos_qoder/" + name + ".py"
                  for name in ("__init__", "__main__", "server", "service", "host"))
 REQUIRED += tuple("qoder/src/nacos_registry/" + name + ".py" for name in CORE_MODULES)
 REQUIRED += ("qoder/specs/compatibility.json", "qoder/skills/nacos-setup/SKILL.md",
-             "qoder/skills/nacos-registry/SKILL.md", "qoder/scripts/build.py",
+             "qoder/skills/nacos-registry/SKILL.md", "qoder/skills/nacos-find-capabilities/SKILL.md",
+             "qoder/skills/nacos-find-capabilities/references/task-completion.md",
+             "qoder/assets/nacos-icon.png", "qoder/scripts/build.py",
              "qoder/scripts/check_package.py", "qoder/tests/test_package.py")
 EXCLUDED_DIRS = {"__pycache__", ".git", ".venv", "venv", "dist", "node_modules",
                  ".pytest_cache", ".mypy_cache", ".ruff_cache", ".qoder", ".codex", ".idea"}
@@ -217,7 +219,7 @@ def build(root=None):
             "entrypoint": "nacos_qoder.__main__.main"}
     exported = {**sources, "build-info.json": json_bytes(info)}
     bundle = dict(exported)  # Installation contains the *same* complete rebuildable source.
-    for prefix in (".qoder-plugin/", "skills/"):
+    for prefix in (".qoder-plugin/", "skills/", "assets/"):
         for name, data in sources.items():
             if name.startswith("qoder/" + prefix):
                 bundle[name[len("qoder/"):]] = data
