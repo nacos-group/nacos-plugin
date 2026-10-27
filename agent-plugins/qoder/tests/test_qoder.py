@@ -246,6 +246,48 @@ class QoderTests(unittest.TestCase):
         self.assertEqual(self.remote.calls, [])
         self.assertNotIn("codexConfig", result["defaults"])
 
+    def test_status_separates_same_session_loading_stages(self):
+        host = self.call("status")["host"]
+        self.assertEqual(host["sameSessionLoading"], {"skills": "user_reload_required", "mcp": "native_tool_mediated",
+                                                      "pluginCanRefresh": False, "restart": "not_permitted",
+                                                      "newConversation": "last_resort"})
+        self.assertEqual(host["loadEvidence"], {"refreshAccepted": "host_reload_or_connector_result",
+                                                "runtimeConnected": "native_connector_query",
+                                                "currentTurnTools": "host_tool_discovery",
+                                                "businessCall": "separate_real_use"})
+        self.assertFalse(host["nativeEntryName"]["renameProvesReload"])
+        self.assertIn("current conversation", host["skillRefresh"])
+        self.assertIn("current conversation", host["mcpRegistration"])
+
+    def test_native_entry_name_stays_recognizable_and_identity_bound(self):
+        item = self.bind()
+        self.assertEqual(item["hostRegistration"]["entryName"],
+                         "nacos_test_mcp_" + digest(item["ref"])[:12])
+        self.assertNotIn("migration", item["hostRegistration"])
+        other = self.call("configure", profile={**self.profile, "namespaceId": "other"})
+        with patch.object(self.remote, "endpoint", "tools.example.org"):
+            moved = self.bind()
+        self.assertTrue(other and moved["hostRegistration"]["entryName"].startswith("nacos_test_mcp_"))
+        self.assertNotEqual(moved["hostRegistration"]["entryName"], item["hostRegistration"]["entryName"])
+        self.assertNotIn("migration", moved["hostRegistration"])
+        with patch("nacos_registry.remote.JsonRpc") as rpc:
+            rpc.return_value.initialize_mcp.return_value = {"capabilities": {"tools": {}}}
+            rpc.return_value.request.return_value = {"tools": []}
+            probe = self.call("mcp_probe", connectionId=moved["id"])
+        self.assertEqual(probe["nativeEntryName"], moved["hostRegistration"]["entryName"])
+        self.assertIn("proves neither", probe["loadingHint"])
+
+    def test_renamed_entry_reports_migration_instead_of_silent_overwrite(self):
+        item = self.bind()
+        stored = self.service.data["connections"][item["id"]]
+        stored["hostRegistration"] = {**stored["hostRegistration"], "entryName": "nacos_" + item["id"][:20]}
+        self.service.store.save()
+        plan = self.call("connection_plan", resourceType="mcp", name="test-mcp")
+        registration = plan["hostRegistration"]
+        self.assertEqual(registration["previousEntryName"], "nacos_" + item["id"][:20])
+        self.assertEqual(registration["entryName"], "nacos_test_mcp_" + digest(item["ref"])[:12])
+        self.assertIn("never overwrite or delete silently", registration["migration"])
+
     def test_codex_and_plaintext_or_page_auth_are_rejected(self):
         for field, value in (("codexConfig", str(self.root / "config.toml")),
                              ("clientAuth", {"type": "token", "token": "forbidden"}),
@@ -1584,6 +1626,188 @@ class QoderTests(unittest.TestCase):
                        "合并已选 Skill 用途后去重", "也不自动注册 MCP 或调用 Agent"):
             self.assertIn(phrase, instructions)
         self.assertLessEqual(len(instructions.splitlines()), 500)
+
+    def test_discovery_preference_defaults_to_ask_and_persists_without_touching_context(self):
+        status = self.call("status")
+        self.assertEqual(status["discovery"]["installPolicy"], "ask")
+        self.assertEqual(status["discovery"]["searchBudget"], {"requests": 3, "itemsPerRequest": 20,
+                                                               "paginationCounts": True})
+        self.assertEqual(status["discovery"]["selfChange"], "not_permitted")
+        self.assertIn("AskUserQuestion", status["discovery"]["askInterface"])
+        self.assertIn("not consent", status["discovery"]["askInterface"])
+        for policy in ("auto", "never", "ask"):
+            with self.subTest(policy=policy):
+                self.assertEqual(self.call("configure_discovery", installPolicy=policy)["installPolicy"], policy)
+                current = self.call("status")
+                self.assertEqual(current["discovery"]["installPolicy"], policy)
+                self.assertEqual(current["context"], status["context"])
+                self.assertEqual(current["configurationRevision"], status["configurationRevision"])
+        self.assertEqual(self.fresh_service().invoke("status")["discovery"]["installPolicy"], "ask")
+        with self.assertRaises(PluginError):
+            validate({"installPolicy": "always"}, DEFINITIONS["configure_discovery"][1])
+
+    def test_implicit_reuse_is_checked_when_planning_and_again_when_applying(self):
+        self.assert_rejected_without_save("install_plan",
+            {"name": "sample-skill", "installRoot": self.profile["installRoots"][0], "discoveryReuse": "automatic"},
+            "permission")
+        self.call("configure_discovery", installPolicy="never")
+        self.assert_rejected_without_save("install_plan",
+            {"name": "sample-skill", "installRoot": self.profile["installRoots"][0], "discoveryReuse": "confirmed"},
+            "permission")
+        self.call("configure_discovery", installPolicy="auto")
+        plan = self.call("install_plan", name="sample-skill", installRoot=self.profile["installRoots"][0],
+                         discoveryReuse="automatic")
+        self.assertEqual(plan["discoveryReuse"], "automatic")
+        self.call("configure_discovery", installPolicy="ask")
+        self.assert_rejected_without_save("apply", {"planId": plan["id"]}, "permission")
+        self.assertEqual(self.call("status")["installations"], [])
+        confirmed = self.call("install_plan", name="sample-skill", installRoot=self.profile["installRoots"][0],
+                              discoveryReuse="confirmed")
+        self.assertEqual(self.call("apply", planId=confirmed["id"])["status"], "completed")
+        explicit = self.call("install_plan", name="sample-skill", installRoot=self.profile["installRoots"][0])
+        self.assertIsNone(explicit["discoveryReuse"])
+
+    def test_agent_binding_records_discovery_provenance(self):
+        self.call("configure_discovery", installPolicy="never")
+        self.assert_rejected_without_save("connection_plan",
+            {"resourceType": "agent", "name": "test-agent", "discoveryReuse": "confirmed"}, "permission")
+        self.call("configure_discovery", installPolicy="ask")
+        plan = self.call("connection_plan", resourceType="agent", name="test-agent", discoveryReuse="confirmed")
+        self.assertEqual(plan["discoveryReuse"], "confirmed")
+        self.assertEqual(self.call("apply", planId=plan["id"])["status"], "completed")
+
+    def test_preview_skill_reads_exact_version_without_installing_or_executing(self):
+        result = self.call("preview_skill", name="sample-skill")
+        self.assertEqual(result["version"], "1.0.0")
+        self.assertEqual(result["ref"]["resourceType"], "skill")
+        self.assertIn("Harmless sample.", result["content"])
+        self.assertEqual([item["path"] for item in result["files"]], ["SKILL.md"])
+        self.assertEqual((result["saved"], result["installed"], result["execution"]),
+                         (False, False, "not_performed"))
+        self.assertEqual(result["hostLoaded"], "not_claimed")
+        self.assertEqual(result["contentTrust"], "untrusted_resource")
+        self.assertEqual(self.call("status")["installations"], [])
+        self.assertFalse(Path(self.profile["installRoots"][0]).exists())
+        self.assertEqual(result["reuse"]["installPolicy"], "ask")
+        self.assertIn("AskUserQuestion", result["reuse"]["askInterface"])
+        self.call("configure_discovery", installPolicy="auto")
+        self.assertNotIn("askInterface", self.call("preview_skill", name="sample-skill")["reuse"])
+        self.call("configure_discovery", installPolicy="ask")
+        self.assert_rejected_without_save("preview_skill", {"name": "sample-skill", "file": "missing.md"}, "not_found")
+        oversized = {"SKILL.md": skill()["SKILL.md"], "big.txt": b"x" * (256 * 1024 + 1)}
+        with patch.object(self.remote, "content", oversized):
+            self.assert_rejected_without_save("preview_skill", {"name": "sample-skill", "file": "big.txt"}, "unsupported")
+        with patch.object(self.remote, "content", {"SKILL.md": skill()["SKILL.md"], "raw.txt": b"\xff\xfe\x00"}):
+            self.assert_rejected_without_save("preview_skill", {"name": "sample-skill", "file": "raw.txt"}, "unsupported")
+
+    def test_mcp_trial_binds_to_discovered_endpoint_and_saves_nothing(self):
+        with patch("nacos_registry.discovery.JsonRpc") as rpc:
+            rpc.return_value.initialize_mcp.return_value = {"capabilities": {"tools": {}}}
+            rpc.return_value.request.return_value = {"tools": [{"name": "lookup"}]}
+            listed = self.call("mcp_trial", name="test-mcp")
+            self.assertEqual(listed["tools"], [{"name": "lookup"}])
+            self.assertEqual(listed["realUse"], "not_performed")
+            self.assertEqual((listed["saved"], listed["route"]), (False, "registry_mcp_adapter"))
+            self.assertEqual(listed["hostLoaded"], "not_claimed")
+            self.assertEqual(listed["currentTurnTools"], "not_claimed")
+            self.assertIn("AskUserQuestion", listed["reuse"]["askInterface"])
+            self.assertEqual(rpc.call_args.args[0], "https://tools.example.org:443/mcp")
+            rpc.return_value.request.return_value = {"content": [{"type": "text", "text": "ok"}]}
+            called = self.call("mcp_trial", name="test-mcp", tool="lookup", arguments={"clue": "synthetic"})
+            self.assertEqual(called["realUse"], "completed")
+        self.assertEqual(self.call("status")["connections"], [])
+        operation = self.call("inspect_operation", operationId=called["operationId"])
+        self.assertEqual((operation["action"], operation["status"], operation["tool"]),
+                         ("mcp_trial", "completed", "lookup"))
+        self.assertEqual(operation["inputDigest"], digest({"clue": "synthetic"}))
+        self.assertNotIn("synthetic", json.dumps(operation))
+
+    def test_mcp_trial_tool_catalogue_is_paginated_and_bounded(self):
+        with patch("nacos_registry.discovery.JsonRpc") as rpc:
+            rpc.return_value.initialize_mcp.return_value = {"capabilities": {"tools": {}}}
+            rpc.return_value.request.side_effect = [{"tools": [{"name": "first"}], "nextCursor": "page-2"},
+                                                    {"tools": [{"name": "second"}]}]
+            result = self.call("mcp_trial", name="test-mcp")
+            self.assertEqual([tool["name"] for tool in result["tools"]], ["first", "second"])
+            self.assertEqual(rpc.return_value.request.call_args_list[1].args[1], {"cursor": "page-2"})
+            rpc.return_value.request.side_effect = [{"tools": [], "nextCursor": "same"}, {"tools": [], "nextCursor": "same"}]
+            self.assert_rejected_without_save("mcp_trial", {"name": "test-mcp"}, "protocol")
+            rpc.return_value.request.side_effect = [{"tools": [{"name": "t"}], "nextCursor": "c%d" % index}
+                                                    for index in range(6)]
+            self.assert_rejected_without_save("mcp_trial", {"name": "test-mcp"}, "unsupported")
+            rpc.return_value.request.side_effect = [{"tools": [{"name": "t%d" % index} for index in range(501)]}]
+            self.assert_rejected_without_save("mcp_trial", {"name": "test-mcp"}, "unsupported")
+
+    def test_agent_trial_sends_authorized_task_without_saving_a_binding(self):
+        with patch("nacos_registry.remote.JsonRpc") as rpc:
+            rpc.return_value.request.return_value = {"kind": "task", "id": "remote-task",
+                                                     "status": {"state": "working"}}
+            result = self.call("agent_trial", name="test-agent", text="Synthetic test input")
+            handle = result["taskHandle"]
+            self.assertEqual((result["saved"], result["route"]), (False, "registry_a2a_adapter"))
+            self.assertIn("AskUserQuestion", result["reuse"]["askInterface"])
+            self.remote.endpoint = "moved.example.org"
+            self.call("agent_task", taskHandle=handle, action="get")
+            self.assertTrue(all(call.args[0] == "https://tools.example.org/rpc" for call in rpc.call_args_list))
+        self.assertEqual(self.call("status")["connections"], [])
+        self.assertNotIn("Synthetic test input", self.service.store.file.read_text())
+
+    def test_trials_require_the_call_scope_and_separate_downstream_credentials(self):
+        profile = {**self.profile, "allowedOperations": ["read", "install"],
+                   "clientAuth": {"type": "token", "tokenEnv": "NACOS_PLUGIN_CLIENT_TOKEN"}}
+        self.call("configure", profile=profile)
+        self.assert_rejected_without_save("mcp_trial", {"name": "test-mcp"}, "permission")
+        self.assert_rejected_without_save("agent_trial", {"name": "test-agent", "text": "Synthetic"}, "permission")
+        self.call("configure", profile={**profile, "allowedOperations": self.profile["allowedOperations"]})
+        self.assert_rejected_without_save(
+            "mcp_trial", {"name": "test-mcp", "auth": {"type": "bearer", "tokenEnv": "NACOS_PLUGIN_CLIENT_TOKEN"}},
+            "validation")
+
+    def test_find_capabilities_skill_carries_cross_app_triggers_and_bounds(self):
+        root = Path(__file__).resolve().parents[1] / "skills/nacos-find-capabilities"
+        instructions = (root / "SKILL.md").read_text()
+        completion = (root / "references/task-completion.md").read_text()
+        self.assertIn("Discover reusable capabilities in Nacos", instructions)
+        self.assertIn("Ordinary requests need not mention Nacos", instructions)
+        for phrase in ("共用一次发现预算", "最多 3 次搜索请求", "`limit: 20`", "mcp_list", "mcp_get", "mcp_call",
+                       "nacos_status", "nacos_search", "discovery.installPolicy", "nacos_preview_skill",
+                       "nacos_mcp_trial", "nacos_agent_trial", "nacos-setup", "最多展示", "改查询或上下文后丢弃 cursor",
+                       "不带运单号和客户数据", "不触发", "不可信数据", "references/task-completion.md",
+                       "必须实际调用 Qoder 原生 `AskUserQuestion`", "未回答、关闭或超时都不是同意"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, instructions)
+        for phrase in ("`ask`（缺省）", "`auto`", "`never`", "AskUserQuestion", "discoveryReuse: \"automatic\"",
+                       "discoveryReuse: \"confirmed\"", "nacos_apply", "query_mcp", "manage_mcp(action: \"add\")",
+                       "重新加载 Skills", "不自动重启", "未回答、关闭或超时都不是同意",
+                       "nacos_uninstall_plan", "不保存注册中心密码", "插件不能自行刷新宿主"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, completion)
+        self.assertLessEqual(len(instructions.splitlines()), 500)
+        self.assertLessEqual(len(completion.splitlines()), 500)
+
+    def test_initialize_offers_static_discovery_instructions_only(self):
+        request = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "initialize",
+                              "params": {"protocolVersion": "2025-03-26"}})
+        sink = io.StringIO()
+        serve(self.service, io.StringIO(request + "\n"), sink)
+        result = json.loads(sink.getvalue())["result"]
+        instructions = result["instructions"]
+        for phrase in ("reusable capability already exists in the configured Nacos AI Registry",
+                       "does not have to mention Nacos", "nacos_preview_skill", "nacos_mcp_trial",
+                       "status.discovery.installPolicy", "ask (default)", "reload Skills",
+                       "actually calling the native question tool AskUserQuestion",
+                       "at most 3 searches of up to 20 items"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, instructions)
+        self.assertNotIn(self.profile["clientUrl"], instructions)
+        self.assertNotIn("test-user", instructions)
+        search = DEFINITIONS["search"][0]
+        self.assertIn("reusable capability already exists in the configured Nacos AI Registry", search)
+        self.assertIn("at most 3 searches of up to 20 items", search)
+        for tool in ("configure_discovery", "preview_skill", "mcp_trial", "agent_trial"):
+            with self.subTest(tool=tool):
+                self.assertIn("AskUserQuestion", DEFINITIONS[tool][0])
+
 
 
 class LocalHttpTests(unittest.TestCase):

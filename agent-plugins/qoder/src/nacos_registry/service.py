@@ -15,6 +15,7 @@ from nacos_qoder.host import local_defaults
 from . import package
 from .credential_service import CredentialMixin, without_ref
 from .credentials import Keychain, NativePrompt
+from .discovery import DiscoveryMixin
 from .registry import Registry
 from .remote import RemoteMixin
 from .store import Store, atomic_write, digest, new_id, safe_path
@@ -56,7 +57,7 @@ def file_changes(before, after):
             "modified": sorted(x for x in before.keys() & after.keys() if before[x] != after[x])}
 
 
-class Service(CredentialMixin, RemoteMixin):
+class Service(CredentialMixin, DiscoveryMixin, RemoteMixin):
     def __init__(self, store=None, registry_factory=Registry, vault=None, prompt=None):
         self.store = store or Store()
         self.registry_factory = registry_factory
@@ -231,6 +232,7 @@ class Service(CredentialMixin, RemoteMixin):
         return {"profile": p, "context": context, "configurationRevision": self.data.get("configurationRevision", 0),
                 "defaults": local_defaults(self.allowed_root), "onboarding": self.data["onboarding"], "diagnosis": diagnosis,
                 "credentialStorage": self.credential_storage(),
+                "discovery": self.discovery_settings(),
                 "credentialStatus": self.credential_status(), "cleanupPending": bool(self.data.get("credentialGarbage")),
                 "scan": scan if scan and current(scan) else None,
                 "installations": [x for x in self.data["installations"].values() if current(x)],
@@ -443,10 +445,11 @@ class Service(CredentialMixin, RemoteMixin):
                 "namespaceId": self.profile()["namespaceId"], "files": [{"path": name, "bytes": len(data)} for name, data in sorted(content.items())],
                 "contentHash": digest(package.hashes(content))}
 
-    def install_plan(self, name, installRoot, version=None, label=None):
+    def install_plan(self, name, installRoot, version=None, label=None, discoveryReuse=None):
         r = self.registry("install")
         root = str(safe_path(installRoot))
         require(root in self.profile()["installRoots"], "Installation root not configured", "permission")
+        self.check_discovery_reuse(discoveryReuse)
         resolved, md5, data = r.download(name, version, label)
         files = package.unpack(data)
         require(package.metadata(files["SKILL.md"])["name"] == name, "Resource identity differs from package Skill name", "conflict")
@@ -464,6 +467,7 @@ class Service(CredentialMixin, RemoteMixin):
                          snapshot=self.snapshot(files), hashes=package.hashes(files), version=resolved, serverMd5=md5,
                          selector={"version": version, "label": label}, previous=copy.deepcopy(old),
                          changes=file_changes(current, package.hashes(files)),
+                         discoveryReuse=discoveryReuse,
                          loadState="pending_host_verification")
 
     def skill_status(self, name, version=None):
@@ -502,6 +506,7 @@ class Service(CredentialMixin, RemoteMixin):
         kind = p["kind"]
         scopes = {"upload": "develop", "submit": "publish", "publish": "publish", "install": "install", "uninstall": "install", "restore": "install", "mcp_config": "install", "bind_agent": "call", "disconnect": "install"}
         self.profile(scopes[kind])
+        self.check_discovery_reuse(p.get("discoveryReuse"))
         operation = self.store.operation(kind, p["ref"])
         operation["planId"] = planId
         p.update(status="started", operationId=operation["id"])
@@ -713,7 +718,8 @@ class Service(CredentialMixin, RemoteMixin):
             raise
         require(package.disk_hashes(item["target"]) == item["hashes"], "Local content differs from installed baseline", "conflict")
         return {"installationId": installationId, "files": "verified", "remote": "readable", "loadState": item["loadState"],
-                "next": "Verify Skill discovery and real use in the target Qoder session; file checks do not prove loading"}
+                "next": "Ask the user to reload Skills in the current Qoder conversation and confirm the Skill is "
+                        "listed; file checks do not prove loading"}
 
 
 ACTIONS = {"configure", "status", "diagnose", "search", "scan", "onboarding", "select", "upload_plan", "install_plan", "publish_plan", "apply", "uninstall_plan", "inspect_operation", "recover", "verify_skill"}
@@ -724,3 +730,4 @@ ACTIONS.add("skill_status")
 
 ACTIONS.update({"disconnect_plan", "reconcile"})
 ACTIONS.update({"my_skills", "upload_preview", "credentials"})
+ACTIONS.update({"configure_discovery", "preview_skill", "mcp_trial", "agent_trial"})
