@@ -37,7 +37,7 @@ Qoder 所需源码全部位于自身目录，运行、测试和构建不依赖 C
 | 跨应用演进与分工 | [通用路线图](specs/TODO.md) |
 | Codex 安装、开发与兼容范围 | [Codex 插件](codex/README.md) |
 | Codex 实现与验收状态 | [Codex TODO](codex/specs/TODO.md) |
-| Qoder 源码、安装与验证 | [Qoder 开发预览](#qoder-开发预览)、适配边界 `qoder/specs/README.md`、能力与兼容记录 `qoder/specs/compatibility.json` |
+| Qoder 源码、安装与验证 | [Qoder 插件](qoder/README.md)、[首版范围](#qoder-开发预览)、适配边界 `qoder/specs/README.md`、能力与兼容记录 `qoder/specs/compatibility.json` |
 
 各适配独立构建和发布，不加入根 Maven 构建。插件源码、内置工作流与合成样例可以随包
 交付；用户资源、凭据、私有测试环境配置及操作记录留在用户环境。

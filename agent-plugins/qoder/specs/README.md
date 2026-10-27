@@ -5,7 +5,7 @@
 本目录维护 Qoder 的实现选择、版本兼容、验收证据和待办。当前代码版本为 `0.1.0`，
 内容与开发预览 `0.1.0-dev.8` 一致，只有版本号和 CI 覆盖变化，验收边界不因去掉 dev 后缀而放宽。
 详细功能及 ONB/CRED/DEF 映射以 [compatibility.json](compatibility.json) 为准。
-安装和构建入口见仓库 `agent-plugins/README.md` 的 Qoder 章节。
+安装、构建与源码结构见本适配的 [README](../README.md)，仓库级入口见 `agent-plugins/README.md` 的 Qoder 章节。
 
 通用契约位于仓库 `agent-plugins/specs/`；独立 Qoder 源码 ZIP 不包含其他应用和跨应用设计文档，
 但保留本目录及全部运行/构建源码。规则的引用不要求运行时读取通用规范，也不引入 Codex 目录依赖。
