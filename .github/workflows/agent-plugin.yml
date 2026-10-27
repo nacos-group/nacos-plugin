@@ -41,3 +41,31 @@ jobs:
           path: |
             agent-plugins/codex/dist/*.zip
             agent-plugins/codex/dist/*.sha256
+  verify-qoder:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ['3.11', '3.13']
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: agent-plugins/qoder
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: agent-plugins/qoder/requirements-build.txt
+      - run: python -m pip install -r requirements-build.txt
+      - run: python -m unittest discover -s tests -v
+        env:
+          PYTHONPATH: src
+      - run: python scripts/build.py
+      - run: python scripts/check_package.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nacos-ai-registry-qoder-${{ matrix.os }}-${{ matrix.python }}
+          path: |
+            agent-plugins/qoder/dist/*.zip
+            agent-plugins/qoder/dist/*.sha256

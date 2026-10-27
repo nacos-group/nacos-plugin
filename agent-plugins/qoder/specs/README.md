@@ -2,7 +2,8 @@
 
 # Qoder 插件规范与适配边界
 
-本目录维护 Qoder 的实现选择、版本兼容、验收证据和待办。当前代码版本为 `0.1.0-dev.8`，
+本目录维护 Qoder 的实现选择、版本兼容、验收证据和待办。当前代码版本为 `0.1.0`，
+内容与开发预览 `0.1.0-dev.8` 一致，只有版本号和 CI 覆盖变化，验收边界不因去掉 dev 后缀而放宽。
 详细功能及 ONB/CRED/DEF 映射以 [compatibility.json](compatibility.json) 为准。
 安装和构建入口见仓库 `agent-plugins/README.md` 的 Qoder 章节。
 
@@ -26,8 +27,8 @@
 
 ## 2. 发现契约的适配状态
 
-dev.7 在 Qoder 侧独立实现了 `capability-discovery-spec.md` 的本地部分，dev.8 修正了询问形式的落点，
-没有复用或修改 Codex 模块：
+`0.1.0` 在 Qoder 侧独立实现了 `capability-discovery-spec.md` 的本地部分（入口与策略来自 dev.7，
+询问形式的落点由 dev.8 修正），没有复用或修改 Codex 模块：
 
 - [x] 入口与引导：`skills/nacos-find-capabilities/`（SKILL.md 承载触发条件，`references/task-completion.md`
       承载复用与试用流程），`nacos_search` 描述和 `initialize.instructions` 给出同一语义的静态提示，
@@ -35,7 +36,7 @@ dev.7 在 Qoder 侧独立实现了 `capability-discovery-spec.md` 的本地部�
 - [x] 安装策略：`nacos_configure_discovery` 持久化 `ask | auto | never`，缺省和旧状态均为 `ask`；
       保存在 `profile` 之外，不改变授权上下文、已有资源归属或权限。模型不得自行改为 `auto`。
 - [x] 询问形式：`ask` 必须实际调用 Qoder 原生 `AskUserQuestion`，仅在该工具未暴露或明确不可用时
-      说明原因后退回对话。dev.8 把该要求同时写入 SKILL.md 正文、`status.discovery.askInterface`、
+      说明原因后退回对话。该要求同时写入 SKILL.md 正文、`status.discovery.askInterface`、
       三个试用结果的 `reuse`（`auto`/`never` 时不下发）以及偏好与试用工具描述，使规则在决策时点一定在上下文内。
 - [x] 计划来源：`install_plan`/`connection_plan` 接受 `discoveryReuse`，创建与 apply 两处按当前策略校验；
       策略改为 `ask`/`never` 后旧自动计划被拒绝，已完成计划保持幂等。
@@ -50,14 +51,16 @@ dev.7 在 Qoder 侧独立实现了 `capability-discovery-spec.md` 的本地部�
 
 - [ ] CD-01–07、CD-13–26、CD-28–34 需在真实 Qoder 新会话中逐项验证是否触发、是否误触发、候选依据、
       询问形式与任务是否继续，并记录应用/模型版本和次数，不继承 Codex 的结论。dev.7 的一次真实会话
-      在试用后用对话文字询问复用，dev.8 的修正尚未在真实会话复测。
+      在试用后用对话文字询问复用；dev.8 安装后使用者做了简单试用未发现问题，但未逐项记录询问渲染，
+      `0.1.0` 仍需按场景复测。
 - [ ] 同会话加载仍取决于 Qoder 的 Skills 重载与原生连接器行为；当前没有插件可调用的刷新接口，
       相关指引未在真实应用中验收。
 
 ## 3. 验证记录归属
 
-dev.8 自动化验证包含 171 项 checkout 测试（82 适配/核心、58 凭据、18 打包、13 发现与加载）、
-隔离源码包测试、包和校验和检查、离线重建及清单展示元数据与图标断言；这些仅证明相应自动化层，
+`0.1.0` 自动化验证包含 171 项 checkout 测试（82 适配/核心、58 凭据、18 打包、13 发现与加载）、
+隔离源码包测试、包和校验和检查、离线重建及清单展示元数据与图标断言，并由仓库 CI 的 `verify-qoder`
+作业在 ubuntu/macOS 与 Python 3.11/3.13 上重复测试、构建和包检查；这些仅证明相应自动化层，
 不代表真实 Keychain、Nacos、原生连接器、同会话加载或完整问答流程已经通过。
 兼容记录保留各历史版本的证据边界；打包后安装/升级的补充结论见仓库入口文档，不能回填为打包前证据。
 
