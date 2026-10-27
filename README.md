@@ -1,15 +1,21 @@
 # nacos-plugin
-Nacos 生态插件集合，包含安装到 Nacos Server 的扩展，以及安装到 coding agent / personal agent 的接入插件。
 
-## 按安装位置选择
+这里汇集了 Nacos 社区维护的扩展插件。你可以用它们为 Nacos 增加数据库适配、配置加密、
+变更通知等能力，也可以让日常使用的 AI 助手接入 Nacos AI Registry，发现并使用团队共享的资源。
 
-| 安装位置 | 插件 | 安装、开发与兼容入口 |
+仓库中的插件分为两类，按你的需求选择即可：
+
+| 你想做什么 | 使用哪类插件 | 从哪里开始 |
 | --- | --- | --- |
-| Nacos Server | 数据库、加密、自定义环境、配置变更、追踪及 AI 导入插件 | 本页下方的服务端插件安装、版本映射和 Maven 开发指南。 |
-| Agent 应用 | Nacos AI Registry：发现、管理和使用 agentic 资源 | [插件入口](agent-plugins/README.md)、[通用规范](agent-plugins/specs/README.md)、[Codex 插件](agent-plugins/codex/README.md)、[Qoder 插件](agent-plugins/README.md#qoder-开发预览)。 |
+| 让 Nacos 使用其他数据库，或扩展加密、配置变更、追踪和 AI 资源导入能力 | **Nacos Server 扩展插件**：编译为 JAR，安装到 Nacos Server。 | 本页下方的版本映射、插件列表和 Maven 构建指南。 |
+| 让 Codex、Qoder 等 AI 助手使用 Nacos 中的技能、MCP 工具和远端 Agent | **Agent 插件**：安装到对应的 AI 应用，在对话中发现、使用和管理资源。 | [Agent 插件总览](agent-plugins/README.md)、[Codex 使用指南](agent-plugins/codex/README.md)、[Qoder 入口](agent-plugins/README.md#qoder-开发预览)。 |
 
-两类插件分别构建与发布。Agent 插件不安装到 Nacos Server，也不加入根 Maven 构建；
-其版本、运行依赖以及与 Nacos 和 Agent 应用的兼容关系由组件独立维护。
+例如，团队可以把工作流程整理成 Skill，把内部查询系统提供为 MCP 服务，再通过 Nacos 统一管理。
+安装 Agent 插件后，成员可以在熟悉的 AI 应用中查找这些能力，或直接描述任务，由模型判断是否需要
+到 Nacos 寻找帮助。资源的访问权限仍由 Nacos 和实际服务控制。
+
+两类插件分别维护版本和构建流程。下面的版本映射和 `mvn clean package` 用于服务端插件；
+Agent 插件的安装、运行依赖及开发原则见其独立文档。
 
 ![](https://tva1.sinaimg.cn/large/008i3skNly1gxmnilyukqj30qp0fgglx.jpg)
 

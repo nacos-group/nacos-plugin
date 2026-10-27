@@ -5,6 +5,7 @@
 `python3`。原生 Windows 因 `fcntl` 文件锁依赖无法启动，目录 fsync、权限和凭据服务也需要
 适配；不声明支持。Linux 可使用环境变量或无认证，页面直接填写尚未实现。
 
+开发先遵循[上层开发原则](../../README.md#开发原则)，Codex 专属约定见[本组件 README](../README.md#开发约定与验证)。
 在 `agent-plugins/codex/` 执行；使用源码 ZIP 时先进入解压目录的 `codex/`：
 
 ```sh
@@ -47,7 +48,8 @@ node --test tests/test_ui_model.cjs
 
 独立 GitHub Actions 执行本组件的测试、打包及干净运行检查，不调用 Maven，不自动发布。
 现有服务端 Java CI 不变。组件 tag 为 `nacos-ai-registry-v<version>`；源码和安装包必须来自
-同一组件源码摘要。正式发布前仍须完成 [验收边界](compatibility.md) 与 TODO 的剩余项。
+同一组件源码摘要。发布前按[发布指南](releasing.md)核对[验收边界](compatibility.md)与 TODO，
+明确本次发行支持范围、发布门槛和保留的限制，不把版本号更新当作未验项通过。
 
 列表展示信息维护在 `plugin.json` 的 `extensions.com.openai.interface`，包括描述、开发者、
 网站、支持入口和图标。构建同步到兼容 manifest；仅在 README 写网站不会填充插件详情。

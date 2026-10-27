@@ -1,183 +1,178 @@
 # Nacos AI Registry for Codex
 
-将 Nacos AI Registry 接入 Codex。本组件位于 `agent-plugins/codex/`，独立于
-仓库中的 Nacos Server Java 插件，不需要复制 JAR 到 Nacos，也不由根 Maven 构建。
+在 Codex 中查找和使用 Nacos AI Registry 里的技能、MCP 工具和远端 Agent，也可以把自己开发的
+技能上传、发布给团队使用。插件同时提供对话引导和资源中心页面，连接配置、资源管理都可以从这里开始。
 
-当前提供 `0.1.0-dev.21` 首版验收候选的源码与可安装包；P0/P1 的实现覆盖和剩余发布门槛见 TODO。
-完整设计目标不等于本版已交付能力。
-首期包含 Skill 生产/消费、显式双向更新和初始化盘点，以及已有 MCP/远端 Agent 的发现
-与调用。[简洁工作台](specs/resource-center-ui-spec.md)已按选定图册重构为三主视图、
-类型专属详情和独立设置；本地自动测试与浏览器交互已验证，基础功能经使用者自测可用，
-现进入首版验收。完整内嵌闭环与首次连接三步向导等差距继续在 TODO 中单列。
-分层结论见[测试矩阵](specs/test-matrix.md)。
-创建后提醒和 Hooks 不纳入首期。
+当前源码版本为 **0.1.0**。安装包与 Nacos Server 插件分别构建、分别发布；已发布附件以
+[GitHub Releases](https://github.com/nacos-group/nacos-plugin/releases)为准。
 
-| 内容 | 入口 |
+## 能做什么
+
+| 场景 | 当前功能 |
 | --- | --- |
-| 产品与完整设计 | [通用规范](../specs/README.md) |
-| Codex 适配设计 | [专属规范](specs/README.md) |
-| 当前范围、待办和决策 | [TODO](specs/TODO.md) |
-| 来源、仓库与迁移检查 | [迁移记录](docs/migration.md) |
-| 源码、安装包与兼容要求 | [打包分发](specs/distribution-spec.md) |
+| 初次连接 | 逐步确认地址、命名空间、认证及技能目录；macOS 可在页面填写凭据并保存到钥匙串，也可选择环境变量。 |
+| 使用技能 | 搜索、读取、安装、检查更新、处理冲突、恢复和卸载；可盘点自己选定目录中的已有技能。 |
+| 开发和共享技能 | 预览上传内容、保存草稿、提交/发布、查看自己的版本；按 Nacos 实际权限和发布流程执行。 |
+| 使用工具和 Agent | 发现已有 MCP 服务和 A2A Agent，核对端点、独立认证和调用结果，按需保存本地连接。 |
+| 为普通任务寻找帮助 | 缺少适用能力时尝试发现，先读取技能或试用服务，再按“询问 / 自动保存 / 不保存”决定是否长期复用。模型自行判断是否采用候选。 |
+| 页面操作 | 已接入、发现资源、我的资源，以及独立设置、本地技能和待处理操作；支持全局页面与当前对话侧栏。 |
 
-版本独立采用 SemVer，tag 为 `nacos-ai-registry-v<version>`。不沿用 Server 插件的版本
-映射。运行依赖与支持边界见兼容说明，私有测试环境信息不进入仓库；未经验证的 Agent 应用与服务器组合不声明支持。
-仓库只保存插件源码、内置工作流和隔离样例，用户业务资源和凭据留在用户环境。
-
-dev.15 的初始化会区分认证方式和凭据提供方式。macOS 用户可让本地对话预填侧栏设置，
-再亲自在页面填写用户名、密码或 Token，保存到本机钥匙串；无需手动设置环境变量，
-日常更换凭据也不要求重启。环境变量仍是可选方式；Linux 尚未实现页面凭据存储，原生 Windows 当前不支持启动。
-macOS 账号密码页面保存已获用户实测确认，其他验收边界见[初始化规范](specs/credential-onboarding-spec.md)。
-
-初始化还会询问是否自定义技能目录。不需要时，新配置使用个人 `~/.agents/skills` 安装目录，
-已存在的个人目录和 `$CODEX_HOME/skills` 作为扫描候选；具体路径会在保存前展示。已有配置保持
-不变，也可在“设置 → 技能目录”添加默认目录。保存目录不等于扫描或上传。
-
-`nacos-find-capabilities` 在任务需要专业识别/检索、业务数据、团队规则或
-专用工作流且没有已知适用能力时，就尝试在已配置的 Nacos 中搜索 Skill、MCP 和 Agent，
-不要求先失败或在问题中提到 Nacos。首次检索没有有效结果时也可回退到发现。
-规划、回退与交接共用一轮最多 3 次的预算；Skill 描述、搜索工具和 MCP 初始化说明使用同一标准。
-已有能力能给出有效结果时优先直接完成任务；只读搜索不会自动授权安装或远端执行。
-这依赖新会话加载并选择发现入口，实际隐式触发效果仍待验证，详见
-[发现适配与测试场景](specs/capability-discovery-spec.md)。
-
-可在“设置 → 能力发现”选择：询问是否安装（默认）、有效使用后自动安装、不安装也不询问。
-它只影响解决问题时发现的能力，主动要求安装不受影响。先通过校验后的 Skill 内容或不保存连接的
-MCP/Agent 接口尝试解决任务，再按策略保存本次真正有用的资源；询问优先采用交互式选项。
-MCP 保存后可尝试原生刷新：需要当前 Codex App Server 提供控制 socket；stdio-only 桌面当前无法
-由插件触发该刷新，可使用不安装的 MCP 调用，或在应用 MCP 设置中 Restart 后核对当前会话。
-模型仍自行选择合适能力，试用、保存、原生加载和实际调用分别确认。
+本版面向 **本地执行的 Codex**，运行需要 Python 3.11+。macOS 支持页面凭据输入；Linux 使用
+无认证或环境变量；原生 Windows 暂不支持。服务端按 Nacos 3.3.0-RC 的固定 API 基线适配。
+其他版本和系统的支持边界见[兼容说明](docs/compatibility.md)。
 
 ## 安装已发布的 ZIP
 
-准备 Python 3.11+（macOS 或 Linux），从 [GitHub Releases](https://github.com/nacos-group/nacos-plugin/releases)
-下载 `nacos-ai-registry-<version>.zip`，不要选 `-source.zip` 或 Source code。
+下载 `nacos-ai-registry-0.1.0.zip`（或 Release 中实际提供的版本），不要选 `-source.zip`
+或 GitHub 自动生成的 Source code。确保本机已安装 Python 3.11+，Codex 能找到 `python3`。
+下面两种方式任选一种。
 
-### 方式一：在桌面插件页面选择 ZIP
+### 方式一：在桌面插件页面安装
 
-如果当前账户的插件页面提供 **上传插件包 / Upload plugin archive**：
-
-1. 打开桌面应用的 **插件** 页面，在创建或更多菜单中选择 **上传插件包**。
+1. 打开 Codex 所在桌面应用的 **插件** 页面，选择 **上传插件包 / Upload plugin archive**。
 2. 选择下载的 ZIP，点击 **添加插件 / Add plugin**。
-3. 打开生成的插件详情，若显示 **安装 / Install**，点击安装。
-4. 在 **本地 Codex 对话** 中通过 `@` 选择 Nacos AI Registry，发送“初始化 Nacos AI Registry，先调用 nacos_status 检查本地工具”。
+3. 打开插件详情，若显示 **安装 / Install**，点击安装。
+4. 回到本地 Codex 对话，通过 `@` 选择 **Nacos AI Registry**，按下文初始化。
 
-这条路径无需解压或编写 marketplace。它会将插件包上传到账户，入口和可接收的组件取决于账户权限。
-上传与共享、公开上架是独立操作；可见范围以插件的共享设置为准。
-插件包含本地 MCP 程序，需要在使用者电脑上运行。
-若安装后的“设置”按钮打开了云端对话，出现“Skill 已读取、工具未加载”，请切回 Codex，
-选择本地项目与“本地 / Local”执行环境，再按第 4 步初始化。仅出现这个提示无需卸载重装。
-若没有上传入口或上传被拒绝，使用下面的本地安装方式。
-更多说明见[安装与验证](docs/installation.md)。
+这条路径会把插件包上传到账户，再安装到本机；上传与公开上架是不同操作，可见范围以共享设置为准。
+若账户没有上传入口，或希望插件包始终留在本机，使用方式二。
+界面入口可能因应用版本与权限不同而变化，详见[安装说明](docs/installation.md)与
+[官方插件说明](https://learn.chatgpt.com/docs/plugins)。
 
-### 方式二：让 Codex 自动安装
+### 方式二：让 Codex 自动完成本地安装
 
-把下面一句话发给能够操作本机文件的 Codex，只需替换 ZIP 的绝对路径：
+把下面这段话发给能够操作本机文件的 Codex，只替换 ZIP 的绝对路径：
 
 ```text
-请把 /absolute/path/nacos-ai-registry.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 的说明完成本地安装和验证，保留已有插件配置及私有数据。
+请把 /absolute/path/nacos-ai-registry-0.1.0.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 的说明完成本地安装和验证；保留已有插件配置、凭据和本地技能，不上传到账户。
 ```
 
-在终端使用 Codex CLI 时，同样只需一条命令：
+使用 Codex CLI 时也可以复制下面的命令，替换路径后执行：
 
 ```sh
-codex '请把 /absolute/path/nacos-ai-registry.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 的说明完成本地安装和验证，保留已有插件配置及私有数据。'
+codex '请把 /absolute/path/nacos-ai-registry-0.1.0.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 完成本地安装和验证；保留已有插件配置、凭据和本地技能，不上传到账户。'
 ```
 
-这会开启由 Codex 执行安装的对话，需要已登录的 CLI，并按界面提示授予所需访问权限。
-当前原生 `codex plugin add` 不直接接受 ZIP 路径；解压和本地源登记由 Codex 完成，
-安装包留在本机。完整命令仅供排查或手动操作，见[本地安装细节](docs/local-installation.md)。
+Codex 会核对安装包、解压到固定目录、登记本地来源并完成安装。CLI 需要已登录，并获得执行安装所需的
+本机访问权限；这是一条安装协助指令，`codex plugin add` 本身不直接接收 ZIP。
+具体命令留在[本地安装细节](docs/local-installation.md)，日常安装不需要手写 marketplace。
 
-## 从源码构建插件包
+## 初始化与开始使用
 
-构建环境需要 macOS 或 Linux、Python 3.11+；运行测试还需要 Node.js 22+。
-安装后的插件只需要 Codex 能找到 `python3`，不需要 Node.js、pip 或 Maven。
-PyYAML 会随运行包内置；Windows 暂不声明支持。
+在本地 Codex 对话中选择插件，发送：
 
-从仓库根目录执行：
+```text
+初始化 Nacos AI Registry，先调用 nacos_status 检查本地工具。
+```
+
+引导会逐项确认 Nacos 地址、命名空间、用途和认证方式。macOS 选择页面填写时，Codex 可以先把
+非敏感信息填入侧栏设置，你再亲自输入用户名、密码或 Token 并保存。凭据不需要发送到聊天中。
+
+不需要自定义技能目录时，新配置默认安装到 `~/.agents/skills`；已存在的该目录及
+`$CODEX_HOME/skills` 可作为扫描候选。已有配置会保留，扫描和上传都需要单独选择。
+完整默认值和认证说明见[初始化指南](docs/installation.md#初始化)。
+
+完成配置后，可以直接说“打开 Nacos 资源中心”“查找并安装某个技能”或“连接这个 MCP 服务”。
+也可以直接描述工作需求，由模型判断是否需要发现能力。在“设置 → 能力发现”中可选择：
+
+- **询问是否安装**（默认）：资源有效帮助完成任务后，询问是否保存供下次使用。
+- **有效使用后自动安装**：按已有权限和计划保存本次有用的资源。
+- **不安装，也不询问**：仍可发现和试用，任务结束后不主动保存。
+
+上述偏好只影响解决任务时的隐式发现；你主动要求安装时按该请求处理。
+MCP 配置已保存、Codex 已加载工具和本次任务已调用分别确认。当前桌面没有开放控制 socket 时，
+插件不能保证同一对话即时刷新；可以继续使用授权的试用接口，或在 MCP 设置中重启连接后核对。
+
+安装后若工具或页面没出现，先确认使用的是本地执行环境，再尝试新建本地对话；仍然显示旧入口时
+完整退出并重开应用。设置按钮打开云端对话时，回到本地对话初始化即可，无需因此卸载重装。
+更多排查见[安装与恢复](docs/installation.md)、[页面入口](docs/resource-center.md)。
+
+## 从源码编译和启动
+
+开发环境需要 Python 3.11+；前端测试需要 Node.js 22+。插件运行和打包不需要 Maven。
+从仓库根目录执行以下命令；若使用源码 ZIP，先进入解压目录的 `codex/`，跳过第一行：
 
 ```sh
 cd agent-plugins/codex
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-build.txt
+PYTHONPATH=src .venv/bin/python -m nacos_registry --version
+```
+
+先用仓库外的临时状态目录检查启动，避免开发调试改动日常配置：
+
+```sh
+NACOS_DEV_STATE=$(mktemp -d)
+PYTHONPATH=src .venv/bin/python -m nacos_registry --state-dir "$NACOS_DEV_STATE" status
+```
+
+尚未配置时返回未初始化状态是正常的。需要单独调试 MCP 服务时运行：
+
+```sh
+PYTHONPATH=src .venv/bin/python -m nacos_registry --state-dir "$NACOS_DEV_STATE" serve
+```
+
+`serve` 通过标准输入/输出处理 MCP 请求，等待客户端连接，不会启动浏览器或弹出独立网页；
+终端调试结束可按 Ctrl+C。要在 Codex 中使用页面和完整插件，请继续打包安装。
+
+### 构建可安装包
+
+仍在 `agent-plugins/codex/` 中执行：
+
+```sh
+.venv/bin/python scripts/build.py
+.venv/bin/python scripts/check_package.py
+```
+
+依赖安装完成后，这两步可以离线运行，不连接 Nacos。构建会校验版本一致性，并生成兼容 manifest、
+内置依赖的运行程序、离线页面、源码及校验和；包检查还会验证文档链接、独立重建与隔离启动。
+
+| `dist/` 中的产物 | 用途 |
+| --- | --- |
+| `nacos-ai-registry-0.1.0.zip` | 安装包；按上面的任一方式安装。 |
+| `nacos-ai-registry-0.1.0-source.zip` | 源码包；保留 `codex/` 与通用 `specs/` 的目录关系。 |
+| 两个 ZIP 对应的 `.sha256` | 文件完整性校验，发布时与 ZIP 一起提供。 |
+| `marketplace/` | 已生成的本地来源，供开发调试安装使用。 |
+| `nacos-ai-registry/` | 安装包的展开目录，供检查产物使用。 |
+
+直接调试构建目录见[源码产物安装](docs/local-installation.md#安装源码构建的产物)。
+安装后的插件只需要能找到 `python3`，不需要 pip、Node.js 或源码虚拟环境。
+
+## 开发约定与验证
+
+先遵循上一层的[Agent 插件开发原则](../README.md#开发原则)。Codex 适配还需注意：
+
+- **明确代码分层。** `service.py`、`registry.py`、`remote.py` 等处理资源流程；`hosts/` 处理
+  Codex 路径、受管配置和刷新；`skills/` 承载对话引导；`ui/` 分离状态、桥接、组件和主题。
+  通用行为变更更新 `../specs/`，具体工具映射和 UI 设计更新本目录 `specs/`。
+- **保持包内入口一致。** `plugin.json` 与 `src/nacos_registry/__init__.py` 的版本同步修改。
+  `mcp.json` 和 `.mcp.json` 保持一致的启动行为；兼容 manifest、zipapp 和页面由构建生成。
+  改源码后重新构建，通过原安装来源升级，不直接编辑 Codex 缓存。
+- **保护用户环境。** MCP 只修改自己拥有的配置块，保留用户的其他设置和工具限制。凭据经安全通道保存；
+  不在工作流、工具参数、日志或样例中加入明文秘密。开发联调状态和服务都放在仓库外。
+- **按层核验结果。** 页面调用、模型可见工具、原生加载和实际业务使用分别验证；界面跟随 Codex 主题。
+  修改流程时同时检查[通用交互](../specs/resource-center-interaction-spec.md)、
+  [Codex UI 适配](specs/resource-center-ui-spec.md)和[测试矩阵](specs/test-matrix.md)。
+
+提交前按改动范围运行相应测试；版本或打包改动应执行完整检查：
+
+```sh
 PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
 node --test tests/test_ui_model.cjs
 .venv/bin/python scripts/build.py
 .venv/bin/python scripts/check_package.py
 ```
 
-使用下载的源码 ZIP 时，解压后进入其中的 `codex/`，从创建虚拟环境这一步开始。
-依赖安装完成后，构建与包检查均可离线执行，也不需要连接 Nacos。
-包检查会验证 manifest、图标资源、校验和、文档链接、源码独立重建，以及隔离环境中的 CLI、MCP 和页面资源。
+详细模块职责与验证方法见[开发指南](docs/development.md)。打包前保证私有环境文件不在源码目录中；
+`dist/` 已忽略，不提交生成包。真实应用中仍待验证的内容保留在[TODO](specs/TODO.md)，不以单元测试代替。
 
-所有产物生成在 `dist/`，其中 `<version>` 来自 `plugin.json`：
+## 发布与更多文档
 
-| 产物 | 用途 |
-| --- | --- |
-| `nacos-ai-registry-<version>.zip` | 可分发的安装包，包含 manifest、Skills、运行程序、许可证及对应源码。 |
-| `nacos-ai-registry-<version>-source.zip` | 可独立重建的源码包，保留 `codex/` 与通用 `specs/` 的目录关系。 |
-| 上述两个 ZIP 各自的 `.sha256` 文件 | 下载后校验文件完整性，与对应 ZIP 一起分发。 |
-| `marketplace/` | 已生成本地 marketplace 清单和完整插件，可直接用于下面的本地安装。 |
-| `nacos-ai-registry/` | 安装包的展开内容，用于检查打包结果。 |
+`0.1.0` 使用组件 tag `nacos-ai-registry-v0.1.0`。维护者从确定的干净提交构建，在 GitHub Release
+提供安装包、源码包、校验和与发行说明，具体操作见[发布指南](docs/releasing.md)。
+源码版本更新不会自动发布，GitHub Release 与 Codex 公开插件目录上架也是分别进行的流程。
 
-`dist/` 已被 Git 忽略。构建会收集源码、工作流、图标、文档、规范、测试和样例；真实测试配置、
-凭据与操作记录应始终保存在仓库外，不能先放进这些目录再依赖打包过滤。
-
-构建后的 ZIP 同样使用上面的两种安装方式。开发者直接使用构建目录调试时，
-参见[构建产物调试安装](docs/local-installation.md#安装源码构建的产物)。
-
-## 发布供他人使用的版本
-
-这里的发布是将版本包分发到本仓库的 GitHub Releases；Codex 官方插件目录上架是单独流程，
-发布 ZIP 不会自动完成目录上架。当前 `0.1.0-dev.21` 应以预发布版本分发，正式稳定版仍需完成
-[TODO](specs/TODO.md) 和[兼容说明](docs/compatibility.md)中的发布门槛。
-
-维护者按以下顺序发布：
-
-1. 同步修改 `plugin.json` 的 `version` 与 `src/nacos_registry/__init__.py` 的 `__version__`，
-   更新 README 的版本与验收范围；两处版本不一致时构建会失败。
-2. 将改动提交、合并，检出准备发布的提交。确认 `git status --porcelain` 没有输出，
-   再完整执行上面的测试、构建和包检查。不要使用此前留在 `dist/` 中的旧包。
-3. 检查 `dist/nacos-ai-registry/build-info.json`：版本应正确，`gitBase` 应为准备发布的提交，
-   `dirty` 应为 `false`。源码包与安装包必须来自这一次构建。
-4. 在仓库外准备发行说明，写明变化、支持环境、安装入口和未完成的验收项，然后创建组件 tag
-   和 Release 草稿。下面命令仍在 `agent-plugins/codex/` 中执行，需要 GitHub 推送及发布权限、
-   已登录的 `gh`；将发行说明路径替换为实际文件路径。
-
-```sh
-PLUGIN_VERSION=$(.venv/bin/python -c 'import json; print(json.load(open("plugin.json"))["version"])')
-PLUGIN_TAG="nacos-ai-registry-v${PLUGIN_VERSION}"
-
-git tag -a "$PLUGIN_TAG" -m "Nacos AI Registry ${PLUGIN_VERSION}"
-git push origin "refs/tags/${PLUGIN_TAG}"
-
-gh release create "$PLUGIN_TAG" \
-  "dist/nacos-ai-registry-${PLUGIN_VERSION}.zip" \
-  "dist/nacos-ai-registry-${PLUGIN_VERSION}.zip.sha256" \
-  "dist/nacos-ai-registry-${PLUGIN_VERSION}-source.zip" \
-  "dist/nacos-ai-registry-${PLUGIN_VERSION}-source.zip.sha256" \
-  --repo nacos-group/nacos-plugin \
-  --verify-tag --draft --prerelease --latest=false \
-  --title "Nacos AI Registry ${PLUGIN_VERSION}" \
-  --notes-file /absolute/path/to/release-notes.md
-```
-
-每一步成功后再继续；若 tag 已存在，应先核对它指向的提交，不覆盖已发布版本。
-在 GitHub 中核对草稿的 tag、四个附件和发行说明后再发布。`dev`、`rc` 等候选版本保留
-Pre-release 标记；稳定版满足发布门槛后再移除该标记，并明确选择是否设为最新版本。
-下载者应同时获得安装 ZIP 与对应 SHA-256；例如在下载目录使用 macOS 的
-`shasum -a 256 -c <安装包文件名>.sha256`，或 Linux 的 `sha256sum -c <安装包文件名>.sha256`。
-
-现有 `.github/workflows/agent-plugin.yml` 会在相关 PR 或手动触发时执行测试和打包，
-并保存 ZIP 与校验和为 Actions artifacts。它不会因推送 tag 自动创建或发布 Release；
-上述发布步骤需由维护者执行。
-
-## 更多说明
-
-- [本地安装、初始化和恢复](docs/installation.md)
-- [开发、测试与打包](docs/development.md)
-- [资源中心页面与入口排查](docs/resource-center.md)
-- [兼容范围与发布门槛](docs/compatibility.md)
-
-源码入口为 `src/nacos_registry/`，工作流在 `skills/`，manifest 为根目录的 `plugin.json`。
-构建生成独立 zipapp、安装 ZIP 和源码 ZIP。提供对话向导、MCP 工具及资源中心页面；各项验收状态见 TODO。
+- [通用规范](../specs/README.md)与[Codex 专属规范](specs/README.md)
+- [兼容范围](docs/compatibility.md)与[测试矩阵](specs/test-matrix.md)
+- [初始化、升级和卸载](docs/installation.md)
+- [源码来源与迁移记录](docs/migration.md)
