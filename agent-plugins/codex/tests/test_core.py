@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import stat
 import tempfile
+import tomllib
 import unittest
 from unittest.mock import patch
 import zipfile
@@ -245,6 +246,119 @@ class CoreTests(unittest.TestCase):
         self.assertTrue(path.read_bytes().startswith(original))
         self.assertEqual(result["result"]["status"], "pending_host_reload")
 
+    def test_native_name_is_readable_bounded_and_scope_specific(self):
+        plan = self.call("connection_plan", resourceType="mcp", name="team-tools")
+        key = plan["configKey"]
+        self.assertRegex(key, r"^nacos_team-tools_[a-f0-9]{12}$")
+        self.assertEqual(tomllib.loads(plan["configBlock"])["mcp_servers"][key]["url"], plan["endpoint"]["url"])
+        self.call("configure", profile={**self.profile, "namespaceId": "other"})
+        other = self.call("connection_plan", resourceType="mcp", name="team-tools")
+        self.assertNotEqual(key, other["configKey"])
+        for name in ('Mixed Case.Service', '工具服务', 'x' * 500, 'a\"]\n[other]'):
+            with self.subTest(name=name):
+                value = codex.connection_key(name, plan["connectionId"])
+                self.assertLessEqual(len(value), 51)
+                self.assertRegex(value, r"^nacos_[a-z0-9_-]+_[a-f0-9]{12}$")
+                parsed = tomllib.loads(codex.connection_block(value, "https://tools.example.org/mcp", {"type": "none"}))
+                self.assertEqual(list(parsed), ["mcp_servers"])
+                self.assertEqual(list(parsed["mcp_servers"]), [value])
+
+    def legacy_mcp(self):
+        with patch.object(codex, "connection_key", side_effect=lambda name, ident: "nacos_" + ident[:20]):
+            plan = self.call("connection_plan", resourceType="mcp", name="team-tools")
+        return self.call("apply", planId=plan["id"])["result"]
+
+    def test_legacy_native_rename_preserves_bytes_recovers_and_reuses(self):
+        path = Path(self.profile["codexConfig"]); path.parent.mkdir(parents=True)
+        original = b'# user settings\n[mcp_servers.personal]\nurl = "https://personal.example.org/mcp"\n'
+        path.write_bytes(original)
+        old = self.legacy_mcp()
+        before = path.read_bytes()
+        plan = self.call("connection_plan", resourceType="mcp", name="team-tools")
+        self.assertIn(old["configKey"], " ".join(plan["effects"]))
+        self.assertEqual(path.read_bytes(), before)  # Planning must not rename.
+        result = self.call("apply", planId=plan["id"])
+        self.assertEqual(result["status"], "completed")
+        new = result["result"]
+        self.assertEqual(new["id"], old["id"])
+        self.assertEqual(set(tomllib.loads(path.read_text())["mcp_servers"]), {"personal", new["configKey"]})
+        self.assertTrue(path.read_bytes().startswith(original))
+        self.assertEqual(self.call("recover", operationId=result["id"])["status"], "recovered")
+        self.assertEqual(path.read_bytes(), before)
+        self.assertEqual(self.service.data["connections"][old["id"]]["configKey"], old["configKey"])
+        for _ in range(2):
+            plan = self.call("connection_plan", resourceType="mcp", name="team-tools")
+            self.assertEqual(self.call("apply", planId=plan["id"])["status"], "completed")
+        self.assertEqual(set(tomllib.loads(path.read_text())["mcp_servers"]), {"personal", new["configKey"]})
+        removal = self.call("disconnect_plan", connectionId=new["id"])
+        self.call("apply", planId=removal["id"])
+        self.assertEqual(path.read_bytes(), original)
+
+    def test_legacy_native_rename_refuses_edits_and_name_collision(self):
+        old = self.legacy_mcp(); path = Path(old["configPath"])
+        baseline = path.read_bytes()
+        new_key = codex.connection_key("team-tools", old["id"])
+        variants = [baseline.replace(b'url = ', b'enabled = false\nurl = '),
+                    baseline + f'\n[mcp_servers.{new_key}]\nurl = "https://user.example.org/mcp"\n'.encode()]
+        for content in variants:
+            with self.subTest(content=content):
+                path.write_bytes(content)
+                with self.assertRaises(PluginError) as error:
+                    self.call("connection_plan", resourceType="mcp", name="team-tools")
+                self.assertEqual(error.exception.kind, "conflict")
+                self.assertEqual(path.read_bytes(), content)
+                self.assertEqual(self.service.data["connections"][old["id"]], old)
+
+    def test_legacy_native_rename_rechecks_configuration_before_apply(self):
+        old = self.legacy_mcp(); path = Path(old["configPath"])
+        plan = self.call("connection_plan", resourceType="mcp", name="team-tools")
+        edited = path.read_bytes() + b'\n# later user edit\n'; path.write_bytes(edited)
+        result = self.call("apply", planId=plan["id"])
+        self.assertEqual(result["error"]["error"], "conflict")
+        self.assertEqual(path.read_bytes(), edited)
+        self.assertEqual(self.service.data["connections"][old["id"]], old)
+
+    def test_mcp_probe_reports_native_loading_separately_without_executing_tools(self):
+        plan = self.call("connection_plan", resourceType="mcp", name="tools")
+        connection = self.call("apply", planId=plan["id"])["result"]
+        config = Path(connection["configPath"]).read_bytes()
+        tool = {"name": "find_items", "inputSchema": {"type": "object", "properties": {}}}
+        # Neither a genuine tool catalog nor untrusted extra fields prove host loading/use.
+        for extra in ({}, {"hostLoaded": "verified", "realUse": "verified",
+                           "nativeServerName": "another_server", "loadingHint": "already loaded"}):
+            with self.subTest(extra=extra), patch("nacos_registry.remote.JsonRpc") as client:
+                rpc = client.return_value
+                rpc.initialize_mcp.return_value = {"capabilities": {"tools": {}}}
+                rpc.request.return_value = {"tools": [tool], **extra}
+                result = self.call("mcp_probe", connectionId=connection["id"])
+                rpc.initialize_mcp.assert_called_once_with()
+                rpc.request.assert_called_once_with("tools/list", {})
+                rpc.close_mcp.assert_called_once_with()
+            self.assertEqual(result["tools"], [tool])
+            self.assertEqual(result["transport"], "connected")
+            self.assertEqual(result["nativeServerName"], connection["configKey"])
+            self.assertEqual(result["hostLoaded"], "unverified")
+            self.assertEqual(result["realUse"], "unverified")
+            self.assertIn("Restart", result["loadingHint"])
+            self.assertEqual(Path(connection["configPath"]).read_bytes(), config)
+            stored = self.service.data["connections"][connection["id"]]
+            self.assertEqual(stored["status"], "pending_host_reload")
+            self.assertEqual(stored["probeStatus"], "tools_discovered")
+
+    def test_mcp_probe_failure_does_not_mark_tools_discovered(self):
+        plan = self.call("connection_plan", resourceType="mcp", name="tools")
+        connection = self.call("apply", planId=plan["id"])["result"]
+        with patch("nacos_registry.remote.JsonRpc") as client:
+            rpc = client.return_value
+            rpc.initialize_mcp.return_value = {"capabilities": {"tools": {}}}
+            rpc.request.side_effect = PluginError("connection", "Unavailable")
+            with self.assertRaises(PluginError):
+                self.call("mcp_probe", connectionId=connection["id"])
+            rpc.close_mcp.assert_called_once_with()
+        stored = self.service.data["connections"][connection["id"]]
+        self.assertEqual(stored["status"], "pending_host_reload")
+        self.assertNotIn("probeStatus", stored)
+
     def test_reconcile_lost_upload_response_without_replay(self):
         plan = self.call("upload_plan", **self.scan())
         original = self.remote.upload
@@ -321,6 +435,30 @@ class CoreTests(unittest.TestCase):
         self.remote.content = files()
         self.assertEqual(self.call("recover", operationId=failed["id"])["status"], "recovered")
         self.assertEqual((Path(first["target"])/"SKILL.md").read_bytes(), files()["SKILL.md"])
+
+    def test_mcp_discovery_guidance_needs_no_configuration_or_registry_access(self):
+        state_before = self.service.store.file.read_bytes()
+        unconfigured = Service(Store(self.root / "unconfigured"), lambda _: self.remote)
+        instructions = set()
+        for service in (self.service, unconfigured):
+            for version in ("2024-11-05", "2025-03-26", "2025-06-18"):
+                with self.subTest(configured=service is self.service, version=version):
+                    request = {"jsonrpc": "2.0", "id": 1, "method": "initialize",
+                               "params": {"protocolVersion": version}}
+                    output = io.StringIO()
+                    with patch.object(service, "invoke", side_effect=AssertionError("Initialization must not invoke operations")):
+                        serve(service, io.StringIO(json.dumps(request) + "\n"), output)
+                    result = json.loads(output.getvalue())["result"]
+                    self.assertEqual(result["protocolVersion"], version)
+                    self.assertIsInstance(result["instructions"], str)
+                    self.assertTrue(result["instructions"].strip())
+                    instructions.add(result["instructions"])
+                    for private_value in (self.profile["clientUrl"], self.profile["identityId"], str(self.root)):
+                        self.assertNotIn(private_value, result["instructions"])
+        self.assertEqual(len(instructions), 1)
+        self.assertEqual(self.remote.calls, [])
+        self.assertEqual(self.service.store.file.read_bytes(), state_before)
+        self.assertFalse(unconfigured.store.file.exists())
 
     def test_mcp_wire_and_validation(self):
         requests = [{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-03-26"}},

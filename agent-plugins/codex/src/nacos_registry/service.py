@@ -17,6 +17,7 @@ from .hosts.codex import local_defaults
 from . import package
 from .registry import Registry
 from .remote import RemoteMixin
+from .discovery import DiscoveryMixin
 from .store import Store, atomic_write, digest, new_id, safe_path
 from .transport import checked_url
 
@@ -56,7 +57,7 @@ def file_changes(before, after):
             "modified": sorted(x for x in before.keys() & after.keys() if before[x] != after[x])}
 
 
-class Service(RemoteMixin, CredentialMixin):
+class Service(RemoteMixin, CredentialMixin, DiscoveryMixin):
     def __init__(self, store=None, registry_factory=Registry, vault=None):
         self.store = store or Store()
         self.registry_factory = registry_factory
@@ -153,6 +154,7 @@ class Service(RemoteMixin, CredentialMixin):
         current = lambda x: p and x.get("context") == digest(p)
         scan = self.data["scans"].get(self.data["onboarding"].get("scanId"))
         return {"profile": p, "context": digest(p), "defaults": local_defaults(self.allowed_root), "onboarding": self.data["onboarding"],
+                "discovery": self.discovery_settings(),
                 "credentialStorage": self.vault.capabilities(), "credentials": self.credential_status(),
                 "credentialCleanupPending": bool(self.data.get("credentialGarbage")),
                 "scan": scan if scan and current(scan) else None,
@@ -323,7 +325,8 @@ class Service(RemoteMixin, CredentialMixin):
                 "namespaceId": self.profile()["namespaceId"], "files": [{"path": name, "bytes": len(data)} for name, data in sorted(content.items())],
                 "contentHash": digest(package.hashes(content))}
 
-    def install_plan(self, name, installRoot, version=None, label=None):
+    def install_plan(self, name, installRoot, version=None, label=None, discoveryReuse=None):
+        self.check_discovery_reuse(discoveryReuse)
         r = self.registry("install")
         root = str(safe_path(installRoot))
         require(root in self.profile()["installRoots"], "Installation root not configured", "permission")
@@ -344,7 +347,7 @@ class Service(RemoteMixin, CredentialMixin):
                          snapshot=self.snapshot(files), hashes=package.hashes(files), version=resolved, serverMd5=md5,
                          selector={"version": version, "label": label}, previous=copy.deepcopy(old),
                          changes=file_changes(current, package.hashes(files)),
-                         loadState="pending_host_verification")
+                         loadState="pending_host_verification", discoveryReuse=discoveryReuse)
 
     def skill_status(self, name, version=None):
         r = self.registry("develop")
@@ -378,6 +381,7 @@ class Service(RemoteMixin, CredentialMixin):
             return self.data["operations"][p["operationId"]]
         require(p["status"] == "planned", "Operation already started; inspect or recover it before retry", "conflict")
         require(time.time() - p["createdAt"] < 3600, "Plan expired; create a fresh plan", "conflict")
+        self.check_discovery_reuse(p.get("discoveryReuse"))
         kind = p["kind"]
         scopes = {"upload": "develop", "submit": "publish", "publish": "publish", "install": "install", "uninstall": "install", "restore": "install", "mcp_config": "install", "bind_agent": "call", "disconnect": "install"}
         self.profile(scopes[kind])
@@ -605,3 +609,4 @@ ACTIONS.add("skill_status")
 
 ACTIONS.update({"disconnect_plan", "reconcile"})
 ACTIONS.update({"my_skills", "upload_preview"})
+ACTIONS.update({"configure_discovery", "preview_skill", "mcp_trial", "agent_trial", "mcp_refresh"})

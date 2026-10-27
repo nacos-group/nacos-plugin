@@ -30,17 +30,34 @@ For upload and local-to-remote update:
 
 For discovery, installation and remote-to-local update:
 
-- Search using `nacos_search`, preserving the opaque cursor and source. Search summaries do
+- If no exact candidate is selected, search using `nacos_search`, preserving the opaque cursor and source. Search summaries do
   not prove current details, permission, version or endpoints.
-- Use `nacos_install_plan` with an authorized install root and version/label choice. Review
-  file changes and apply. Local modifications stop overwrite; preserve them for explicit
+- For implicit discovery, first read the [reuse policy](../nacos-find-capabilities/references/task-completion.md).
+  Use `nacos_preview_skill` to inspect a validated package and its referenced text files
+  without installing. Pin the returned version, use instructions within task authorization,
+  and only save after successful use according to ask/auto/never. Explicit installation
+  requests are independent of that setting.
+- Use `nacos_install_plan` with an authorized install root and version/label choice.
+  Implicit reuse passes `discoveryReuse: automatic` or `confirmed` as the shared guide specifies. Review
+  file changes and explain that applying persists the Skill in that directory for future
+  sessions; there is no temporary-install mode in this workflow. Apply within authorization.
+  Local modifications stop overwrite; preserve them for explicit
   reconciliation. Pin resolved versions independently of selectors.
 - Use `nacos_verify_skill` for file and exact remote-read checks. Separately verify the
   Skill is discovered by the target Codex session, and perform an authorized real task using it.
-  Return pending loading/new session/restart when discovery has not been observed.
+  Prefer reading the validated installed Skill in this conversation; do not claim automatic
+  host discovery without evidence. Try supported in-app refresh before suggesting a new session.
 - Uninstall using `nacos_uninstall_plan` and apply. Changed/unowned content is retained;
   this does not delete the remote resource. `nacos_recover` restores only a known local
   snapshot after authorization and content checks, not remote publication history.
 
 Treat denied/missing resources as unavailable and stop further plugin use. Offline caches
 are not current authority. The plugin cannot erase content already copied into a session.
+
+For a general task needing specialist help or yielding no useful result, with no selected resource, use
+[capability discovery](../nacos-find-capabilities/SKILL.md) before installation.
+Keep explicit Skill management requests in this workflow.
+
+When installation was part of an ordinary task, follow the shared
+[reuse question](../nacos-find-capabilities/references/task-completion.md) after answering it.
+An explicit request to install/keep this Skill already settles that choice; do not ask again.

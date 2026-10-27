@@ -9,6 +9,7 @@ from pathlib import Path
 import re
 import socket
 import tomllib
+from urllib.parse import urlsplit
 from ..errors import PluginError, require
 from ..store import safe_path
 
@@ -76,17 +77,53 @@ def read_config(path):
     return data
 
 
+def trial_tool_allowed(config_path, url, tool=None):
+    """A trial route must not bypass an existing native server/tool restriction."""
+    if not config_path:
+        return True
+    def identity(value):
+        parsed = urlsplit(value)
+        return (parsed.scheme.lower(), (parsed.hostname or "").lower(),
+                parsed.port or (443 if parsed.scheme == "https" else 80), parsed.path.rstrip("/"), parsed.query)
+    for entry in tomllib.loads(read_config(config_path).decode()).get("mcp_servers", {}).values():
+        if not entry.get("url") or identity(entry["url"]) != identity(url):
+            continue
+        if entry.get("enabled") is False:
+            return False
+        if tool is not None and (tool in entry.get("disabled_tools", [])
+                                 or ("enabled_tools" in entry and tool not in entry["enabled_tools"])):
+            return False
+    return True
+
+
 def fingerprint(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def connection_key(name, connection_id):
+    """Readable, bounded native name; the digest keeps resource scopes distinct."""
+    require(isinstance(name, str) and isinstance(connection_id, str)
+            and re.fullmatch(r"[a-f0-9]{64}", connection_id), "Invalid MCP identity")
+    slug = re.sub(r"[^a-z0-9_-]+", "-", name.lower()).strip("-_")[:32].rstrip("-_") or "mcp"
+    return f"nacos_{slug}_{connection_id[:12]}"
+
+
 def connection_block(key, url, auth):
-    require(re.fullmatch(r"nacos_[a-f0-9]{20}", key), "Invalid managed MCP key")
+    # Existing hash-only keys remain valid for recovery and old connection plans.
+    require(re.fullmatch(r"nacos_(?:[a-f0-9]{20}|[a-z0-9][a-z0-9_-]{0,31}_[a-f0-9]{12})", key), "Invalid managed MCP key")
     lines = [f"# BEGIN NACOS {key}", f"[mcp_servers.{key}]", "url = " + json.dumps(url)]
     if auth["type"] == "bearer":
         lines.append("bearer_token_env_var = " + json.dumps(auth["tokenEnv"]))
     lines.append(f"# END NACOS {key}")
     return "\n".join(lines) + "\n"
+
+
+def replace_connection(data, key, block, previous=None):
+    """Prepare an atomic rename only when the previous owned block is intact."""
+    if previous and previous["configKey"] != key:
+        data = replace_block(data, previous["configKey"], "", previous["configBlock"])
+        return replace_block(data, key, block)
+    return replace_block(data, key, block, previous.get("configBlock") if previous else None)
 
 
 def replace_block(data, key, block, previous=None):

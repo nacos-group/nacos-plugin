@@ -61,6 +61,7 @@ Nacos 负责资源的统一管理与治理；插件负责把这些资源接入�
 | 已接入、发现、我的资源、设置与本地技能的交互规则 | [资源中心 UI 与交互](resource-center-ui-spec.md) |
 | 逐项操作的入口、状态、执行影响、返回与异常；跨应用复用 | [资源中心通用操作与状态](resource-center-interaction-spec.md) |
 | 资源搜索、开发、版本与发布 | [资源管理](resource-management-spec.md) |
+| 任务信号与主动发现、跨应用引导词、关键词搜索、候选交接及跨模型 CD 验收 | [按任务意图发现能力](capability-discovery-spec.md) |
 | Skill、Prompt、AgentSpec、MCP 的使用与持续同步 | [装配与更新](assembly-sync-spec.md) |
 | 远端 Agent 消费与本地 Agent 服务化 | [Agent 互联](agent-interoperability-spec.md) |
 | 源码、插件包、安装和发布渠道 | [打包与分发](distribution-spec.md) |

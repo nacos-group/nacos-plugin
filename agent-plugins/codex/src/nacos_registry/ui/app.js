@@ -23,6 +23,7 @@
     locale: () => bridge.host.hostContext?.locale || navigator.language, version: NacosBuild.version,
     busy: () => model.busy.size > 0, changed: () => { if (model.subpage === 'settings') render(); },
     diagnose: () => call('diagnose'), reload: load, configure: profile => mutation('configure', {profile}),
+    configureDiscovery: installPolicy => mutation('configure_discovery', {installPolicy}),
     configureCredentials: (profile, changes) => model.exclusive('configure', async () => {
       locks();
       try { const value = await bridge.saveCredentials(profile, changes, model.context); await load(); return value; }

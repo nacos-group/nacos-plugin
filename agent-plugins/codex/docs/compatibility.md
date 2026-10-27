@@ -1,6 +1,6 @@
 # 兼容范围与发布门槛
 
-组件版本 `0.1.0-dev.15` 是进入首版验收的开发预览。既有基础功能经使用者自测可用，
+组件版本 `0.1.0-dev.21` 是进入首版验收的开发预览。既有基础功能经使用者自测可用，
 尚未作为正式发行；完整 P1 的验收定义见 [TODO](../specs/TODO.md)；
 核心功能已有开发预览验收；新版工作台通过核心、浏览器和包检查，完整内嵌验收待完成。实现、工具发现和真实使用仍须区分。
 真实私有联调的配置、步骤与轨迹保存在仓库外，不作为可公开复现的环境配置。
@@ -12,16 +12,25 @@
 | Codex | 本地执行；桌面插件安装、工具/Skill 加载与实际调用已验收。portable 与 Codex 专用声明均交付；不声明覆盖所有客户端版本或云端执行。 |
 | 运行时 | Python 最低 3.11；PyYAML 6.0.3 随包。本次回归覆盖 macOS/Python 3.13；既有核心有 Linux/Python 3.11、3.13 证据，当前改版的 Linux 回归待 CI。Linux 桌面集成、macOS/Python 3.11 不在本次已验证范围；原生 Windows 当前不支持，见下表。 |
 | Skill | 单 Skill ZIP、根目录或单外层目录；路径、引用、大小、数量、符号链接和 YAML 校验；不执行脚本。 |
-| MCP | Nacos `mcp-streamable` 前端 → Codex 原生 Streamable HTTP 连接；无认证或独立 bearer 环境引用。stdio 执行、SSE 旧 transport 与代理模式不在本版。 |
+| MCP | Nacos `mcp-streamable` 前端 → Codex 原生 Streamable HTTP 连接；无认证或独立 bearer 环境引用。另支持经 Nacos 验证端点的不持久 MCP 调用；不支持任意 URL 代理、stdio 执行或 SSE 旧 transport。 |
 | Agent | A2A 0.3.0 JSON-RPC，非流式 message/send、tasks/get、tasks/cancel。只消费已有服务，不注册当前会话。 |
 | 页面 | 三主视图、类型专属详情、菜单/确认、独立设置已实现；合成浏览器验收不等同于实际 Codex。新版全局/会话入口与内嵌闭环仍待验收，详见[测试矩阵](../specs/test-matrix.md)。 |
 | 我的资源 | 仅 Skill，使用原生 Admin login 的已认证用户名过滤并核验 owner；共享资源不混入。匿名或 token 模式不能可靠确定所有者，返回不支持。 |
 | 初始化 | 用户运行 setup/初始化 Skill 后扫描选定目录；不声称安装自动扫描、全局事件或自动上传。 |
+| 意图发现 | dev.18 通过 Skill 描述、搜索工具与 MCP 初始化说明提供专业任务主动发现和有界回退；不要求先失败。应用是否暴露说明、各模型实际选择和任务闭环仍需独立验证。 |
 | 创建后提醒 | F17/T20 只保留设计，不含 Hooks、提醒或后台进程。 |
 
 `tools/list`、`mcp_probe` 或配置文件写入成功不等于应用已加载，也不等于真实使用成功。
 安装/连接默认返回待验证或待刷新；应用加载和实际任务结果由验收者独立确认。
-权限拒绝和资源缺失会阻止后续插件调用，无法抹除已进入会话或被复制的内容。
+dev.20 增加 ask/auto/never 的隐式发现安装策略和不安装的 Skill/MCP/Agent 试用路径。
+原生刷新通过现有 App Server Unix WebSocket socket，验证同一线程后调用 reload 并检查状态。
+隔离 App Server 的同线程原生调用已验证；stdio-only 桌面未提供控制入口，不能承诺当前轮自动加载。
+此时可使用标明适配路线的 MCP 调用，或 Settings → MCP servers → Restart 后核对当前对话。
+试用不突破下游认证和本地禁用工具策略，也不等于永久安装。详见[发现适配](../specs/capability-discovery-spec.md)。
+
+dev.21 将新保存的原生 MCP 名称改为资源名加稳定短标识，便于在 Codex 列表识别。
+旧哈希名仍受支持；明确重新保存时才通过受保护的计划迁移，插件升级不会自动重命名已有连接。
+同一桌面对话自动原生加载继续跟踪 [DISC08](../specs/TODO.md)，不以新会话可用替代该项验收。
 
 已完成 Skill 双向更新/恢复、普通消费与开发身份、资源撤权、审核拒绝、离线、部分失败、
 同名与本地修改冲突、未知写结果核对、MCP 原生配置刷新及真实调用、A2A 失败/取消，
