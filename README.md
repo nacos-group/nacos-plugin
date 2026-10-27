@@ -6,7 +6,7 @@ Nacos 生态插件集合，包含安装到 Nacos Server 的扩展，以及安装
 | 安装位置 | 插件 | 安装、开发与兼容入口 |
 | --- | --- | --- |
 | Nacos Server | 数据库、加密、自定义环境、配置变更、追踪及 AI 导入插件 | 本页下方的服务端插件安装、版本映射和 Maven 开发指南。 |
-| Agent 应用 | Nacos AI Registry：发现、管理和使用 agentic 资源 | [插件入口](agent-plugins/README.md)、[通用规范](agent-plugins/specs/README.md)、[Codex 插件](agent-plugins/codex/README.md)。 |
+| Agent 应用 | Nacos AI Registry：发现、管理和使用 agentic 资源 | [插件入口](agent-plugins/README.md)、[通用规范](agent-plugins/specs/README.md)、[Codex 插件](agent-plugins/codex/README.md)、[Qoder 插件](agent-plugins/README.md#qoder-开发预览)。 |
 
 两类插件分别构建与发布。Agent 插件不安装到 Nacos Server，也不加入根 Maven 构建；
 其版本、运行依赖以及与 Nacos 和 Agent 应用的兼容关系由组件独立维护。
@@ -120,7 +120,8 @@ cp <插件模块>/target/<插件名称>.jar <NACOS_HOME>/plugins/
 nacos-plugin/
 ├── agent-plugins/                       # 按 Agent 应用组织的插件
 │   ├── specs/                          # 通用规范
-│   └── codex/                          # Codex 实现及专属 specs
+│   ├── codex/                          # Codex 实现及专属 specs
+│   └── qoder/                          # Qoder 适配源码、测试与独立构建
 ├── nacos-ai-importer-plugin-ext/         # AI 资源导入插件集合
 ├── nacos-config-change-plugin-ext/        # 配置变更插件集合
 │   ├── nacos-fileformat-config-change-plugin/
