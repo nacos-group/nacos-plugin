@@ -19,7 +19,7 @@
 | 应用 | 源码版本 | 已实现功能概览 | 使用与兼容入口 |
 | --- | --- | --- | --- |
 | Codex | **0.1.0** | 逐步初始化；macOS 页面录入凭据；Skill 搜索、上传、发布、安装、更新、恢复与卸载；MCP/Agent 发现与使用；意图发现、免安装试用和三种复用策略；资源中心页面。 | [安装与开发](codex/README.md)、[兼容范围](codex/docs/compatibility.md)、[待办](codex/specs/TODO.md)。 |
-| Qoder | **0.1.0-dev.8** | 原生问答初始化；macOS 系统对话框与钥匙串；Skill 生产消费、显式更新与本地盘点；MCP/Agent 发现与使用；意图发现、免安装试用及交互式复用询问。当前为对话与工具工作流。 | [Qoder 开发预览](#qoder-开发预览)。页面未实现；同会话加载依赖应用原生重载与连接器能力，尚待实际验收。 |
+| Qoder | **0.1.0** | 原生问答初始化；macOS 系统对话框与钥匙串；Skill 生产消费、显式更新与本地盘点；MCP/Agent 发现与使用；意图发现、免安装试用及交互式复用询问。当前为对话与工具工作流。 | [Qoder 使用与开发](#qoder-使用与开发)。页面未实现；同会话加载依赖应用原生重载与连接器能力，尚待实际验收。 |
 | WorkBuddy | 尚未实现 | 预留适配方向，暂无可安装产物。 | 后续在 `workbuddy/` 独立实现。 |
 
 “已实现”表示代码具备相应能力；操作系统、应用版本和真实服务的验证范围由各子插件单独记录。
@@ -71,11 +71,25 @@ agent-plugins/
 - [通用规范导航](specs/README.md)：初始化、凭据、发现、装配、UI 和分发。
 - [通用路线图](specs/TODO.md)：跨应用目标与适配分工。
 - [Codex 使用与开发](codex/README.md)：两种安装方式、源码运行、测试与发布入口。
+- [Qoder 使用与开发](#qoder-使用与开发)：桌面导入、qodercli 安装、源码结构与构建入口。
 
-## Qoder 开发预览
+## Qoder 使用与开发
 
-Qoder 的安装、构建和历史验证说明已移到
-[Qoder 开发预览记录](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/qoder/specs/development-preview.md)，
-当前能力与待办见[Qoder 规范索引](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/qoder/specs/README.md)
-及[兼容矩阵](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/qoder/specs/compatibility.json)。
-在源码仓库中，这些文件位于 `qoder/specs/`；独立插件包不附带其他应用的实现。
+Qoder 的安装入口、初始化步骤、源码结构和构建命令集中在
+[Qoder 插件 README](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/qoder/README.md)。
+桌面端在 **Extensions → Plugins → Add Plugins → Upload Plugin** 选择安装 ZIP；也可用
+`qodercli plugins install <插件目录>` 安装已展开的插件目录（当前 CLI 不接受本地 ZIP 路径）。
+安装后在本地会话先调用 `nacos_status`，再用 `nacos-setup` 完成原生分步初始化。
+从源码构建时在 `agent-plugins/qoder/` 执行测试、`scripts/build.py` 与 `scripts/check_package.py`，
+产物生成在该目录的 `dist/`；仓库 CI 的 `verify-qoder` 作业在 ubuntu/macOS 与 Python 3.11/3.13 上重复这一流程。
+
+| 内容 | 入口 |
+| --- | --- |
+| 安装、初始化、源码结构与构建 | [qoder/README.md](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/qoder/README.md) |
+| 适配边界与通用规范映射 | [qoder/specs/README.md](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/qoder/specs/README.md) |
+| 兼容矩阵与逐项验收证据 | [qoder/specs/compatibility.json](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/qoder/specs/compatibility.json) |
+| 历史开发预览与逐版本验证记录 | [qoder/specs/development-preview.md](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/qoder/specs/development-preview.md) |
+
+在源码仓库中这些文件位于 `qoder/`；独立插件包不附带其他应用的实现。`0.1.0` 的适配内容与
+开发预览 `0.1.0-dev.8` 一致，只增加了版本号和 CI 覆盖，验收边界不因去掉 dev 后缀而放宽：
+真实会话的发现触发、原生询问渲染、同会话 Skill 重载、真实钥匙串与 Nacos 以兼容矩阵的记录为准。

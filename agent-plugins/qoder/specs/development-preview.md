@@ -2,10 +2,13 @@
 
 # Qoder 开发预览记录
 
-本页保留原 Agent 总览中的 Qoder 安装、构建与历史验证记录，已包含 PR #186 的更新；
+本页保留原 Agent 总览中的 Qoder 开发预览与逐版本验证记录，已包含 PR #186 的更新；
 版本描述属于各自记录时间，当前适配边界见[规范索引](README.md)及[兼容记录](compatibility.json)。
+当前的安装入口、初始化步骤、源码结构与构建命令以本适配的 [README](../README.md) 为准，
+本页不再重复维护这些操作说明。
 
-`qoder/` 保留完整适配源码、Skills、测试、构建与包检查脚本，当前版本为 `0.1.0-dev.8`。
+`qoder/` 保留完整适配源码、Skills、测试、构建与包检查脚本，当前版本为 `0.1.0`，
+适配内容与开发预览 `0.1.0-dev.8` 一致，只增加了版本号和 CI 覆盖，验收边界不因去掉 dev 后缀而放宽。
 dev.7 按通用[能力发现规范](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/specs/capability-discovery-spec.md)补齐普通任务中的意图式发现：
 新增入口技能 `nacos-find-capabilities`、`nacos_search` 引导文本与静态 MCP initialize 提示，
 单轮预算为 3 次搜索各不超过 20 条（分页计入），最多比较 3 个候选；本地偏好 ask/auto/never
@@ -22,16 +25,16 @@ dev.6 将下游用途明确为四项原生单选：“不使用”“接入 MCP�
 本版强化原生交互优先：API URL、自定义命名空间、目录和环境变量名也通过原生问答的
 “其他”输入；只有工具未提供或实际不可用才说明原因并逐项降级，取消或拒绝不得绕过。
 通用初始化及 ONB-02/03 验收同步约束此行为；秘密仍走独立系统安全录入。
-旧 dev.4 已核验卸载、移除 MCP 及清理未配置状态；旧 dev.1–dev.4 本地分发产物按用户要求
-清理，保留源码与历史验证记录。dev.8 安装后的实际发现触发、复用询问的原生渲染、同会话加载、
+旧 dev.4 已核验卸载、移除 MCP 及清理未配置状态；旧 dev.1–dev.8 本地分发产物按用户要求
+清理，保留源码与历史验证记录。`0.1.0` 安装后的实际发现触发、复用询问的原生渲染、同会话加载、
 Keychain 和 Nacos 仍待验收。
 宿主适配位于 `src/nacos_qoder/`，Nacos 协议、技能包校验、操作计划、冲突恢复及下游调用
 源码位于本目录的 `src/nacos_registry/`。两者随安装包和源码包完整保留；从源码包的
 `qoder/` 可独立重建，无需 Codex 目录、原仓库或 Maven。
 
-当前开发预览已有单中心接入、技能搜索/上传/发布/安装/显式更新/恢复、本地盘点，以及已有
+当前实现已有单中心接入、技能搜索/上传/发布/安装/显式更新/恢复、本地盘点，以及已有
 MCP 和 A2A 0.3.0 JSONRPC Agent 的发现与调用工具；dev.7 在 dev.6 的 26 个工具上新增
-发现偏好与三个免安装试用工具，共 30 个，dev.8 维持 30 个，包括 `nacos_credentials`
+发现偏好与三个免安装试用工具，共 30 个，dev.8 与 `0.1.0` 维持 30 个，包括 `nacos_credentials`
 本机安全录入/清除入口。
 macOS 原生系统对话框与 Keychain 存储已实现，
 但安装插件中的真实录入、真实 Keychain 读写及 Nacos 认证尚待用户验收；不表示首版全部通过。
@@ -54,10 +57,10 @@ Qoder，但不继承 Codex 的通过结论。
 | F01/F14 配置与诊断 | 保存必填 expectedRevision 拒绝并发/迟到覆盖；诊断独立保存当前上下文、状态、时间和固定错误。最新状态上下文含私有随机密钥对当前 Keychain 载荷及环境值的 HMAC，轮换、移除或拒绝访问使旧上下文、计划及诊断失效；中断不报通过。dev.4 绑定失败、上下文变更及 Keychain 支撑的模拟 login/diagnose 已本地验证，真实宿主/存储/Nacos 待验收。 |
 | F01/F11 凭据边界 | nacos_credentials 只接收 action enter/clear、surface client/admin 及必填 _context，不接收任何明文秘密参数。本机 osascript 对话框录入，密码/Token 隐藏，用户名仅在系统对话框可见；绑定变更丢弃引用并要求重新录入，Keychain 不支持 authorizeCredentialReuse。共享 Client/Admin 录入一次，独立配置分别录入；55 项凭据测试通过，含 fake SecItem 查询标志/错误映射及下游别名隔离，未访问真实 Keychain/Nacos。 |
 | F02/F03/F04 Skill 闭环 | 搜索、上传预检、草稿、提交/发布、确切版本读取和安装已有工具。仍需真实 Nacos 审核/可见性验收，以及 Qoder 用户/项目作用域的发现和实际使用验证。 |
-| CD 能力发现与复用 | dev.7 已实现入口技能、工具引导文本、静态 initialize 提示、单轮预算、ask/auto/never 偏好的双重校验，以及免安装预览与 MCP/Agent 试用的分页和限额；发现、可达、已保存、宿主已加载、本轮可调用与实际使用分开陈述。dev.8 把“`ask` 必须实际调用原生 `AskUserQuestion`”写入入口技能正文、状态和试用结果，修正了 dev.7 真实会话中退回对话文字的问题。13 项专项测试在 171 项套件内通过，使用假 HTTP 与合成包。真实新会话的发现触发、询问渲染、同会话 Skill 重载与原生连接器加载仍待验收。 |
+| CD 能力发现与复用 | dev.7 已实现入口技能、工具引导文本、静态 initialize 提示、单轮预算、ask/auto/never 偏好的双重校验，以及免安装预览与 MCP/Agent 试用的分页和限额；发现、可达、已保存、宿主已加载、本轮可调用与实际使用分开陈述。dev.8 把“`ask` 必须实际调用原生 `AskUserQuestion`”写入入口技能正文、状态和试用结果，修正了 dev.7 真实会话中退回对话文字的问题；`0.1.0` 沿用该实现。13 项专项测试在 171 项套件内通过，使用假 HTTP 与合成包。真实新会话的发现触发、询问渲染、同会话 Skill 重载与原生连接器加载仍待验收。 |
 | F10/F16 显式更新与盘点 | 保留已有盘点结果或继续当前选择，不自动重复扫描；选择须针对当前扫描，全部可读候选有选择才允许完成，终态才能 reopen。稳定选择和 rootStates 保留；普通设置变更保留归属但旧写计划失效，未知结果不自动重发，不提供后台同步。 |
 | F07/F08 MCP 与远端 Agent | MCP 绑定不等于原生注册，仍需另行确认注册/移除并核验工具使用。Agent 绑定拒绝并发覆盖；下游凭据更换须重新绑定，已知任务仅能在重新授权的原端点继续。本地回归及下游别名隔离测试通过；A2A 限定 0.3.0 JSONRPC，真实 send/get/cancel 验收待完成，不承诺流式。 |
-| F12/F13/F14 源码与交付 | dev.8 完整源码保留，171 项 checkout 测试（82 适配/核心、58 凭据、18 分发、13 发现与加载）及实际解压源码 ZIP 的全部测试通过；包/校验和/清单展示与图标断言、隔离 zipapp CLI/stdio 及源码与安装包内源码字节一致离线重建通过，无 Codex 源码差异。CLI 严格校验沿用历史 dev.6 结论，未对 dev.7/dev.8 重跑。原生安装、升级、配置后卸载/凭据清理仍待验收，不宣称 Qoder 全链路通过。 |
+| F12/F13/F14 源码与交付 | `0.1.0` 完整源码保留，171 项 checkout 测试（82 适配/核心、58 凭据、18 分发、13 发现与加载）及实际解压源码 ZIP 的全部测试通过，并由仓库 CI 的 `verify-qoder` 作业在 ubuntu/macOS 与 Python 3.11/3.13 上重复测试、构建和包检查；包/校验和/清单展示与图标断言、隔离 zipapp CLI/stdio 及源码与安装包内源码字节一致离线重建通过，无 Codex 源码差异。CLI 严格校验沿用历史 dev.6 结论，未对 dev.7、dev.8 或 `0.1.0` 重跑。原生安装、升级、配置后卸载/凭据清理仍待验收，不宣称 Qoder 全链路通过。 |
 
 **普通用户凭据入口（本地模拟验证通过，真实验收待完成）**：本机 macOS 优先使用系统对话框与
 Keychain，不要求把账号密码或 Token 发到聊天、工具参数、仓库或宿主 MCP 配置。保存/清除
@@ -67,8 +70,9 @@ Keychain，不要求把账号密码或 Token 发到聊天、工具参数、仓�
 未实现浏览器设置页、侧边页、资源中心或 MCP 加密信封。
 
 **后续或条件能力**：完整 F15 资源中心、Prompt、AgentSpec、多中心、企业策略与后台更新、
-本地 Agent 网关/服务化、F17 创建/更新提示，以及跨插件共享抽象。Linux 待验证且不能宣称
-支持 macOS 凭据入口，Windows 尚不支持；无页面的 UIX 和页面专属分支不适用，不是通过。
+本地 Agent 网关/服务化、F17 创建/更新提示，以及跨插件共享抽象。Linux 仅由 CI 跑测试、构建
+与包检查，真实使用未实测且不能宣称支持 macOS 凭据入口，Windows 尚不支持；无页面的 UIX
+和页面专属分支不适用，不是通过。
 Keychain 生命周期及系统对话框取消/失败边界已纳入 CRED 映射，验收仍待完成。
 
 ONB-01–ONB-08、CRED-01–CRED-10、DEF-01–DEF-06 的逐项映射及未通过项保存在
@@ -76,36 +80,28 @@ ONB-01–ONB-08、CRED-01–CRED-10、DEF-01–DEF-06 的逐项映射及未通�
 
 ### 构建和验证
 
-本机运行需要 Python 3.11+，构建时安装锁定的 PyYAML 6.0.3；安装产物内置纯 Python
-PyYAML，使用者不需要 pip、Node.js 或 Java。Windows 因本地状态锁使用 `fcntl` 暂不支持，
-Linux 尚未实测。以下命令从仓库根目录执行：
+构建环境、测试与打包命令、源码 ZIP 重建方式和产物清单见[适配 README](../README.md)。
+本机运行需要 Python 3.11+，构建时安装锁定的 PyYAML 6.0.3；安装产物内置纯 Python PyYAML，
+使用者不需要 pip、Node.js 或 Java。Windows 因本地状态锁使用 `fcntl` 暂不支持，
+Linux 仅由仓库 CI 的 `verify-qoder` 作业覆盖测试、构建与包检查。
+本版 ZIP 命名为 `nacos-ai-registry-qoder-0.1.0.zip` 与
+`nacos-ai-registry-qoder-0.1.0-source.zip`，只上传前者。构建信息记录来源摘要、基线提交、
+工作区是否有未提交改动和依赖版本。生成产物被 Git 忽略，维护者应提交源码，不把构建包或
+私有配置提交到仓库。
 
-```sh
-python3 -m venv agent-plugins/qoder/.venv
-agent-plugins/qoder/.venv/bin/python -m pip install -r agent-plugins/qoder/requirements-build.txt
-PYTHONPATH=agent-plugins/qoder/src agent-plugins/qoder/.venv/bin/python -m unittest discover -s agent-plugins/qoder/tests -v
-agent-plugins/qoder/.venv/bin/python agent-plugins/qoder/scripts/build.py
-agent-plugins/qoder/.venv/bin/python agent-plugins/qoder/scripts/check_package.py
-qodercli plugins validate agent-plugins/qoder/dist/nacos-ai-registry --strict --json
-```
-
-从源码 ZIP 重建时，在解压根目录执行 `python3 -I -S -B qoder/scripts/build.py` 和
-`python3 -I -S -B qoder/scripts/check_package.py`；内置 PyYAML 源码，无需 pip 或其他插件。
-源码测试可使用 `PYTHONPATH=qoder/src:qoder/vendor/pyyaml python3 -S -B -m unittest discover -s qoder/tests -v`。
-`qoder/dist/` 生成安装 ZIP、源码 ZIP、对应 SHA-256 和展开插件目录。本版 ZIP 命名为
-`nacos-ai-registry-qoder-0.1.0-dev.8.zip` 与 `nacos-ai-registry-qoder-0.1.0-dev.8-source.zip`；
-只上传前者。构建信息记录来源摘要、基线提交、工作区是否有未提交改动和依赖版本。
-生成产物被 Git 忽略，维护者应提交源码，不把构建包或私有配置提交到仓库。
-**dev.8 本地验证（2026-10-27）**：171 项 checkout 测试通过（82 适配/核心、58 凭据、
+**`0.1.0` 本地验证（2026-10-27）**：171 项 checkout 测试通过（82 适配/核心、58 凭据、
 18 分发、13 发现与加载），覆盖发现偏好默认值、持久化与原生询问要求、计划与落盘两次
 复用校验、三个免安装试用及其分页/限额和随偏好变化的复用提示、下游凭据隔离、入口技能
-契约、静态 initialize 提示、加载阶段与原生连接名称迁移。实际解压的 dev.8 源码 ZIP 以
+契约、静态 initialize 提示、加载阶段与原生连接名称迁移。实际解压的 `0.1.0` 源码 ZIP 以
 Python 3.13 `-S -B`、仅内置 YAML、空 HOME 且无 Codex 目录运行，171 项全部通过。
 `build.py` 与 `check_package.py` 通过校验和、ZIP 元数据、完整源码、清单展示与图标断言、
 隔离 zipapp CLI 及 initialize/tools-list/status，源码与安装包内源码离线重建字节一致；
 `*.zip.sha256` 已验证，无 Codex 源码差异。CLI 严格校验沿用历史 dev.6 结论，本版未重跑。
+相同流程已加入 CI 的 `verify-qoder` 作业，在 ubuntu/macOS 与 Python 3.11/3.13 上重复执行。
 真实新会话的发现触发、复用询问的原生渲染、同会话 Skill 重载、原生连接器加载、真实
 Keychain 与 Nacos 仍待用户验收。
+**历史 dev.8 本地验证（2026-10-27）**：同样 171 项 checkout 测试、解压源码测试、包与
+校验和检查及离线重建通过；其适配内容与 `0.1.0` 一致。
 **历史 dev.7 本地验证（2026-10-27）**：同样 171 项 checkout 测试、解压源码测试、包与
 校验和检查及离线重建通过；其复用询问在真实会话中退回对话文字，由 dev.8 修正。
 **历史 dev.3 验证**：`0.1.0-dev.3` 通过 100 项测试（82 项适配/核心与 18 项分发契约）；
@@ -137,10 +133,9 @@ ZIP 元数据、完整源码、隔离 zipapp CLI 及 initialize/tools-list/statu
 所有秘密测试仅用 fake 存储/对话框及合成值，无真实用户秘密、实际 Keychain 或真实 Nacos；
 这些本地通过不替代 dev.4 Desktop 安装、真实对话框/Keychain/Nacos 或原生连接器验收。
 
-### 安装与初始化
+### 安装与初始化的历史观察
 
-Desktop：在 **Extensions → Plugins → Add Plugins → Upload Plugin** 选择安装 ZIP，
-启用插件并打开本地会话，发送“初始化 Nacos AI Registry，先调用 nacos_status”。
+安装入口、CLI 命令和初始化步骤见[适配 README](../README.md)；本节只保留逐版本的实测观察。
 ZIP 根包含 `.qoder-plugin/plugin.json`，MCP 路径使用 `${QODER_PLUGIN_ROOT}`。
 本机 CLI 1.1.46 的历史 dev.4 严格格式校验（零错误/警告）、隔离 zipapp 工具启动及源码重建
 已通过，历史结果仍按版本保留在兼容文件。Desktop 在 `0.1.0-dev.2` 曾发现 25 个工具并读取未配置状态，初始化却
@@ -149,25 +144,17 @@ ZIP 根包含 `.qoder-plugin/plugin.json`，MCP 路径使用 `${QODER_PLUGIN_ROO
 首个 URL 步骤退回聊天询问；卸载与空状态清理已核验，不证明完整初始化或真实 Keychain。
 dev.5 修正自定义输入路径，须安装后新建本地会话验证首个 URL 的原生 Other 输入、原生选项、
 取消/降级边界、本机安全录入、Keychain 和真实业务。
-dev.8 另需在普通任务中验证发现是否被触发或被正确跳过、`ask` 偏好是否真正发出原生询问
-（dev.7 在此处退回了对话文字），以及同会话的 Skill 重载与原生连接器加载；插件没有刷新接口，
-也不会自动重启应用。
+`0.1.0` 另需在普通任务中验证发现是否被触发或被正确跳过、`ask` 偏好是否真正发出原生询问
+（dev.7 在此处退回了对话文字，dev.8 已修正），以及同会话的 Skill 重载与原生连接器加载；
+插件没有刷新接口，也不会自动重启应用。
 dev.2 未配置环境的原生卸载、MCP 移除及专用空状态/孤立缓存清理已核验，保留用户技能、
 其他插件、远端资源、完整源码与当时 dev.3 归档；不代表配置后 Keychain 清理已通过。
 CLI 的实际会话调用仍因 SDK 认证载荷缺失未完成；完整升级、带用户资源的卸载及真实
 Nacos/Skill/下游使用验收仍待完成。
-CLI 本地安装与开发临时加载入口已通过 `--help` 核实，分别使用：
-
-```sh
-qodercli plugins install ./agent-plugins/qoder/dist/nacos-ai-registry
-qodercli --plugin-dir ./agent-plugins/qoder/dist/nacos-ai-registry
-```
-
-这些命令基于本机 `qodercli --help`，其他版本先核对实际命令；不要照搬 Codex marketplace。
 安装会变更插件配置，临时加载不代替正式安装。源码目录不含生成 runtime，先构建后加载。
 升级重新构建并通过宿主安装/更新入口执行，不直接编辑缓存；卸载插件与清理托管技能、
 原生连接器分别选择，均不自动删除 Nacos 资源。
-`0.1.0-dev.8` 安装或升级后新建本地会话并重新发现工具 schema，先调用 `nacos_status`；
+`0.1.0` 安装或升级后新建本地会话并重新发现工具 schema，先调用 `nacos_status`；
 保存配置必须传最新 `configurationRevision` 作为 `expectedRevision`。已有 schemaVersion 1
 状态保留；旧版本写计划须重新生成，已有下游绑定须重新授权，不自动执行迁移中的远端写入。
 发现偏好单独保存，默认为 `ask`，升级既不沿用其他取值也不改写已保存的选择；dev.6 已保存的

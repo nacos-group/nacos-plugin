@@ -1,7 +1,7 @@
 {
   "name": "nacos-ai-registry",
   "displayName": "Nacos AI Registry",
-  "version": "0.1.0-dev.8",
+  "version": "0.1.0",
   "description": "Find reusable Skills, MCP tools and specialist Agents in your Nacos AI Registry while solving an ordinary task in local Qoder. Requires Python 3.11+ and macOS for native credential entry.",
   "descriptionZh": "在本地 Qoder 完成普通任务时，从 Nacos AI Registry 发现并复用可用的技能、MCP 工具和远端 Agent。需要 Python 3.11+，原生凭据输入依赖 macOS。",
   "author": {"name": "Nacos Group"},

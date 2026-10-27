@@ -8,7 +8,7 @@
 | 你想做什么 | 使用哪类插件 | 从哪里开始 |
 | --- | --- | --- |
 | 让 Nacos 使用其他数据库，或扩展加密、配置变更、追踪和 AI 资源导入能力 | **Nacos Server 扩展插件**：编译为 JAR，安装到 Nacos Server。 | 本页下方的版本映射、插件列表和 Maven 构建指南。 |
-| 让 Codex、Qoder 等 AI 助手使用 Nacos 中的技能、MCP 工具和远端 Agent | **Agent 插件**：安装到对应的 AI 应用，在对话中发现、使用和管理资源。 | [Agent 插件总览](agent-plugins/README.md)、[Codex 使用指南](agent-plugins/codex/README.md)、[Qoder 入口](agent-plugins/README.md#qoder-开发预览)。 |
+| 让 Codex、Qoder 等 AI 助手使用 Nacos 中的技能、MCP 工具和远端 Agent | **Agent 插件**：安装到对应的 AI 应用，在对话中发现、使用和管理资源。 | [Agent 插件总览](agent-plugins/README.md)、[Codex 使用指南](agent-plugins/codex/README.md)、[Qoder 入口](agent-plugins/README.md#qoder-使用与开发)。 |
 
 例如，团队可以把工作流程整理成 Skill，把内部查询系统提供为 MCP 服务，再通过 Nacos 统一管理。
 安装 Agent 插件后，成员可以在熟悉的 AI 应用中查找这些能力，或直接描述任务，由模型判断是否需要

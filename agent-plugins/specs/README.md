@@ -31,7 +31,7 @@ Nacos 负责资源的统一管理与治理；插件负责把这些资源接入�
 
 本目录维护跨 Agent 应用的功能、资源与治理契约，[通用路线图](TODO.md)说明演进方向。
 各应用的安装、实现和验收记录维护在其专属目录；当前入口为 [Codex 规范](../codex/specs/README.md)
-与 [Qoder 入口](../README.md#qoder-开发预览)所列的 `qoder/specs/README.md`、`compatibility.json`。
+与 [Qoder 入口](../README.md#qoder-使用与开发)所列的 `qoder/README.md`、`qoder/specs/README.md`、`compatibility.json`。
 安装与开发从[插件入口](../README.md)开始。原 Nacos 规范与源码使用固定提交的跨仓库链接。
 
 ## 能力概览

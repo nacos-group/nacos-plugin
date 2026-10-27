@@ -22,7 +22,7 @@ TIMESTAMP = (2026, 1, 1, 0, 0, 0)
 FILE_MODE = 0o100644
 ENTRYPOINT = b"from nacos_qoder.__main__ import main\nmain()\n"
 SOURCE_DIRS = ("src", "scripts", "tests", "skills", "assets", ".qoder-plugin", "specs")
-SOURCE_FILES = (".mcp.json", "requirements-build.txt", ".gitignore")
+SOURCE_FILES = ("README.md", ".mcp.json", "requirements-build.txt", ".gitignore")
 CORE_MODULES = ("__init__", "schema", "service", "registry", "remote", "package", "store",
                 "errors", "transport", "downstream", "discovery", "credentials", "credential_service")
 REQUIRED = tuple("qoder/src/nacos_qoder/" + name + ".py"

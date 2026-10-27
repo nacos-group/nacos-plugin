@@ -160,6 +160,7 @@ class BuildContractTests(unittest.TestCase):
                "args": ["${QODER_PLUGIN_ROOT}/server/nacos-qoder.pyz", "serve"]}}}
         fixture = {".qoder-plugin/plugin.json": json.dumps(manifest), ".mcp.json": json.dumps(mcp),
                    ".gitignore": "dist/\n", "requirements-build.txt": "PyYAML==6.0.3\n",
+                   "README.md": "# Fixture adapter README\n",
                    "specs/compatibility.json": "{}", "src/nacos_qoder/__init__.py": '__version__ = "' + VERSION + '"\n',
                    "src/nacos_qoder/__main__.py": FIXTURE_MAIN,
                    "src/nacos_qoder/server.py": "# fixture\n", "src/nacos_qoder/service.py": "# fixture\n",
@@ -207,6 +208,7 @@ class BuildContractTests(unittest.TestCase):
         self.assertIn("qoder/.qoder-plugin/plugin.json", source)
         self.assertIn("qoder/.mcp.json", source)
         self.assertIn("qoder/.gitignore", source)
+        self.assertIn("qoder/README.md", source)
         self.assertIn("qoder/skills/.metadata.json", source)
         self.assertEqual(source["qoder/src/nacos_registry/__init__.py"],
                          ('__version__ = "' + VERSION + '"\n').encode())
