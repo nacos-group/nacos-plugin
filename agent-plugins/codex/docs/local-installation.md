@@ -29,7 +29,7 @@
 python3 --version
 codex plugin --help
 cd "$HOME/Downloads"
-PLUGIN_VERSION='0.1.0-dev.10'
+PLUGIN_VERSION='0.1.0'
 PLUGIN_ZIP="nacos-ai-registry-${PLUGIN_VERSION}.zip"
 shasum -a 256 -c "${PLUGIN_ZIP}.sha256"
 ```

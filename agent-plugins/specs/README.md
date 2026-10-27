@@ -31,7 +31,7 @@ Nacos 负责资源的统一管理与治理；插件负责把这些资源接入�
 
 本目录维护跨 Agent 应用的功能、资源与治理契约，[通用路线图](TODO.md)说明演进方向。
 各应用的安装、实现和验收记录维护在其专属目录；当前入口为 [Codex 规范](../codex/specs/README.md)
-与 [Qoder 入口](../README.md#qoder-开发预览)所列的 `qoder/specs/README.md`、`compatibility.json`。
+与 [Qoder 入口](../README.md#qoder-使用与开发)所列的 `qoder/README.md`、`qoder/specs/README.md`、`compatibility.json`。
 安装与开发从[插件入口](../README.md)开始。原 Nacos 规范与源码使用固定提交的跨仓库链接。
 
 ## 能力概览
@@ -90,6 +90,7 @@ Codex 图稿的颜色、尺寸或技术栈。当前 SVG 是 Codex 的设计基�
 | UI | 入口、操作状态、返回、确认和反馈语义；不支持页面时的能力边界。 | 应用主题、CSS/组件、断点尺寸、SVG 与实际页面验收。 |
 | 分发与验证 | 来源完整性、独立构建、私有数据排除及验证分层。 | manifest、安装命令、发布渠道、版本矩阵、测试结果及应用 TODO。 |
 
-Codex 的发现/复用实现映射 CD-01–34；Qoder 当前继续使用自身独立实现，并未因合并规范获得
-同样的隐式发现策略、免安装试用或原生刷新支持。其适配待办和差异维护在 `qoder/specs/README.md`。
+Codex 与 Qoder 已分别实现意图发现、ask/auto/never 复用策略和免安装试用，并在各自规范中
+映射 CD-01–34。同会话原生加载仍取决于各应用接口，实际验证结果分别维护；Qoder 的映射、
+交互式询问与待验边界见 `qoder/specs/README.md`，不会因采用通用规范而继承 Codex 的验收结果。
 后续应用先声明采用范围与缺口，再逐项验证；不能复制另一应用的通过状态或要求照搬其工具与界面。

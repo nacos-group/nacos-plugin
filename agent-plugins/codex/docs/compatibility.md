@@ -1,8 +1,9 @@
 # 兼容范围与发布门槛
 
-组件版本 `0.1.0-dev.21` 是进入首版验收的开发预览。既有基础功能经使用者自测可用，
-尚未作为正式发行；完整 P1 的验收定义见 [TODO](../specs/TODO.md)；
-核心功能已有开发预览验收；新版工作台通过核心、浏览器和包检查，完整内嵌验收待完成。实现、工具发现和真实使用仍须区分。
+当前源码版本为 `0.1.0`，包含开发预览期间已实现的资源中心、页面凭据、意图发现和复用能力。
+既有基础功能经使用者自测可用；完整 P1 的验收定义见 [TODO](../specs/TODO.md)。
+版本号更新不改变下面的支持范围和待验项：工作台已通过核心、浏览器和包检查，完整内嵌验收仍待完成。
+实现、工具发现和真实使用分别记录；实际发行以 GitHub Release 为准。
 真实私有联调的配置、步骤与轨迹保存在仓库外，不作为可公开复现的环境配置。
 
 | 维度 | 当前边界 |
@@ -10,7 +11,7 @@
 | Nacos | 固定基线 `1511b5a85f744acb0ad54e8213b1f4d82674799c`（3.3.0-RC）。不外推旧版本；Client/Admin 可共用或分别配置地址与认证。 |
 | 原生认证 | `none`、原生 login、accessToken；支持环境变量引用。macOS 页面凭据经页面加密和本地 MCP 通道保存到 Keychain，普通状态仅保存引用；第三方鉴权/OAuth 未实现。 |
 | Codex | 本地执行；桌面插件安装、工具/Skill 加载与实际调用已验收。portable 与 Codex 专用声明均交付；不声明覆盖所有客户端版本或云端执行。 |
-| 运行时 | Python 最低 3.11；PyYAML 6.0.3 随包。本次回归覆盖 macOS/Python 3.13；既有核心有 Linux/Python 3.11、3.13 证据，当前改版的 Linux 回归待 CI。Linux 桌面集成、macOS/Python 3.11 不在本次已验证范围；原生 Windows 当前不支持，见下表。 |
+| 运行时 | Python 最低 3.11；PyYAML 6.0.3 随包。本地回归覆盖 macOS/Python 3.13；合并前 CI 已通过 Ubuntu、macOS 与 Python 3.11、3.13 的组合检查。这些是核心、协议和打包验证，不代表各系统的桌面集成均已通过；原生 Windows 当前不支持，见下表。 |
 | Skill | 单 Skill ZIP、根目录或单外层目录；路径、引用、大小、数量、符号链接和 YAML 校验；不执行脚本。 |
 | MCP | Nacos `mcp-streamable` 前端 → Codex 原生 Streamable HTTP 连接；无认证或独立 bearer 环境引用。另支持经 Nacos 验证端点的不持久 MCP 调用；不支持任意 URL 代理、stdio 执行或 SSE 旧 transport。 |
 | Agent | A2A 0.3.0 JSON-RPC，非流式 message/send、tasks/get、tasks/cancel。只消费已有服务，不注册当前会话。 |
@@ -42,7 +43,7 @@ dev.21 将新保存的原生 MCP 名称改为资源名加稳定短标识，便�
 | 系统 | 代码评估与已知边界 |
 | --- | --- |
 | macOS | 页面加密使用 WebCrypto，本地解密依赖 Security.framework / CommonCrypto，存储使用 Keychain；账号密码页面保存已有用户实测。 |
-| Linux | 核心使用 POSIX 文件锁；可使用无认证或环境变量。尚无系统凭据服务及解密适配，页面直接填写明确不可用，不能称为“仅待验证”。当前修改的 Linux CI 及桌面端联调尚未执行。 |
+| Linux | 核心使用 POSIX 文件锁；可使用无认证或环境变量。尚无系统凭据服务及解密适配，页面直接填写明确不可用，不能称为“仅待验证”。Ubuntu 核心与打包 CI 已通过，Linux 桌面端联调尚未完成。 |
 | 原生 Windows | `store.py` 顶层导入 `fcntl` 会阻止启动；文件锁、目录 fsync、权限及凭据服务还需适配。环境变量也不能解决启动问题。 |
 | WSL | 进程遵循 Linux 边界；Windows 桌面与 WSL 的路径、进程环境及插件连接未验证，不承诺可用。 |
 
