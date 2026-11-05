@@ -15,7 +15,9 @@
 | Codex 页面状态与通用操作的对应关系 | [SVG 场景映射](ui-storyboard.md) · [可点击图册](assets/ui/index.html) |
 | manifest、产物、安装与发布渠道 | [打包与分发](distribution-spec.md) |
 | 插件入口、页面、初始化及可选事件机制 | [可行性与验证边界](feasibility-spec.md) |
-| 当前范围、实施状态、待办和决策 | [TODO 与排期](TODO.md) |
+| 当前实现、缺陷与分层验收事实 | [实现与验收记录](implementation-status.md) |
+| 所有宿主共用的功能、协作与治理计划 | [全局路线图与待办](../../specs/roadmap.md) |
+| 职责协作的组合架构、执行路径与结果契约 | [多 Agent 协作规范](../../specs/multi-agent-collaboration-spec.md) |
 
 安装与开发从 [Codex 插件入口](../README.md)开始。其他 Agent 应用应在各自目录记录
 适配与验证结果，Codex 的实现和测试结论不自动构成其他应用的支持声明。

@@ -119,5 +119,5 @@ codex plugin marketplace add "$(pwd)/dist/marketplace"
 codex plugin add nacos-ai-registry@local-nacos-registry
 ```
 
-构建步骤见 [README](../README.md#从源码构建插件包)。原始源码目录缺少已构建的运行程序，不能直接安装。
+构建步骤见 [README](../README.md#构建可安装包)。原始源码目录缺少已构建的运行程序，不能直接安装。
 也可以将完整的 `dist/marketplace/`（包含隐藏的 `.agents/`）复制到固定目录后注册该目录。

@@ -66,4 +66,4 @@ marketplace 不能对外分发。实际发布前必须重新核实准入和格�
 
 构建与校验命令见[开发指南](../docs/development.md)，安装步骤见[安装指南](../docs/installation.md)。
 独立 CI 覆盖本目录和共享规范的变化，生成 Codex 产物；不调用 Maven，也不自动发布。
-支持矩阵、页面门槛和其余验收项见 [TODO](TODO.md)。
+支持矩阵、页面门槛和其余验收项见 [实现与验收记录](implementation-status.md)。

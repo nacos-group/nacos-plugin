@@ -49,11 +49,18 @@ flowchart LR
 | Nacos 协议适配 | Client/Admin HTTP、认证、能力信息、分页及错误映射。 | 直接修改 Config、Naming 或数据库来模拟 AI API。 |
 | 调用适配 | 选定协议的请求、流式事件、超时、取消和结果映射。 | 从发现结果推断调用权限或凭据。 |
 | 本地状态存储 | 缓存、锁定版本、基线摘要、操作日志和恢复信息。 | 资源发布的服务端事实来源。 |
+| 协作协调（规划） | 任务/角色关联、执行路由、有界调度、状态/超时、部分结果和追溯；见[协作规范](multi-agent-collaboration-spec.md)。 | 将临时会话和任务历史写入 Nacos 目录，或以工作流文字代替可靠调度。 |
 | 凭据服务与系统适配 | 受保护输入通道、引用归属、保存事务、缓存失效及系统存储。 | 普通工具返回秘密、隐式跨应用共享凭据。 |
 | 服务网关 | 对外调用入口、身份映射、隔离执行和 Endpoint 活性。 | 自动接管用户现有会话。 |
 
 模块划分是逻辑边界，不要求每个模块成为独立服务或源码仓库。协议适配可使用经过验证的
 SDK、CLI 或直接 HTTP 实现；核心不得依赖面向人的 CLI 文本输出。
+
+图中的“共享核心”是目标架构。截至 `2026-11-05` 的 `0.1.0` 基线，Codex/Qoder 分别维护
+本地 Python 源码并独立打包，没有公共运行库或多角色协调器；后续抽离范围与迁移由
+[COL09](multi-agent-collaboration-spec.md#col09)说明，版本安排见全局路线图。
+协作模板、临时宿主实例和真实远程服务分别建模，沿用既有资源类型；任务记录和产物保存在协调层/宿主，
+具体持久化与恢复契约按协作规范 COL-D03 定稿。
 
 页面内部进一步区分通用操作状态、应用能力适配和应用视觉适配。
 [通用操作规范](resource-center-interaction-spec.md)约束入口、步骤、返回和执行结果；
@@ -106,6 +113,7 @@ SDK、CLI 或直接 HTTP 实现；核心不得依赖面向人的 CLI 文本输�
 | 图形界面 | MCP Apps 资源、桥接调用、展示模式、全局/会话入口及策略限制，分别标记支持状态。 |
 | 页面主题与控件 | 可用主题信号/变量、原生组件与后备样式；宽窄容器、焦点、浅深色及通用操作映射。 |
 | 生命周期 | 启动、关闭、重连、进程所有权和持续后台执行能力。 |
+| 本地协作执行（规划） | 插件实际可调用的实例创建、权限/工作目录隔离、状态、审批、取消、清理与恢复入口；无接口时的限制及降级。 |
 | 服务化 | 是否具有稳定的会话创建、执行、事件和取消 API。 |
 
 适配器不得通过复制某宿主的路径与配置语法声称支持另一个宿主。每个发布版本必须提供
@@ -114,6 +122,23 @@ SDK、CLI 或直接 HTTP 实现；核心不得依赖面向人的 CLI 文本输�
 默认目录与本地标识遵循[初始化默认值规则](onboarding-spec.md#5-本机默认值与自定义)，
 具体路径和配置语法留在应用目录。验收场景引用[通用编号](onboarding-acceptance-spec.md)，
 各应用独立保存执行结论。
+
+### 3.1 新增宿主的基础接入
+
+WorkBuddy、Claude Code、Cursor、Gemini CLI 分别作为独立适配目标，排期见
+[全局宿主计划](roadmap.md#host-support)。基础交付包括独立分发、初始化与凭据、Skill 搜索/安装/
+更新/发布、MCP 及已有远端 Agent 调用、加载验证和升级卸载；无需等待多角色协调或公共运行库。
+
+| 宿主 | 官方扩展入口 | 需要映射的差异 |
+| --- | --- | --- |
+| WorkBuddy | [插件系统](https://www.codebuddy.cn/docs/workbuddy/Plugins) | 桌面插件安装、Skills/MCP、交互、安全输入及资源加载。 |
+| Claude Code | [Plugins](https://code.claude.com/docs/en/plugins) | 插件布局、Skills/MCP、用户/项目作用域、权限与终端交互；桌面入口另验。 |
+| Cursor | [Plugins reference](https://cursor.com/docs/reference/plugins) | 插件组件、Skills/MCP、规则、配置作用域与加载。 |
+| Gemini CLI | [Extensions](https://geminicli.com/docs/extensions/writing-extensions/) | extension 包、Skills/MCP、终端输入及进程环境。 |
+
+上述入口用于适配设计，不表示 Nacos 插件已支持这些宿主。实现时固定宿主版本与操作系统组合；
+页面、Hooks、刷新、委派、取消和恢复逐项声明，基础接入不默认包含全部增强能力。
+操作系统凭据后端可复用，各宿主的凭据引用和配置仍默认隔离。
 
 ## 4. 工具与状态表达
 
@@ -129,8 +154,8 @@ SDK、CLI 或直接 HTTP 实现；核心不得依赖面向人的 CLI 文本输�
 本插件遵循[AI Registry 规范](https://github.com/alibaba/nacos/blob/1511b5a85f744acb0ad54e8213b1f4d82674799c/specs/zh-cn/ai/ai-registry-spec.md)、
 [集成与适配器规范](https://github.com/alibaba/nacos/blob/1511b5a85f744acb0ad54e8213b1f4d82674799c/specs/zh-cn/integration/integration-adapter-spec.md)和
 [HTTP API 规范](https://github.com/alibaba/nacos/blob/1511b5a85f744acb0ad54e8213b1f4d82674799c/specs/zh-cn/http-api/api-spec.md)。服务端契约优先于本插件内部便利模型。
-既有 Nacos 规范无需因本插件的独立实现而改变；任何实际契约缺口必须列入
-[待决策事项](TODO.md)，不能在插件中静默补造服务端语义。
+既有 Nacos 规范无需因本插件的独立实现而改变；实际契约缺口必须在对应领域 spec 中说明，
+需要新增服务端能力时先补上游契约，不能在插件中静默补造服务端语义。
 
 ## 6. 仓库与交付边界
 

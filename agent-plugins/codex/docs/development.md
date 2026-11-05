@@ -48,7 +48,7 @@ node --test tests/test_ui_model.cjs
 
 独立 GitHub Actions 执行本组件的测试、打包及干净运行检查，不调用 Maven，不自动发布。
 现有服务端 Java CI 不变。组件 tag 为 `nacos-ai-registry-v<version>`；源码和安装包必须来自
-同一组件源码摘要。发布前按[发布指南](releasing.md)核对[验收边界](compatibility.md)与 TODO，
+同一组件源码摘要。发布前按[发布指南](releasing.md)核对[验收边界](compatibility.md)与[实现记录](../specs/implementation-status.md)，
 明确本次发行支持范围、发布门槛和保留的限制，不把版本号更新当作未验项通过。
 
 列表展示信息维护在 `plugin.json` 的 `extensions.com.openai.interface`，包括描述、开发者、

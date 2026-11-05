@@ -2,7 +2,7 @@
 
 这里的发布是将版本包分发到本仓库的 GitHub Releases；Codex 官方插件目录上架是单独流程，
 发布 ZIP 不会自动完成目录上架。当前源码版本为 `0.1.0`，使用不带预发布后缀的版本号。发布前核对
-[TODO](../specs/TODO.md)与[兼容范围](compatibility.md)，在发行说明中如实列出已知限制和未完成验证；
+[实现与验收记录](../specs/implementation-status.md)与[兼容范围](compatibility.md)，在发行说明中如实列出已知限制和未完成验证；
 更改源码版本号不会自动创建 tag、上传附件或发布 Release。
 
 维护者按以下顺序发布：

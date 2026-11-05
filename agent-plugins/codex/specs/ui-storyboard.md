@@ -2,7 +2,7 @@
 
 # 资源中心 UI 场景与交互图册
 
-**状态：当前 SVG 版本为已选定设计基线，实现正在逐页修正；逐帧结论见 [UI 对照表](ui-conformance.md)，实际应用验收见 TODO 与测试矩阵。** 本图册落实[Codex UI 规范](resource-center-ui-spec.md)
+**状态：当前 SVG 版本为已选定设计基线，实现正在逐页修正；逐帧结论见 [UI 对照表](ui-conformance.md)，实际应用验收见实现记录与测试矩阵。** 本图册落实[Codex UI 规范](resource-center-ui-spec.md)
 及[通用操作与状态规范](../../specs/resource-center-interaction-spec.md)。后续适配可复用文字契约，
 按所在 Agent 应用调整 CSS；本图册的具体颜色、尺寸和组件只作为 Codex 设计参考。
 一张图只显示一个界面状态，不再把菜单样本、操作步骤和多种结果拼成同一产品页面。
@@ -203,7 +203,7 @@ Codex 浮层与弹窗尺寸见[专属 UI 规范](resource-center-ui-spec.md#48-�
 [凭据管理](../../specs/credential-management-spec.md)，Codex 桥接与限制见
 [凭据适配](credential-onboarding-spec.md)。
 
-设计帧不作为保存、加载或实际调用的证据。Codex 的实现状态见 [TODO](TODO.md)、
+设计帧不作为保存、加载或实际调用的证据。Codex 的实现状态见 [实现与验收记录](implementation-status.md)、
 [逐页对照](ui-conformance.md)和[测试矩阵](test-matrix.md)。
 
 ## 7. 通用操作与图稿映射
