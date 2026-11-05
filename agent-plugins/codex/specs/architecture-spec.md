@@ -3,7 +3,7 @@
 # Codex 适配与实现规范
 
 本文件补充[通用架构](../../specs/architecture-spec.md)，只记录 Codex 的接入和实现选择。
-交付状态以 [TODO](TODO.md) 和[兼容说明](../docs/compatibility.md)为准。
+交付状态以 [实现与验收记录](implementation-status.md) 和[兼容说明](../docs/compatibility.md)为准。
 
 ## 1. 插件与资源加载
 
@@ -32,7 +32,7 @@ Nacos 认证当前支持原生 login/token 的环境变量引用、macOS 页面�
 
 下游 MCP 首批选择 Streamable HTTP，Agent 选择 A2A 0.3.0 JSON-RPC 的非流式
 message/send、tasks/get、tasks/cancel；流式、OAuth 和其他协议暂不声明支持。
-下游认证当前仍使用独立环境变量，实际兼容性按 TODO 的 P0/P1 验收。
+下游认证当前仍使用独立环境变量，实际兼容性见实现与验收记录；后续范围按全局路线图维护。
 
 ## 3. AgentSpec profile（后续能力）
 

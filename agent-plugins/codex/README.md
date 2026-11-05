@@ -164,7 +164,7 @@ node --test tests/test_ui_model.cjs
 ```
 
 详细模块职责与验证方法见[开发指南](docs/development.md)。打包前保证私有环境文件不在源码目录中；
-`dist/` 已忽略，不提交生成包。真实应用中仍待验证的内容保留在[TODO](specs/TODO.md)，不以单元测试代替。
+`dist/` 已忽略，不提交生成包。真实应用中仍待验证的内容保留在[实现与验收记录](specs/implementation-status.md)，不以单元测试代替。
 
 ## 发布与更多文档
 

@@ -9,7 +9,7 @@
 [凭据管理](../../specs/credential-management-spec.md)。
 
 用户已选择“简洁工作台”：贴近 Codex，突出列表、搜索和当前操作。SVG 是本适配的设计基线，
-实际实现及未通过项见 [TODO](TODO.md)、[测试矩阵](test-matrix.md)和[逐页对照](ui-conformance.md)。
+实际实现及未通过项见 [实现与验收记录](implementation-status.md)、[测试矩阵](test-matrix.md)和[逐页对照](ui-conformance.md)。
 规范整理不改变原有验收结论；其他应用根据自己的能力和风格实现通用操作。
 
 ## 1. 当前适配范围
@@ -251,4 +251,4 @@ planId/operationId 跟踪。当前 stdio MCP 与状态锁串行执行，不能�
 | CUI-12 主题与流程独立 | 通用 UI §11 | Codex 主题通知和容器变化。 |
 
 ONB/CRED/DEF 场景见[通用验收](../../specs/onboarding-acceptance-spec.md)。
-实施状态继续维护在 [Codex TODO](TODO.md#11-ui-改版待办)。
+实施状态继续维护在 [Codex 页面验收记录](implementation-status.md#5-页面实现与验证记录)。

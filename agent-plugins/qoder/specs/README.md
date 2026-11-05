@@ -18,7 +18,7 @@
 | `onboarding-spec.md`、`onboarding-acceptance-spec.md` | `nacos-setup` 使用当前 Qoder 原生问答；非敏感自定义值通过 Other 输入，取消不跳过，只有工具实际不可用才说明原因逐项退回对话。工具发现和调用映射到 `mcp_list/mcp_get/mcp_call`，不复制 Codex 的选择工具名。 |
 | `credential-management-spec.md`、`platforms/macos-credential-store.md` | `nacos_credentials` 的 enter/clear 与 client/admin 面映射到本机 osascript 对话框和 SecItem。密码/Token 隐藏输入，不经过模型参数；存储 service、引用绑定、journal 和修订保护见兼容记录。无浏览器设置页或 Codex 加密桥接。 |
 | `assembly-sync-spec.md` | 技能使用 `~/.qoder/skills` 或明确选定的项目目录；状态使用 `NACOS_QODER_HOME` 或 `~/.qoder/state/nacos-ai-registry`。MCP 绑定与 Qoder 原生注册分开验证，不能把绑定或探针计为原生工具已加载。 |
-| `agent-interoperability-spec.md` | 当前为 A2A 0.3.0 JSONRPC 消费，需先保存绑定；原任务端点、独立认证、未知结果与取消按兼容记录约束。不承诺流式或本地 Agent 服务化。 |
+| `agent-interoperability-spec.md` | 当前为 A2A 0.3.0 JSONRPC 消费，支持保存绑定和免安装试用；原任务端点、独立认证、未知结果与取消按兼容记录约束。不承诺流式或本地 Agent 服务化。 |
 | `capability-discovery-spec.md` | `nacos-find-capabilities` 承载普通任务触发条件，`nacos_search` 描述和 MCP `initialize.instructions` 重复同一语义；`discovery.installPolicy`（`ask` 缺省）保存在 profile 之外，计划与 apply 两处校验 `discoveryReuse`。免安装试用为 `nacos_preview_skill`、`nacos_mcp_trial`、`nacos_agent_trial`。`ask` 必须实际调用 `AskUserQuestion`，该要求同时出现在 SKILL.md 正文、`status.discovery.askInterface`、试用结果的 `reuse` 与相关工具描述里；同会话加载依赖用户重载 Skills 和 `query_mcp`/`manage_mcp`，插件没有刷新接口，不自动重启。 |
 | `resource-center-ui-spec.md`、`resource-center-interaction-spec.md` | 当前是对话与工具工作流，页面未实现，应用页面能力未验证。未来采用通用操作语义和 Qoder 自身视觉风格，不要求照搬 Codex SVG。 |
 | `distribution-spec.md` | `.qoder-plugin/plugin.json`（含 `logo` 与展示元数据）、`${QODER_PLUGIN_ROOT}`、Qoder 安装入口与独立 Python zipapp；不使用 Codex marketplace、manifest 或状态路径。图标为本目录自带的 `assets/nacos-icon.png` 副本，不引用其他适配目录。 |
@@ -66,4 +66,16 @@
 兼容记录保留各历史版本的证据边界；打包后安装/升级的补充结论见[开发预览记录](development-preview.md)，不能回填为打包前证据。
 
 当前仍需按兼容记录逐项完成真实应用、系统存储、服务调用以及带配置/资源的卸载验收。
-私有测试配置和操作轨迹留在仓库外；通用路线图只列适配状态和入口，不复制本适配的版本日志。
+私有测试配置和操作轨迹留在仓库外；通用路线图只列未来功能与版本计划，不复制本适配的版本日志。
+
+## 4. 全局计划与本地证据
+
+功能范围及认证、更新、发布询问、协作小功能的目标版本统一进入
+[全局路线图](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/specs/roadmap.md)，
+本目录只维护 Qoder 的实现映射、兼容和实际验收，不维护独立排期。
+该链接指向完整仓库；独立源码包无需其他适配或公共规范才能运行/构建。
+当前没有本地子 Agent 执行器、多角色协调器、AgentSpec、使用前更新策略、创建后提醒或网关，
+也没有共享运行库；这些限制与页面/同会话加载证据分开记录。
+组合架构及 COL-Axx 验收场景见
+[多 Agent 协作规范](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/specs/multi-agent-collaboration-spec.md)；
+后续验证关联到 compatibility.json，不继承 Codex 结论。

@@ -78,9 +78,22 @@ Nacos、下游 MCP、远端 Agent 和网关入站凭据分别管理，不能因�
 
 ## 5. 系统存储与能力声明
 
-macOS 的可复用实现要求见[系统钥匙串配置](platforms/macos-credential-store.md)。其他系统
-须接入并验证各自安全存储，不能沿用 macOS 结果宣称支持，也不能退回工作区明文文件。
+macOS 的可复用实现要求见[系统钥匙串配置](platforms/macos-credential-store.md)。
+Windows 与 Linux 的安全录入、传输和系统保存是明确的适配目标，版本安排见
+[跨平台待办](roadmap.md#platform-support)；不能沿用 macOS 结果宣称支持，也不能退回工作区明文文件。
 系统存储实现独立于应用页面入口；同一系统上每种应用仍需验证输入、传输、保存和使用闭环。
+
+| 执行环境 | 存储与输入设计 | 验收重点 |
+| --- | --- | --- |
+| macOS | 沿用 Keychain 和已支持的安全页面/系统输入入口。 | 新平台接入后保持原引用、隔离及保存/清除行为兼容。 |
+| 原生 Windows | 接入当前用户的 Credential Manager，配套安全页面或原生输入；适配依赖 macOS 的加密通道。 | 先完成运行兼容；再验证保存、读取、替换、删除、拒绝、并发和重启，普通配置只保存引用。 |
+| Linux 桌面 | 优先采用 Secret Service 的 D-Bus 接口及经验证的实现，配套受保护输入与传输。 | 区分服务未安装、会话不可达、集合锁定、用户取消及权限拒绝；不能假设所有发行版都预装密钥库。 |
+| 无桌面 Linux / WSL / SSH / 容器 | 根据实际执行位置选择系统后端、用户授权的环境变量或外部凭据提供方；无交互时不依赖桌面解锁。 | 明确作用域、生命周期、注入与轮换；无可用来源时提示配置，不跨机器隐式访问宿主密钥库。 |
+
+Windows 存储适配参考[官方凭据处理说明](https://learn.microsoft.com/en-us/windows/win32/secbp/handling-passwords)，
+Linux 适配参考[Secret Service 规范](https://specifications.freedesktop.org/secret-service/latest-single/)。
+这些是实现入口；宿主可用性、输入安全与完整凭据生命周期仍需逐组合验证。
+认证协议与操作系统存储保持独立，新增 RAM/OIDC/OAuth2 提供方复用同一存储接口。
 
 应用适配记录三个维度：安全输入入口、传输通道、执行机器的凭据存储。任一必需能力未知
 或不可用时禁用对应直接填写选项；环境变量分支独立声明。支持状态与实际验收结果见
@@ -110,3 +123,50 @@ macOS 的可复用实现要求见[系统钥匙串配置](platforms/macos-credent
 [RFC 7518](https://www.rfc-editor.org/rfc/rfc7518.html)。复用实现仍应验证公开向量、独立实现
 互通、篡改、重放、过期、上下文竞争及错误脱敏。禁网浏览器和协议测试不替代目标应用的
 真实内嵌页面与系统授权验收。
+
+## 7. 多认证提供方的扩展约束
+
+RAM、OIDC/OAuth2 均有可行适配路径，当前尚未实现；版本安排见[全局 T35](roadmap.md#t35)。
+认证类型与凭据来源分别配置；同一种 provider 可使用系统存储或明确的凭据提供方，不能把新增认证
+简化为普通聊天输入更多秘密字段。
+
+- RAM 使用目标服务接受的签名与 AK/SK/STS 身份材料，secret key 不随业务请求发送；临时凭据有
+  有效期和受控刷新。MSE/兼容部署的 AI Client 与 Admin 面分别核验，不从配置/命名 SDK 成功外推。
+- OIDC/OAuth2 分清交互式用户身份与 client credentials 服务身份，按目标 issuer、audience/scope、
+  认证面和 principal 绑定 token；ID token 不作为通用 API access token。用户登录优先采用系统浏览器
+  和 PKCE，Device Authorization 仅在提供方支持时启用；回调/state、取消和过期均须核验。
+- provider 的 refresh token、client secret 和 STS 密钥沿用安全输入、引用与清除约束，不进入
+  模型工具参数、发布包或共享配置；不把固定应用 secret 随插件分发，也不任意执行凭据脚本。
+- 刷新有并发去重和失败边界；凭据轮换清除旧认证缓存和过期计划，保持资源归属。结果未知的业务写请求
+  不因刷新成功便自动重发。Client/Admin 与下游服务身份继续分开处理。
+- 使用服务端可核验的身份建立 owner/“我的资源”映射；本地用户名、显示名称或未核验 claims 不能授权。
+  对缺少可信身份映射的提供方先明确该能力不支持，不返回其他人的资源冒充个人资源。
+
+### 7.1 适配路径与前提
+
+现有插件仅实现原生 login/token/none。新增提供方需要请求适配、身份绑定及凭据生命周期，
+不能仅在设置页增加认证类型。OAuth2 负责授权，OIDC 增加身份层，两者共享 access token 获取基础。
+
+| 提供方 | 可行路径 | 实施前核验 |
+| --- | --- | --- |
+| RAM / STS | 上游已有 RAM 客户端和 AI 签名契约；使用 AK/SK 或优先采用临时凭据。 | 目标 MSE/兼容部署须提供匹配的服务端校验；AI Client/Admin 分别验证。使用 Nacos AI 签名语义，不直接套用通用云 OpenAPI 签名。 |
+| OAuth2 服务身份 | 从支持的 IdP 获取 client credentials access token，或使用受保护的外部 token provider。 | 应用注册、issuer、audience/scope、过期刷新和服务端接受的 token；机器身份不能冒充用户登录。 |
+| OAuth2 / OIDC 用户身份 | 系统浏览器 Authorization Code + PKCE；OIDC 另外建立可信身份关联。 | 插件实际运行位置、回调、应用注册、state 与取消；Nacos Console cookie/回调不直接作为插件会话。 |
+| Device Authorization | 在支持该 grant 的 IdP 上提供无浏览器流程。 | 设备授权入口、用户确认、轮询与到期；不假设所有 IdP 支持。 |
+
+OIDC 到 STS 的角色联邦作为 RAM 凭据来源，和普通 OIDC 用户登录分别配置。
+Client 读取成功不表示 Admin 可以发布；当前“我的资源”基于原生 Admin login 核验 owner，
+新增提供方须补服务端认可的 principal 映射。认证失败不自动降级匿名。
+
+### 7.2 验收与依据
+
+每个 provider 验证真实目标环境的搜索、确切读取及获授权的管理动作，并覆盖：
+STS/token 到期轮换、权限拒绝、Client/Admin 不同身份、回调取消/重放、错误 issuer/audience、
+清除后重启、并发刷新、日志脱敏及“我的资源”的身份隔离。
+
+设计依据为 [Nacos RAM 契约](https://github.com/alibaba/nacos/blob/develop/specs/zh-cn/auth/ram-auth-plugin-spec.md)、
+[MSE 客户端鉴权](https://www.alibabacloud.com/help/en/mse/user-guide/access-authentication-by-nacos)、
+[Nacos OIDC/OAuth2 说明](https://nacos.io/en/docs/latest/plugin/auth-plugin/)、
+[原生应用 OAuth](https://www.rfc-editor.org/rfc/rfc8252.html)和
+[设备授权](https://www.rfc-editor.org/rfc/rfc8628.html)。
+这些契约说明适配路径；交付时另行固定所支持的服务端、IdP 与运行环境版本。

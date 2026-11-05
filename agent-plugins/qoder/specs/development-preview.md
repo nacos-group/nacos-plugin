@@ -45,7 +45,7 @@ macOS 原生系统对话框与 Keychain 存储已实现，
 
 ### 首版范围与剩余门槛
 
-通用规范基线为 develop 的 `5b30079`。首版采用[基础接入阶段](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/specs/TODO.md)：
+通用规范基线为 develop 的 `5b30079`。首版范围为基础接入：
 单中心 Skill 生产与消费、显式双向更新、已有 MCP/远端 Agent 消费及可跳过的本地盘点。
 新增的[初始化](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/specs/onboarding-spec.md)、[凭据管理](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/specs/credential-management-spec.md)、
 [能力发现](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/specs/capability-discovery-spec.md)和[验收场景](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/specs/onboarding-acceptance-spec.md)适用于
