@@ -9,6 +9,82 @@ on:
 permissions:
   contents: read
 jobs:
+  build-integration-nacos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      revision: ${{ steps.nacos-ref.outputs.revision }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: nacos-ref
+        name: Read fixed Nacos revision
+        shell: bash
+        run: |
+          revision=$(cat agent-plugins/integration/nacos-ref.txt)
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: alibaba/nacos
+          ref: ${{ steps.nacos-ref.outputs.revision }}
+          path: nacos-integration-source
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          cache-dependency-path: 'nacos-integration-source/**/pom.xml'
+      - name: Build real Nacos distribution
+        working-directory: nacos-integration-source
+        env:
+          EXPECTED_REVISION: ${{ steps.nacos-ref.outputs.revision }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_REVISION"
+          mvn -B -ntp -pl distribution -am install -Prelease-nacos -Dmaven.test.skip=true -Dcheckstyle.skip=true -Drat.skip=true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: integration-nacos
+          path: nacos-integration-source/distribution/target/nacos-server-*.tar.gz
+          if-no-files-found: error
+          retention-days: 3
+  verify-nacos-integration:
+    needs: build-integration-nacos
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        adapter: [codex, qoder]
+        auth: [enabled, disabled]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r agent-plugins/${{ matrix.adapter }}/requirements-build.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: integration-nacos
+          path: ${{ runner.temp }}/nacos-archive
+      - name: Run adapter against disposable Nacos
+        env:
+          NACOS_IT_SOURCE_REVISION: ${{ needs.build-integration-nacos.outputs.revision }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/nacos-distribution"
+          tar -xzf "$RUNNER_TEMP"/nacos-archive/nacos-server-*.tar.gz -C "$RUNNER_TEMP/nacos-distribution"
+          python agent-plugins/integration/run.py --nacos-home "$RUNNER_TEMP/nacos-distribution/nacos" --adapter '${{ matrix.adapter }}' --auth '${{ matrix.auth }}' --output "$RUNNER_TEMP/agent-integration-reports"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nacos-integration-${{ matrix.adapter }}-${{ matrix.auth }}
+          path: ${{ runner.temp }}/agent-integration-reports
+          if-no-files-found: warn
+          retention-days: 7
   verify-codex:
     strategy:
       matrix:

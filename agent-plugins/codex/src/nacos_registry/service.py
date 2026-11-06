@@ -25,10 +25,14 @@ SCOPES = {"read", "develop", "publish", "install", "call"}
 
 
 def governance(meta):
+    """Compare governance fields; ZIP reads also change version updateTime.
+
+    Content must be checked separately using package hashes, not these timestamps.
+    """
     if meta is None:
         return None
     return {k: v for k, v in meta.items() if k not in ("downloadCount", "updateTime", "versions")} | {
-        "versions": [{k: v for k, v in x.items() if k not in ("downloadCount",)} for x in meta.get("versions", [])]}
+        "versions": [{k: v for k, v in x.items() if k not in ("downloadCount", "updateTime")} for x in meta.get("versions", [])]}
 
 
 def semantic(files):
@@ -369,7 +373,9 @@ class Service(RemoteMixin, CredentialMixin, DiscoveryMixin):
             review = review_summary(selected.get("publishPipelineInfo")) or {}
             require(review.get("status") == "APPROVED", "Review is rejected or approval cannot be verified", "review_rejected" if review.get("status") in ("REJECTED", "FAILED") else "review_unverified")
         require(meta.get("scope") in ("PUBLIC", "PRIVATE", "public", "private"), "Cannot verify target visibility; inspect server metadata", "unsupported")
+        content_hashes = package.hashes(package.unpack(r.draft_zip(name, version)))
         return self.plan(action, self.reference("skill", name), version=version, remoteBaseline=governance(meta),
+                         contentHashes=content_hashes,
                          visibility=meta["scope"], currentStatus=selected["status"],
                          effects=["May become online immediately without a matching pipeline" if action == "submit" else "Publish only after server review checks"])
 
@@ -404,7 +410,7 @@ class Service(RemoteMixin, CredentialMixin, DiscoveryMixin):
         r = self.registry("develop")
         name = p["ref"]["name"]
         require(package.hashes(package.read_directory(p["localPath"])) == p["localHashes"], "Local upload content changed", "conflict")
-        require(governance(self.meta_or_none(r, name)) == p["remoteBaseline"], "Remote state changed since upload plan", "conflict")
+        require(governance(self.meta_or_none(r, name)) == governance(p["remoteBaseline"]), "Remote state changed since upload plan", "conflict")
         if p["draftVersion"]:
             require(package.hashes(package.unpack(r.draft_zip(name, p["draftVersion"]))) == p["draftHashes"], "Draft content changed", "conflict")
         data = self.store.artifact(p["snapshot"]).read_bytes()
@@ -433,7 +439,10 @@ class Service(RemoteMixin, CredentialMixin, DiscoveryMixin):
     def apply_lifecycle(self, p):
         r = self.registry("publish")
         name = p["ref"]["name"]
-        require(governance(r.skill_meta(name)) == p["remoteBaseline"], "Version or visibility changed since plan", "conflict")
+        # Older plans lack a content baseline and must be reviewed again after upgrading.
+        require(bool(p.get("contentHashes")), "Plan has no content baseline; create a fresh submit or publish plan", "conflict")
+        require(package.hashes(package.unpack(r.draft_zip(name, p["version"]))) == p["contentHashes"], "Version content changed since plan", "conflict")
+        require(governance(r.skill_meta(name)) == governance(p["remoteBaseline"]), "Version or visibility changed since plan", "conflict")
         r.lifecycle(name, p["version"], p["kind"])
         try:
             meta = r.skill_meta(name)

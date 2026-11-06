@@ -25,6 +25,11 @@
 “已实现”表示代码具备相应能力；操作系统、应用版本和真实服务的验证范围由各子插件单独记录。
 两套实现使用各自的配置和状态，安装一个不会替另一个完成配置，也不自动共享凭据。
 
+当前分支正在开发 `0.1.1`：Codex、Qoder 均已修复 FIX01 上传冲突误报，读取统计变化不再
+阻塞上传，内容及生命周期变化仍受保护；版本号暂未调整，实际验证范围见各适配验收记录。
+0.1.1 验证分为 [CI 真实 Nacos 集成测试](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/integration/README.md)
+与[本地宿主操作清单](specs/0.1.1-local-acceptance.md)；CI 使用临时实例，不依赖个人测试环境。
+
 ## 目录结构
 
 ```text
