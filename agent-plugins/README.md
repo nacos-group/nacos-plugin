@@ -18,15 +18,17 @@
 
 | 应用 | 源码版本 | 已实现功能概览 | 使用与兼容入口 |
 | --- | --- | --- | --- |
-| Codex | **0.1.0** | 逐步初始化；macOS 页面录入凭据；Skill 搜索、上传、发布、安装、更新、恢复与卸载；MCP/Agent 发现与使用；意图发现、免安装试用和三种复用策略；资源中心页面。 | [安装与开发](codex/README.md)、[兼容范围](codex/docs/compatibility.md)、[验收记录](codex/specs/implementation-status.md)。 |
-| Qoder | **0.1.0** | 原生问答初始化；macOS 系统对话框与钥匙串；Skill 生产消费、显式更新与本地盘点；MCP/Agent 发现与使用；意图发现、免安装试用及交互式复用询问。当前为对话与工具工作流。 | [Qoder 使用与开发](#qoder-使用与开发)。页面未实现；同会话加载依赖应用原生重载与连接器能力，尚待实际验收。 |
+| Codex | **0.1.1** | 逐步初始化；macOS 页面录入凭据；Skill 搜索、上传、发布、安装、更新、恢复与卸载；MCP/Agent 发现与使用；意图发现、免安装试用和三种复用策略；资源中心页面。 | [安装与开发](codex/README.md)、[兼容范围](codex/docs/compatibility.md)、[验收记录](codex/specs/implementation-status.md)。 |
+| Qoder | **0.1.1** | 原生问答初始化；macOS 系统对话框与钥匙串；Skill 生产消费、显式更新与本地盘点；MCP/Agent 发现与使用；意图发现、免安装试用及交互式复用询问。当前为对话与工具工作流。 | [Qoder 使用与开发](#qoder-使用与开发)。页面未实现；同会话加载依赖应用原生重载与连接器能力，尚待实际验收。 |
 | WorkBuddy | 尚未实现 | 预留适配方向，暂无可安装产物。 | 后续在 `workbuddy/` 独立实现。 |
 
 “已实现”表示代码具备相应能力；操作系统、应用版本和真实服务的验证范围由各子插件单独记录。
 两套实现使用各自的配置和状态，安装一个不会替另一个完成配置，也不自动共享凭据。
 
-当前分支正在开发 `0.1.1`：Codex、Qoder 均已修复 FIX01 上传冲突误报，读取统计变化不再
-阻塞上传，内容及生命周期变化仍受保护；版本号暂未调整，实际验证范围见各适配验收记录。
+两端源码版本已统一为 `0.1.1`：均已修复 FIX01 上传冲突误报，读取统计变化不再
+阻塞上传，内容及生命周期变化仍受保护；变更和升级提示见
+[0.1.1 发行说明](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/release-notes/0.1.1.md)。
+实际发布状态以 GitHub Release 为准，验证范围见各适配验收记录。
 0.1.1 验证分为 [CI 真实 Nacos 集成测试](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/integration/README.md)
 与[本地宿主操作清单](specs/0.1.1-local-acceptance.md)；CI 使用临时实例，不依赖个人测试环境。
 
@@ -96,6 +98,6 @@ Qoder 的安装入口、初始化步骤、源码结构和构建命令集中在
 | 兼容矩阵与逐项验收证据 | [qoder/specs/compatibility.json](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/qoder/specs/compatibility.json) |
 | 历史开发预览与逐版本验证记录 | [qoder/specs/development-preview.md](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/qoder/specs/development-preview.md) |
 
-在源码仓库中这些文件位于 `qoder/`；独立插件包不附带其他应用的实现。`0.1.0` 的适配内容与
-开发预览 `0.1.0-dev.8` 一致，只增加了版本号和 CI 覆盖，验收边界不因去掉 dev 后缀而放宽：
+在源码仓库中这些文件位于 `qoder/`；独立插件包不附带其他应用的实现。`0.1.1` 在 `0.1.0`
+基础上修复 FIX01 并补齐真实服务自动测试，既有宿主能力和待验范围保持不变：
 真实会话的发现触发、原生询问渲染、同会话 Skill 重载、真实钥匙串与 Nacos 以兼容矩阵的记录为准。

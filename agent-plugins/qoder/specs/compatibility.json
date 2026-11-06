@@ -1,9 +1,10 @@
 {
   "schemaVersion": 1,
   "adapter": "qoder",
-  "version": "0.1.0",
-  "status": "development-preview",
-  "versionHistory": "0.1.0 carries the same adapter content as the 0.1.0-dev.8 preview; only the version string and the repository verify-qoder CI job changed. Dropping the dev suffix does not widen any evidence boundary, and dev.1 to dev.8 records below stay historical",
+  "version": "0.1.1",
+  "status": "release-preparation; installed-host-acceptance-pending",
+  "versionHistory": "0.1.1 adds FIX01 content/governance conflict protection and real Nacos integration coverage to 0.1.0. The 0.1.0 release carried the same adapter content as 0.1.0-dev.8. Versioned verification and preview records below remain historical; current validation and pending host acceptance are recorded in README.md",
+  "releaseNotes": "https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/release-notes/0.1.1.md",
   "localCore": "../src/nacos_registry",
   "crossPluginDependency": false,
   "contracts": "../../specs",

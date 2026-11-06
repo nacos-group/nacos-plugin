@@ -3,8 +3,12 @@
 在 Codex 中查找和使用 Nacos AI Registry 里的技能、MCP 工具和远端 Agent，也可以把自己开发的
 技能上传、发布给团队使用。插件同时提供对话引导和资源中心页面，连接配置、资源管理都可以从这里开始。
 
-当前源码版本为 **0.1.0**。安装包与 Nacos Server 插件分别构建、分别发布；已发布附件以
+当前源码版本为 **0.1.1**。安装包与 Nacos Server 插件分别构建、分别发布；已发布附件以
 [GitHub Releases](https://github.com/nacos-group/nacos-plugin/releases)为准。
+
+本版修复读取 Skill ZIP 后上传冲突误报，保留内容及生命周期保护；从 0.1.0 升级时，
+缺少内容基线的旧提交/发布计划需重新生成。完整变更见
+[0.1.1 发行说明](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/release-notes/0.1.1.md)。
 
 ## 能做什么
 
@@ -23,7 +27,7 @@
 
 ## 安装已发布的 ZIP
 
-下载 `nacos-ai-registry-0.1.0.zip`（或 Release 中实际提供的版本），不要选 `-source.zip`
+下载 `nacos-ai-registry-0.1.1.zip`（或 Release 中实际提供的版本），不要选 `-source.zip`
 或 GitHub 自动生成的 Source code。确保本机已安装 Python 3.11+，Codex 能找到 `python3`。
 下面两种方式任选一种。
 
@@ -44,13 +48,13 @@
 把下面这段话发给能够操作本机文件的 Codex，只替换 ZIP 的绝对路径：
 
 ```text
-请把 /absolute/path/nacos-ai-registry-0.1.0.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 的说明完成本地安装和验证；保留已有插件配置、凭据和本地技能，不上传到账户。
+请把 /absolute/path/nacos-ai-registry-0.1.1.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 的说明完成本地安装和验证；保留已有插件配置、凭据和本地技能，不上传到账户。
 ```
 
 使用 Codex CLI 时也可以复制下面的命令，替换路径后执行：
 
 ```sh
-codex '请把 /absolute/path/nacos-ai-registry-0.1.0.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 完成本地安装和验证；保留已有插件配置、凭据和本地技能，不上传到账户。'
+codex '请把 /absolute/path/nacos-ai-registry-0.1.1.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 完成本地安装和验证；保留已有插件配置、凭据和本地技能，不上传到账户。'
 ```
 
 Codex 会核对安装包、解压到固定目录、登记本地来源并完成安装。CLI 需要已登录，并获得执行安装所需的
@@ -129,8 +133,8 @@ PYTHONPATH=src .venv/bin/python -m nacos_registry --state-dir "$NACOS_DEV_STATE"
 
 | `dist/` 中的产物 | 用途 |
 | --- | --- |
-| `nacos-ai-registry-0.1.0.zip` | 安装包；按上面的任一方式安装。 |
-| `nacos-ai-registry-0.1.0-source.zip` | 源码包；保留 `codex/` 与通用 `specs/` 的目录关系。 |
+| `nacos-ai-registry-0.1.1.zip` | 安装包；按上面的任一方式安装。 |
+| `nacos-ai-registry-0.1.1-source.zip` | 源码包；保留 `codex/` 与通用 `specs/` 的目录关系。 |
 | 两个 ZIP 对应的 `.sha256` | 文件完整性校验，发布时与 ZIP 一起提供。 |
 | `marketplace/` | 已生成的本地来源，供开发调试安装使用。 |
 | `nacos-ai-registry/` | 安装包的展开目录，供检查产物使用。 |
@@ -168,7 +172,7 @@ node --test tests/test_ui_model.cjs
 
 ## 发布与更多文档
 
-`0.1.0` 使用组件 tag `nacos-ai-registry-v0.1.0`。维护者从确定的干净提交构建，在 GitHub Release
+`0.1.1` 发布时使用组件 tag `nacos-ai-registry-v0.1.1`。维护者从确定的干净提交构建，在 GitHub Release
 提供安装包、源码包、校验和与发行说明，具体操作见[发布指南](docs/releasing.md)。
 源码版本更新不会自动发布，GitHub Release 与 Codex 公开插件目录上架也是分别进行的流程。
 

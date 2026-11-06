@@ -1,7 +1,7 @@
 # 发布 Codex 插件
 
 这里的发布是将版本包分发到本仓库的 GitHub Releases；Codex 官方插件目录上架是单独流程，
-发布 ZIP 不会自动完成目录上架。当前源码版本为 `0.1.0`，使用不带预发布后缀的版本号。发布前核对
+发布 ZIP 不会自动完成目录上架。当前源码版本为 `0.1.1`，使用不带预发布后缀的版本号。发布前核对
 [实现与验收记录](../specs/implementation-status.md)与[兼容范围](compatibility.md)，在发行说明中如实列出已知限制和未完成验证；
 更改源码版本号不会自动创建 tag、上传附件或发布 Release。
 
@@ -13,7 +13,8 @@
    再完整执行[开发指南](development.md)中的测试、构建和包检查。不要使用此前留在 `dist/` 中的旧包。
 3. 检查 `dist/nacos-ai-registry/build-info.json`：版本应正确，`gitBase` 应为准备发布的提交，
    `dirty` 应为 `false`。源码包与安装包必须来自这一次构建。
-4. 在仓库外准备发行说明，写明变化、支持环境、安装入口和未完成的验收项，然后创建组件 tag
+4. 以仓库的[0.1.1 英文发行说明](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/release-notes/0.1.1.md)
+   为起点，在仓库外准备本次实际发布的说明，核对变化、支持环境、安装入口和未完成的验收项，然后创建组件 tag
    和 Release 草稿。下面命令仍在 `agent-plugins/codex/` 中执行，需要 GitHub 推送及发布权限、
    已登录的 `gh`；将发行说明路径替换为实际文件路径。
 
@@ -36,7 +37,9 @@ gh release create "$PLUGIN_TAG" \
 ```
 
 每一步成功后再继续；若 tag 已存在，应先核对它指向的提交，不覆盖已发布版本。
-在 GitHub 中核对草稿的 tag、四个附件和发行说明后再发布。`0.1.0` 不勾选 Pre-release；
+在 GitHub 中核对草稿的 tag、四个附件和发行说明后再发布。若同一 Release 也分发 Qoder，
+还需追加其独立构建的安装 ZIP、源码 ZIP 及两份校验和，核对两端来自同一发布提交。
+`0.1.1` 不勾选 Pre-release；
 `dev`、`rc` 等候选版本则添加 `--prerelease`。是否设为仓库最新版本需单独选择，避免覆盖服务端插件的 Release 展示。
 下载者应同时获得安装 ZIP 与对应 SHA-256；例如在下载目录使用 macOS 的
 `shasum -a 256 -c <安装包文件名>.sha256`，或 Linux 的 `sha256sum -c <安装包文件名>.sha256`。

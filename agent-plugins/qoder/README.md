@@ -5,10 +5,13 @@
 把 Nacos AI Registry 接入本地 Qoder：在普通任务中发现并复用注册中心里的 Skill、
 MCP 工具和远端 Agent，也能把本地技能上传、发布和显式更新。
 
-本适配位于 `agent-plugins/qoder/`，当前版本 `0.1.0`。它独立构建和分发，不进入根 Maven
+本适配位于 `agent-plugins/qoder/`，当前版本 `0.1.1`。它独立构建和分发，不进入根 Maven
 构建，不复制 JAR 到 Nacos Server，也不依赖 `agent-plugins/codex/` 的任何源码或状态路径。
-`0.1.0` 的适配内容与开发预览 `0.1.0-dev.8` 相同，去掉 dev 后缀不放宽任何验收边界：
-自动化层已验证，真实宿主安装、系统钥匙串、真实 Nacos 与同会话加载仍待逐项验收。
+本版修复 FIX01 上传冲突误报，并增加覆盖主要功能的真实 Nacos 集成测试。
+从 0.1.0 升级时，缺少内容基线的旧提交/发布计划需重新生成；实际宿主安装、系统钥匙串及
+同会话加载仍待逐项验收。变更和升级提示见
+[0.1.1 发行说明](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/release-notes/0.1.1.md)，
+已发布附件以 [GitHub Releases](https://github.com/nacos-group/nacos-plugin/releases)为准。
 
 | 内容 | 入口 |
 | --- | --- |
