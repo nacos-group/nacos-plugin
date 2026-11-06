@@ -58,12 +58,20 @@
 | TM37 | 新工具 schema、包中 Skill 引用、页面设置分组、无真实配置/记录入包、旧状态升级保留 | 包、浏览器、本地安装 | 浏览器组件三策略与布局通过；随 dev.20 构建执行隔离包与源码重建检查；真实内嵌新分组待验 |
 | TM38 | 原生 MCP 可读名称、跨来源同名区分、异常/超长名称、旧计划兼容、旧名称原子迁移及恢复、用户修改/目标冲突/执行前变更保护 | 核心、包 | dev.21 合成回归覆盖名称与受保护迁移；不将改名成功视作已加载会话的工具名已更新 |
 
+## 0.1.1 FIX01 修复验收
+
+| 编号 | 范围与关键检查 | 验证层 | 状态 |
+| --- | --- | --- | --- |
+| TM39 | 上传自读、其他客户端读取、绑定后上传与重启；旧计划兼容；内容、可见性、版本及审核变化；提交/发布的内容摘要和读取后状态复核 | 核心、真实 Nacos | `test_upload_conflicts.py` 10 项合成回归通过（含治理字段组合子场景）；旧实现可复现误报；TM40 已观察真实下载统计及版本时间变化并验证无误报，实际宿主会话复测仍待验 |
+| TM40 | 原生认证、三类型搜索/分页、上传绑定、FIX01 与真实冲突、审核发布/拒绝、安装更新/恢复/撤回、复用策略、上下文权限、未知写核对、MCP/A2A 调用及连接管理 | 真实 Nacos HTTP、测试下游 | macOS / Python 3.13.2 / JDK 17.0.8，本适配鉴权开启/关闭各 13 项通过、无跳过；Nacos 固定提交与复现方式见[集成测试说明](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/integration/README.md)。同入口已接入 CI，PR 工作流结果单独核验；不代表真实宿主加载或模型行为通过 |
+
 ## 可重复验证入口
 
-- `PYTHONPATH=src python -m unittest discover -s tests -v`：108 项核心与协议用例。
+- `PYTHONPATH=src python -m unittest discover -s tests -v`：118 项核心与协议用例。
 - `node --test tests/test_ui_model.cjs`：33 项状态、设置映射和桥接用例；Node 22+，无第三方依赖。
 - `python scripts/build.py`、`python scripts/check_package.py`：离线 UI 合并、包与源码摘要、
   文档链接、独立重建、隔离 CLI/MCP 启动及运行中旧包移除后的页面读取。
+- 仓库 `agent-plugins/integration/run.py`：启动固定版本的临时 Nacos，分别运行两适配的 13 项服务集成测试；详见上述集成测试说明。
 
 浏览器检查使用实际页面模块和核心、合成注册中心响应；临时服务与证据均在仓库外。
 “通过”仅指表中注明的层级；尚未完成的真实应用能力继续阻塞 UI08 / T18 完整验收。

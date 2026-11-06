@@ -9,61 +9,131 @@ on:
 permissions:
   contents: read
 jobs:
-  verify-codex:
+  verify-nacos-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - id: nacos-ref
+        name: Read fixed Nacos revision
+        shell: bash
+        run: |
+          revision=$(cat agent-plugins/integration/nacos-ref.txt)
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: alibaba/nacos
+          ref: ${{ steps.nacos-ref.outputs.revision }}
+          path: nacos-integration-source
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          cache-dependency-path: 'nacos-integration-source/**/pom.xml'
+      - name: Build real Nacos distribution
+        working-directory: nacos-integration-source
+        env:
+          EXPECTED_REVISION: ${{ steps.nacos-ref.outputs.revision }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_REVISION"
+          mvn -B -ntp -pl distribution -am install -Prelease-nacos -Dmaven.test.skip=true -Dcheckstyle.skip=true -Drat.skip=true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r agent-plugins/codex/requirements-build.txt -r agent-plugins/qoder/requirements-build.txt
+      - id: prepare
+        name: Extract Nacos distribution
+        run: |
+          mkdir -p "$RUNNER_TEMP/nacos-distribution"
+          tar -xzf nacos-integration-source/distribution/target/nacos-server-*.tar.gz -C "$RUNNER_TEMP/nacos-distribution"
+      - name: Test both adapters with authentication enabled
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        env:
+          NACOS_IT_SOURCE_REVISION: ${{ steps.nacos-ref.outputs.revision }}
+        run: python agent-plugins/integration/run.py --nacos-home "$RUNNER_TEMP/nacos-distribution/nacos" --adapter all --auth enabled --output "$RUNNER_TEMP/agent-integration-reports/enabled"
+      - name: Test both adapters with authentication disabled
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        env:
+          NACOS_IT_SOURCE_REVISION: ${{ steps.nacos-ref.outputs.revision }}
+        run: python agent-plugins/integration/run.py --nacos-home "$RUNNER_TEMP/nacos-distribution/nacos" --adapter all --auth disabled --output "$RUNNER_TEMP/agent-integration-reports/disabled"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nacos-integration-reports
+          path: ${{ runner.temp }}/agent-integration-reports
+          if-no-files-found: warn
+          retention-days: 7
+  verify-adapters:
+    timeout-minutes: 15
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
         python: ['3.11', '3.13']
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        working-directory: agent-plugins/codex
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
           cache: pip
-          cache-dependency-path: agent-plugins/codex/requirements-build.txt
-      - run: python -m pip install -r requirements-build.txt
-      - run: python -m unittest discover -s tests -v
-        env:
-          PYTHONPATH: src
-      - uses: actions/setup-node@v4
+          cache-dependency-path: |
+            agent-plugins/codex/requirements-build.txt
+            agent-plugins/qoder/requirements-build.txt
+      - id: dependencies
+        run: python -m pip install -r agent-plugins/codex/requirements-build.txt -r agent-plugins/qoder/requirements-build.txt
+      - id: node
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test tests/test_ui_model.cjs
-      - run: python scripts/build.py
-      - run: python scripts/check_package.py
+      - name: Codex Python tests
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        working-directory: agent-plugins/codex
+        run: python -m unittest discover -s tests -v
+        env:
+          PYTHONPATH: src
+      - name: Codex UI tests
+        if: ${{ !cancelled() && steps.node.outcome == 'success' }}
+        working-directory: agent-plugins/codex
+        run: node --test tests/test_ui_model.cjs
+      - name: Build Codex package
+        id: codex_build
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        working-directory: agent-plugins/codex
+        run: python scripts/build.py
+      - name: Check Codex package
+        id: codex_package
+        if: ${{ !cancelled() && steps.codex_build.outcome == 'success' }}
+        working-directory: agent-plugins/codex
+        run: python scripts/check_package.py
       - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.codex_package.outcome == 'success' }}
         with:
           name: nacos-ai-registry-codex-${{ matrix.os }}-${{ matrix.python }}
           path: |
             agent-plugins/codex/dist/*.zip
             agent-plugins/codex/dist/*.sha256
-  verify-qoder:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        python: ['3.11', '3.13']
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
+      - name: Qoder Python tests
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         working-directory: agent-plugins/qoder
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-          cache: pip
-          cache-dependency-path: agent-plugins/qoder/requirements-build.txt
-      - run: python -m pip install -r requirements-build.txt
-      - run: python -m unittest discover -s tests -v
+        run: python -m unittest discover -s tests -v
         env:
           PYTHONPATH: src
-      - run: python scripts/build.py
-      - run: python scripts/check_package.py
+      - name: Build Qoder package
+        id: qoder_build
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        working-directory: agent-plugins/qoder
+        run: python scripts/build.py
+      - name: Check Qoder package
+        id: qoder_package
+        if: ${{ !cancelled() && steps.qoder_build.outcome == 'success' }}
+        working-directory: agent-plugins/qoder
+        run: python scripts/check_package.py
       - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.qoder_package.outcome == 'success' }}
         with:
           name: nacos-ai-registry-qoder-${{ matrix.os }}-${{ matrix.python }}
           path: |

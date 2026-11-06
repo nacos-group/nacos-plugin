@@ -2,8 +2,9 @@
 
 # Qoder 插件规范与适配边界
 
-本目录维护 Qoder 的实现选择、版本兼容、验收证据和待办。当前代码版本为 `0.1.0`，
-内容与开发预览 `0.1.0-dev.8` 一致，只有版本号和 CI 覆盖变化，验收边界不因去掉 dev 后缀而放宽。
+本目录维护 Qoder 的实现选择、版本兼容、验收证据和待办。当前代码版本号仍为 `0.1.0`，
+该版本发布时基于开发预览 `0.1.0-dev.8`，验收边界不因去掉 dev 后缀而放宽。
+当前分支已追加面向 `0.1.1` 的 FIX01 修复，尚未发布，验证范围见下文。
 详细功能及 ONB/CRED/DEF 映射以 [compatibility.json](compatibility.json) 为准。
 安装、构建与源码结构见本适配的 [README](../README.md)，历史开发预览与逐版本验证记录见
 [开发预览记录](development-preview.md)，仓库级入口见 `agent-plugins/README.md` 的 Qoder 章节。
@@ -60,13 +61,28 @@
 ## 3. 验证记录归属
 
 `0.1.0` 自动化验证包含 171 项 checkout 测试（82 适配/核心、58 凭据、18 打包、13 发现与加载）、
-隔离源码包测试、包和校验和检查、离线重建及清单展示元数据与图标断言，并由仓库 CI 的 `verify-qoder`
-作业在 ubuntu/macOS 与 Python 3.11/3.13 上重复测试、构建和包检查；这些仅证明相应自动化层，
+隔离源码包测试、包和校验和检查、离线重建及清单展示元数据与图标断言；当前由仓库 CI 的 `verify-adapters`
+作业中的 Qoder 步骤在 ubuntu/macOS 与 Python 3.11/3.13 上重复测试、构建和包检查；这些仅证明相应自动化层，
 不代表真实 Keychain、Nacos、原生连接器、同会话加载或完整问答流程已经通过。
 兼容记录保留各历史版本的证据边界；打包后安装/升级的补充结论见[开发预览记录](development-preview.md)，不能回填为打包前证据。
 
 当前仍需按兼容记录逐项完成真实应用、系统存储、服务调用以及带配置/资源的卸载验收。
 私有测试配置和操作轨迹留在仓库外；通用路线图只列未来功能与版本计划，不复制本适配的版本日志。
+
+FIX01 在 Qoder 中同样存在，已在本适配独立修复：资源和版本的读取统计、updateTime 不作为冲突依据；
+上传保留草稿内容摘要及治理校验，提交/发布保存并复查选定版本的内容摘要、读取后再核验治理状态。
+旧上传计划继续按归一化基线校验，缺少内容基线的旧提交/发布计划需重新生成。
+`tests/test_upload_conflicts.py` 新增 10 项合成回归，覆盖自读、并发读取交错、绑定后上传与重启、
+旧计划、真实内容及可见性/版本/审核状态变化，当前完整 Python 181 项通过。
+这些用例使用 Qoder 的服务入口，不继承 Codex 的测试结论。
+
+0.1.1 另增加[真实 Nacos 集成测试](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/integration/README.md)，
+覆盖认证、搜索分页、Skill 生产消费、FIX01 与真实冲突、审核发布、复用策略、未知写结果核对及 MCP/A2A。
+本机 macOS / Python 3.13.2 / JDK 17.0.8 上，Qoder 鉴权开启/关闭各 13 项通过、无跳过；
+Nacos 固定提交为 1511b5a85f744acb0ad54e8213b1f4d82674799c。
+同入口已接入 GitHub Actions，远端结果以对应 PR 工作流为准。
+真实 Qoder 会话、系统凭据、原生加载和模型行为仍按
+[本地验收清单](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/specs/0.1.1-local-acceptance.md)逐项验证。
 
 ## 4. 全局计划与本地证据
 

@@ -123,9 +123,9 @@ stored 压缩，`build-info.json` 记录源码树摘要、基线提交、工作�
 各自离线重建，要求两个 ZIP 与 runtime 字节一致。`dist/` 已被 Git 忽略：维护者只提交源码，
 真实测试配置、凭据和操作记录始终留在仓库外，不能先放进这些目录再依赖打包过滤。
 
-仓库 CI `.github/workflows/agent-plugin.yml` 的 `verify-qoder` 作业在 ubuntu-latest 与
-macos-latest × Python 3.11/3.13 上执行同样的测试、构建和包检查，并上传 ZIP 与校验和；
-它只覆盖自动化层，不代表宿主、钥匙串或 Nacos 验收通过。
+仓库 CI `.github/workflows/agent-plugin.yml` 的 `verify-adapters` 作业在 ubuntu-latest 与
+macos-latest × Python 3.11/3.13 上分别执行两适配的完整测试、构建和包检查，并分别上传 ZIP 与校验和；
+另一个 job 构建真实 Nacos 并验证两端、两种鉴权模式。这些只覆盖自动化层，不代表宿主或钥匙串验收通过。
 
 ## 源码结构
 

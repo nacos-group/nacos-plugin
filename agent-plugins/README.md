@@ -25,6 +25,11 @@
 “已实现”表示代码具备相应能力；操作系统、应用版本和真实服务的验证范围由各子插件单独记录。
 两套实现使用各自的配置和状态，安装一个不会替另一个完成配置，也不自动共享凭据。
 
+当前分支正在开发 `0.1.1`：Codex、Qoder 均已修复 FIX01 上传冲突误报，读取统计变化不再
+阻塞上传，内容及生命周期变化仍受保护；版本号暂未调整，实际验证范围见各适配验收记录。
+0.1.1 验证分为 [CI 真实 Nacos 集成测试](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/integration/README.md)
+与[本地宿主操作清单](specs/0.1.1-local-acceptance.md)；CI 使用临时实例，不依赖个人测试环境。
+
 ## 目录结构
 
 ```text
@@ -82,7 +87,7 @@ Qoder 的安装入口、初始化步骤、源码结构和构建命令集中在
 `qodercli plugins install <插件目录>` 安装已展开的插件目录（当前 CLI 不接受本地 ZIP 路径）。
 安装后在本地会话先调用 `nacos_status`，再用 `nacos-setup` 完成原生分步初始化。
 从源码构建时在 `agent-plugins/qoder/` 执行测试、`scripts/build.py` 与 `scripts/check_package.py`，
-产物生成在该目录的 `dist/`；仓库 CI 的 `verify-qoder` 作业在 ubuntu/macOS 与 Python 3.11/3.13 上重复这一流程。
+产物生成在该目录的 `dist/`；仓库 CI 的 `verify-adapters` 作业在 ubuntu/macOS 与 Python 3.11/3.13 上分别验证两适配，Qoder 步骤重复这一流程。
 
 | 内容 | 入口 |
 | --- | --- |

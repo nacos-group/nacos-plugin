@@ -59,6 +59,7 @@ roadmap 是唯一功能计划入口，已合并原 TODO，按版本排列小功�
 | 安全输入、凭据来源、隔离、保存/替换/清除和可选加密通道 | [凭据管理](credential-management-spec.md) |
 | 跨应用复用的系统凭据存储实现 | [macOS 系统钥匙串](platforms/macos-credential-store.md) |
 | 初始化、凭据生命周期与默认值的公共测试场景 | [通用验收](onboarding-acceptance-spec.md) |
+| 0.1.1 的真实应用、系统凭据、模型和升级操作步骤 | [本地验收清单](0.1.1-local-acceptance.md) |
 | 首次资源盘点、托管选择与创建后提示 | [本地资源托管](local-resource-onboarding-spec.md) |
 | 已接入、发现、我的资源、设置与本地技能的交互规则 | [资源中心 UI 与交互](resource-center-ui-spec.md) |
 | 逐项操作的入口、状态、执行影响、返回与异常；跨应用复用 | [资源中心通用操作与状态](resource-center-interaction-spec.md) |

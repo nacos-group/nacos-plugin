@@ -3,6 +3,9 @@ name: Java CI with Maven
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    paths-ignore:
+      - 'agent-plugins/**'
+      - '.github/workflows/agent-plugin.yml'
 
 jobs:
   build:
