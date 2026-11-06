@@ -87,7 +87,7 @@ Qoder 的安装入口、初始化步骤、源码结构和构建命令集中在
 `qodercli plugins install <插件目录>` 安装已展开的插件目录（当前 CLI 不接受本地 ZIP 路径）。
 安装后在本地会话先调用 `nacos_status`，再用 `nacos-setup` 完成原生分步初始化。
 从源码构建时在 `agent-plugins/qoder/` 执行测试、`scripts/build.py` 与 `scripts/check_package.py`，
-产物生成在该目录的 `dist/`；仓库 CI 的 `verify-qoder` 作业在 ubuntu/macOS 与 Python 3.11/3.13 上重复这一流程。
+产物生成在该目录的 `dist/`；仓库 CI 的 `verify-adapters` 作业在 ubuntu/macOS 与 Python 3.11/3.13 上分别验证两适配，Qoder 步骤重复这一流程。
 
 | 内容 | 入口 |
 | --- | --- |

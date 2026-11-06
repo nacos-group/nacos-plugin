@@ -46,8 +46,9 @@ node --test tests/test_ui_model.cjs
 | `ui.py` | 复用本地模块生成全局和对话两个离线 HTML 资源，保留入口身份；无 CDN 或运行时构建。 |
 | `tests/` | 不依赖任何真实测试中心的契约与错误路径测试。 |
 
-独立 GitHub Actions 执行本组件的测试、打包及干净运行检查，不调用 Maven，不自动发布。
-现有服务端 Java CI 不变。组件 tag 为 `nacos-ai-registry-v<version>`；源码和安装包必须来自
+GitHub Actions 的 verify-adapters 在四个系统/Python 环境中分别执行两适配的测试、打包及干净运行检查；
+verify-nacos-integration 另在一个 job 内用 Maven 构建固定提交的 Nacos 并运行四组集成测试，不自动发布。
+Java 模块的构建步骤不变，纯插件及插件 workflow 改动不再触发 Java CI。组件 tag 为 `nacos-ai-registry-v<version>`；源码和安装包必须来自
 同一组件源码摘要。发布前按[发布指南](releasing.md)核对[验收边界](compatibility.md)与[实现记录](../specs/implementation-status.md)，
 明确本次发行支持范围、发布门槛和保留的限制，不把版本号更新当作未验项通过。
 

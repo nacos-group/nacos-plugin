@@ -12,16 +12,27 @@ Pipeline 并保存结果。这不验证第三方业务系统或扫描算法。�
 
 ## CI 执行
 
-[Agent plugin CI](../../.github/workflows/agent-plugin.yml) 的 build-integration-nacos 从
-nacos-ref.txt 的完整提交构建公开 alibaba/nacos，不使用移动分支或 latest 镜像。
-verify-nacos-integration 执行 **Codex/Qoder × 原生鉴权开启/关闭** 四个组合，使用 Java 17、Python 3.13。
+[Agent plugin CI](../../.github/workflows/agent-plugin.yml) 共执行 5 个 job：
 
-每个组合使用随机空闲端口、临时 Derby 数据、随机测试密码和 JWT key、独立命名空间；
+- verify-adapters：Ubuntu/macOS × Python 3.11/3.13，共 4 个环境。每个环境分别运行 Codex、Qoder
+  的完整测试、构建及独立包检查；Codex 的 Node 页面状态测试仍在每个环境执行。
+- verify-nacos-integration：1 个 job 内从 nacos-ref.txt 的完整提交构建一次公开 alibaba/nacos，
+  直接使用发行包执行 **Codex/Qoder × 原生鉴权开启/关闭** 四个组合，共 52 项；使用 Java 17、
+  Python 3.13，不使用移动分支或 latest 镜像，也不跨 job 传输 Nacos 包。
+
+每种鉴权模式启动独立临时实例，使用随机空闲端口、临时 Derby 数据、随机测试密码和 JWT key；
+两适配通过 --adapter all 在独立 Python 进程、状态目录和命名空间中依次执行。
 无需仓库 Secrets，不连接维护者实例。失败、启动超时或用例跳过均不能作为通过。
 测试结束停止本次 Nacos、删除临时状态；保留环境摘要、结果与诊断日志，不上传数据库和配置。
 
-原有 Ubuntu/macOS × Python 3.11/3.13 的自动测试及打包检查继续运行，Codex 页面状态测试仍由
-Node 作业执行。Ubuntu 服务测试不表示 Linux 桌面或 Windows 插件已经兼容。
+各测试步骤失败不会屏蔽另一适配或另一鉴权模式的测试，也不会把 job 变成通过；构建和包检查
+只依赖自身必要的前置步骤，失败环境不取消其他环境。产物仍按适配和环境分别上传，集成报告
+归入 nacos-integration-reports 下的 enabled/disabled 目录，保留各适配的结果与日志。
+Ubuntu 服务测试不表示 Linux 桌面或 Windows 插件已经兼容。
+
+Java CI 对仅修改 agent-plugins/ 和本工作流的 PR 不触发；包含其他路径的混合改动仍运行，
+包括 Java 模块、根 POM、共享文件和 Java workflow 自身。修改 Java workflow 的 PR 因而会额外
+运行 Java 构建，它不计入上述 5 个插件 job。
 
 ## 主功能覆盖
 
