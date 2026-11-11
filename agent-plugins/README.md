@@ -76,6 +76,7 @@ agent-plugins/
 ## 进一步阅读
 
 - [通用规范导航](specs/README.md)：初始化、凭据、发现、装配、UI 和分发。
+- [联合发布指南](https://github.com/nacos-group/nacos-plugin/blob/develop/agent-plugins/docs/releasing.md)：Codex/Qoder 的统一版本、英文模板、八个附件、验包、草稿核对与正式发布流程。
 - [全局路线图与待办](specs/roadmap.md)：按目标版本安排小功能与依赖，所有宿主共用。
 - [多 Agent 协作规范](specs/multi-agent-collaboration-spec.md)：模板、路由、执行、任务跟踪与汇总如何组合。
 - [Codex 使用与开发](codex/README.md)：两种安装方式、源码运行、测试与发布入口。
