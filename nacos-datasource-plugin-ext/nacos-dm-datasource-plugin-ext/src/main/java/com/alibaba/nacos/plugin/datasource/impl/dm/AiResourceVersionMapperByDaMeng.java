@@ -58,15 +58,11 @@ public class AiResourceVersionMapperByDaMeng extends AbstractMapperByDaMeng impl
         }
         
         MapperResult built = where.build();
-        String sql = getLimitPageSqlWithOffset(built.getSql() + " ORDER BY gmt_modified DESC ", context.getStartRow(),context.getPageSize());
+        String sql = built.getSql() + " ORDER BY gmt_modified DESC LIMIT ? OFFSET ?";
         List<Object> params = new ArrayList<>(built.getParamList());
-        params.add(context.getStartRow());
         params.add(context.getPageSize());
+        params.add(context.getStartRow());
         return new MapperResult(sql, params);
-    }
-    
-    private String getLimitPageSqlWithOffset(String sql, int offset, int limit) {
-        return getDialect().getLimitPageSqlWithOffset(sql,offset,limit);
     }
     
     @Override

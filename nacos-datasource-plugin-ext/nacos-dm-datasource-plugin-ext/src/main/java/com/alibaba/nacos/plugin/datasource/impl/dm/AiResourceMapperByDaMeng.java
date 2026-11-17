@@ -42,8 +42,8 @@ public class AiResourceMapperByDaMeng extends AbstractMapperByDaMeng implements 
         MapperResult build = where.build();
         String sql = getLimitPageSqlWithMark(build.getSql() + resolveOrderByClause(context));
         List<Object> params = new ArrayList<>(build.getParamList());
-        params.add(context.getStartRow());
         params.add(context.getPageSize());
+        params.add(context.getStartRow());
         return new MapperResult(sql, params);
     }
     
