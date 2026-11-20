@@ -1,13 +1,21 @@
 # 本地安装细节
 
 本页供 Codex 自动安装和开发者排查使用。普通使用者从 [README](../README.md#安装已发布的-zip)
-选择桌面上传或把 ZIP 路径交给 Codex，无需手写清单。
+选择桌面上传或让 Codex 从 GitHub Release 自动下载并安装，无需手写清单。
 
 ## 给执行安装的 Codex
 
-- 读取用户指定的 ZIP，核对 `plugin.json` 的名称、版本以及 `server/nacos-registry.pyz`；
+- 用户未提供本地 ZIP 时，从官方仓库 `nacos-group/nacos-plugin` 的 Release 列表查找
+  tag 为 `nacos-ai-registry-v<版本>` 的条目。可通过 GitHub API 分页读取
+  `https://api.github.com/repos/nacos-group/nacos-plugin/releases`；不要使用仓库级 `/releases/latest`。
+  默认排除草稿和预发布，只选 `nacos-ai-registry-v主版本.次版本.补丁版本`，按三个数字比较选择
+  最新正式版；用户指定版本或 Release 时使用该版本。
+- 从选定 Release 的附件下载 `nacos-ai-registry-<版本>.zip` 和对应 `.zip.sha256`，
+  使用附件的实际下载链接，先校验 SHA-256 再继续。附件缺失、下载失败或校验不通过时停止并报告，
+  不改用 Qoder 包、源码包或 GitHub 自动生成的 Source code。
+- 读取已校验的 ZIP（也支持用户提供的本地包），核对 `plugin.json` 的名称、版本以及 `server/nacos-registry.pyz`；
   先检查压缩包中的路径再解压，保留隐藏文件。确认 Python 3.11+ 和当前 CLI 的插件命令可用。
-- 有同名 `.zip.sha256` 时先比对；缺少时可从用户指定的官方 Release 获取对应文件。
+- 用户提供的本地包有同名 `.zip.sha256` 时先比对；缺少时可从用户指定的官方 Release 获取对应文件。
   无法取得预期摘要时说明尚未完成完整性比对，不宣称校验通过。
 - 先查看已有 marketplace 和插件版本。首次安装可用下面的固定目录；已有安装时沿用已核实的
   来源路径，保留其他插件条目、用户配置和插件私有状态。使用 CLI 支持的安装流程，不直接改缓存。

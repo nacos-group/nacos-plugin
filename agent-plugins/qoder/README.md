@@ -43,37 +43,57 @@ MCP 工具和远端 Agent，也能把本地技能上传、发布和显式更新�
 
 ## 安装
 
-两种方式都安装同一个包：`nacos-ai-registry-qoder-<version>.zip`（不要用 `-source.zip`）。
+下面两种方式任选一种；推荐方式二，让 Qoder 自动下载并安装，无需提前下载文件或构建源码。
+两种方式都使用 `nacos-ai-registry-qoder-<version>.zip`（不要用 `-source.zip`）。
 包根目录含 `.qoder-plugin/plugin.json`、`.mcp.json`、`skills/`、`assets/`、`server/` 与完整源码。
 MCP 以 `python3 ${QODER_PLUGIN_ROOT}/server/nacos-qoder.pyz serve` 在使用者本机启动。
 
 ### 方式一：Qoder Desktop 页面导入
 
-1. 打开 **Extensions → Plugins → Add Plugins → Upload Plugin**，选择安装 ZIP。
-2. 在插件详情里启用插件。
-3. 新建一个本地会话，让宿主重新发现工具 schema。
+1. 从 [GitHub Releases](https://github.com/nacos-group/nacos-plugin/releases) 中选择
+   `nacos-ai-registry-v<版本>`，下载 `nacos-ai-registry-qoder-<版本>.zip` 和同名 `.zip.sha256` 并校验。
+2. 打开 **Extensions → Plugins → Add Plugins → Upload Plugin**，选择安装 ZIP。
+3. 在插件详情里启用插件。
+4. 新建一个本地会话，让宿主重新发现工具 schema。
 
-### 方式二：qodercli
+### 方式二：让 Qoder 一键下载安装（推荐）
+
+把下面这段话直接发到能够联网并操作本机文件的 Qoder 对话中：
+
+```text
+请帮我下载并安装 Nacos AI Registry 到本机 Qoder：
+1. 在 https://github.com/nacos-group/nacos-plugin/releases 中查找 tag 为 nacos-ai-registry-v<版本> 的最新正式版，按版本号选择，排除草稿和预发布；不要使用仓库整体的 Latest，它可能是 Nacos Server 插件。
+2. 从该 Release 下载 nacos-ai-registry-qoder-<版本>.zip 和同名 .zip.sha256，校验 SHA-256；下载或校验失败时停止安装并说明原因。
+3. 检查 Python 3.11+ 和 qodercli 插件命令，检查 ZIP 路径后解压并保留隐藏文件。在解压目录运行 qodercli plugins validate . --json，确认 valid 为 true 且 errorCount 为 0，核对警告后通过 qodercli 安装到 user 作用域。保留已有插件配置、凭据和本地技能。
+4. 核对安装后的版本和状态，尝试调用 nacos_status；如果需要新建本地会话才能加载，请明确告诉我下一步。
+```
+
+CLI 用户运行 `qodercli` 进入对话后，粘贴同一段指令即可。需要指定版本时，在指令末尾补充
+“安装 0.1.1”或目标 Release 链接；默认选择 Agent 插件的最新正式版。
+Qoder 会完成下载、校验、解压、验证和安装，需要具备相应的网络与本机访问权限。
+如果本机缺少支持插件的 `qodercli`，先安装或更新 CLI，也可以使用方式一导入同一个 ZIP。
+
+### 手动使用 qodercli（可选）
 
 `qodercli plugins install` 接受插件**目录**或远端 HTTPS `.zip` URL，不接受本地 ZIP 文件路径；
-本地 ZIP 先解压，或直接用构建产生的展开目录（下文 `dist/nacos-ai-registry`）：
+使用本地包时，先校验同名 `.zip.sha256`，将 ZIP 解压到独立目录并保留隐藏文件。
+进入解压目录，确认当前目录直接含 `.qoder-plugin/plugin.json`、`.mcp.json` 与 `server/`，然后执行：
 
 ```sh
-qodercli plugins validate ./agent-plugins/qoder/dist/nacos-ai-registry --strict --json
-qodercli plugins install ./agent-plugins/qoder/dist/nacos-ai-registry
+qodercli plugins validate . --json
+qodercli plugins install . --scope user
 qodercli plugins list
 ```
 
+先确认验证结果 `valid: true` 且 `errorCount: 0`，核对并记录警告后再安装。
+0.1.1 在 `qodercli` 1.1.46 下会提示 `category`、`tags`、`descriptionZh`、`logo`
+属于未使用或未知的元数据字段，共 4 条警告、0 个错误。`--strict` 会将这些警告也视为失败，
+因此用户安装使用上面的普通验证命令。
+
 `--scope` 可选 `user`（默认，全局）、`project`（提交到版本库）、`local`（个人、不提交）。
-开发调试可免安装临时加载，退出即失效，不写插件配置：
-
-```sh
-qodercli --plugin-dir ./agent-plugins/qoder/dist/nacos-ai-registry
-```
-
 以上基于本机 `qodercli` 1.1.46 的 `--help`，其他版本先核对实际命令；不要照搬 Codex marketplace。
 卸载为 `qodercli plugins uninstall nacos-ai-registry`，或在 Desktop 插件页面移除。
-升级重新构建并通过宿主安装/更新入口执行，不直接编辑宿主缓存。
+升级时获取新版本发布包，通过宿主安装/更新入口执行并保留已有配置，不直接编辑宿主缓存。
 
 ### 安装后初始化
 
@@ -99,6 +119,14 @@ PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
 .venv/bin/python scripts/build.py
 .venv/bin/python scripts/check_package.py
 ```
+
+构建后可在 `agent-plugins/qoder/` 中免安装临时加载，退出即失效，不写插件配置：
+
+```sh
+qodercli --plugin-dir ./dist/nacos-ai-registry
+```
+
+需要正式安装构建产物时，进入 `dist/nacos-ai-registry/`，执行上面的手动 CLI 安装命令。
 
 用下载的源码 ZIP 时，解压后在其根目录（含 `qoder/` 与 `LICENSE`）执行：
 
