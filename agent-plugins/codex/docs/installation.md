@@ -20,22 +20,15 @@
 
 ## 让 Codex 自动安装
 
-将下面一句话发到本地 Codex 对话，替换 ZIP 路径即可：
+复制 [README 中的一键安装指令](../README.md#方式二让-codex-一键下载安装推荐)，
+发到能够联网并操作本机文件的 Codex 对话即可，无需提前下载 ZIP 或填写路径。
+CLI 用户运行 `codex` 进入对话后粘贴同一段指令；需要指定版本时补充版本号或 Release 链接。
 
-```text
-请把 /absolute/path/nacos-ai-registry.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 的说明完成本地安装和验证，保留已有插件配置及私有数据。
-```
-
-CLI 用户可以直接执行：
-
-```sh
-codex '请把 /absolute/path/nacos-ai-registry.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 的说明完成本地安装和验证，保留已有插件配置及私有数据。'
-```
-
-这是一条启动安装协助对话的命令，需要已登录且可执行本地命令的 Codex CLI，
-不是原生 ZIP 安装子命令。当前 `codex plugin add` 只接受 marketplace 中的插件选择器。
-Codex 会完成解压、本地清单登记和安装；这些细节见[高级本地安装说明](local-installation.md)。
-如 CLI 不可用，参见[官方 CLI 安装说明](https://developers.openai.com/codex/cli/)。
+Codex 会从官方 Release 中选择 Agent 插件的最新正式版，下载对应安装包和校验文件，
+完成 SHA-256 校验、本地清单登记、安装与验证，并保留已有配置和私有数据。
+本仓库包含其他组件的 Release，版本选择以 `nacos-ai-registry-v<版本>` 为准。
+具体命令见[高级本地安装说明](local-installation.md)；如 CLI 不可用，参见
+[官方 CLI 安装说明](https://developers.openai.com/codex/cli/)。
 
 ## 安装后验证
 

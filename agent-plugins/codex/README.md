@@ -27,39 +27,40 @@
 
 ## 安装已发布的 ZIP
 
-下载 `nacos-ai-registry-0.1.1.zip`（或 Release 中实际提供的版本），不要选 `-source.zip`
-或 GitHub 自动生成的 Source code。确保本机已安装 Python 3.11+，Codex 能找到 `python3`。
-下面两种方式任选一种。
+确保本机已安装 Python 3.11+，Codex 能找到 `python3`。下面两种方式任选一种；
+推荐方式二，直接把安装任务交给 Codex，无需提前下载文件或填写本地路径。
 
 ### 方式一：在桌面插件页面安装
 
-1. 打开 Codex 所在桌面应用的 **插件** 页面，选择 **上传插件包 / Upload plugin archive**。
-2. 选择下载的 ZIP，点击 **添加插件 / Add plugin**。
-3. 打开插件详情，若显示 **安装 / Install**，点击安装。
-4. 回到本地 Codex 对话，通过 `@` 选择 **Nacos AI Registry**，按下文初始化。
+1. 从 [GitHub Releases](https://github.com/nacos-group/nacos-plugin/releases) 中选择
+   `nacos-ai-registry-v<版本>`，下载 `nacos-ai-registry-<版本>.zip` 和同名 `.zip.sha256` 并校验。
+   例如 `nacos-ai-registry-0.1.1.zip`；不要选 `-source.zip` 或 GitHub 自动生成的 Source code。
+2. 打开 Codex 所在桌面应用的 **插件** 页面，选择 **上传插件包 / Upload plugin archive**。
+3. 选择下载的 ZIP，点击 **添加插件 / Add plugin**。
+4. 打开插件详情，若显示 **安装 / Install**，点击安装。
+5. 回到本地 Codex 对话，通过 `@` 选择 **Nacos AI Registry**，按下文初始化。
 
 这条路径会把插件包上传到账户，再安装到本机；上传与公开上架是不同操作，可见范围以共享设置为准。
 若账户没有上传入口，或希望插件包始终留在本机，使用方式二。
 界面入口可能因应用版本与权限不同而变化，详见[安装说明](docs/installation.md)与
 [官方插件说明](https://learn.chatgpt.com/docs/plugins)。
 
-### 方式二：让 Codex 自动完成本地安装
+### 方式二：让 Codex 一键下载安装（推荐）
 
-把下面这段话发给能够操作本机文件的 Codex，只替换 ZIP 的绝对路径：
+把下面这段话直接发到能够联网并操作本机文件的 Codex 对话中：
 
 ```text
-请把 /absolute/path/nacos-ai-registry-0.1.1.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 的说明完成本地安装和验证；保留已有插件配置、凭据和本地技能，不上传到账户。
+请帮我下载并安装 Nacos AI Registry 到本机 Codex：
+1. 在 https://github.com/nacos-group/nacos-plugin/releases 中查找 tag 为 nacos-ai-registry-v<版本> 的最新正式版，按版本号选择，排除草稿和预发布；不要使用仓库整体的 Latest，它可能是 Nacos Server 插件。
+2. 从该 Release 下载 nacos-ai-registry-<版本>.zip 和同名 .zip.sha256，校验 SHA-256；下载或校验失败时停止安装并说明原因。
+3. 检查 Python 3.11+ 和本机 Codex 插件命令，按安装包内 codex/docs/local-installation.md 完成本地安装。保留已有插件配置、凭据和本地技能，插件包留在本机。
+4. 核对安装后的版本和状态，尝试调用 nacos_status 并打开资源中心；如果需要新建本地对话或重启应用才能加载，请明确告诉我下一步。
 ```
 
-使用 Codex CLI 时也可以复制下面的命令，替换路径后执行：
-
-```sh
-codex '请把 /absolute/path/nacos-ai-registry-0.1.1.zip 安装到当前 Codex。按包内 codex/docs/local-installation.md 完成本地安装和验证；保留已有插件配置、凭据和本地技能，不上传到账户。'
-```
-
-Codex 会核对安装包、解压到固定目录、登记本地来源并完成安装。CLI 需要已登录，并获得执行安装所需的
-本机访问权限；这是一条安装协助指令，`codex plugin add` 本身不直接接收 ZIP。
-具体命令留在[本地安装细节](docs/local-installation.md)，日常安装不需要手写 marketplace。
+CLI 用户运行 `codex` 进入对话后，粘贴同一段指令即可。需要指定版本时，在指令末尾补充
+“安装 0.1.1”或目标 Release 链接；默认选择 Agent 插件的最新正式版。
+Codex 会完成下载、校验、解压、本地来源登记和安装，需要具备相应的网络与本机访问权限。
+具体命令见[本地安装细节](docs/local-installation.md)，日常安装不需要手写 marketplace。
 
 ## 初始化与开始使用
 
