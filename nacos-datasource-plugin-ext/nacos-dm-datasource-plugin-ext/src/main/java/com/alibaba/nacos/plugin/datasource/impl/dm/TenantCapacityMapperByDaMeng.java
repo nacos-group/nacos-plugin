@@ -37,44 +37,44 @@ public class TenantCapacityMapperByDaMeng extends AbstractMapperByDaMeng impleme
     
     @Override
     public MapperResult select(MapperContext context) {
-        String sql = "select id,tenant_id,quota,`usage`,max_size,max_aggr_count,max_aggr_size "
+        String sql = "select id,tenant_id,quota,usage,max_size,max_aggr_count,max_aggr_size "
                 + " from tenant_capacity where tenant_id = ?";
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.TENANT_ID)));
     }
     
     @Override
     public MapperResult incrementUsageWithDefaultQuotaLimit(MapperContext context) {
-        String sql = "update tenant_capacity set `usage` = `usage` + 1, gmt_modified = ? "
-                + " where tenant_id = ? and `usage` < ? and quota = 0";
+        String sql = "update tenant_capacity set usage = usage + 1, gmt_modified = ? "
+                + " where tenant_id = ? and usage < ? and quota = 0";
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.GMT_MODIFIED),
                 context.getWhereParameter(FieldConstant.TENANT_ID), context.getWhereParameter(FieldConstant.USAGE)));
     }
     
     @Override
     public MapperResult incrementUsageWithQuotaLimit(MapperContext context) {
-        String sql = "update tenant_capacity set `usage` = `usage` + 1, gmt_modified = ? "
-                + " where tenant_id = ? and `usage` < quota and quota != 0";
+        String sql = "update tenant_capacity set usage = usage + 1, gmt_modified = ? "
+                + " where tenant_id = ? and usage < quota and quota != 0";
         return new MapperResult(sql, CollectionUtils.list(context.getUpdateParameter(FieldConstant.GMT_MODIFIED),
                 context.getWhereParameter(FieldConstant.TENANT_ID)));
     }
     
     @Override
     public MapperResult incrementUsage(MapperContext context) {
-        String sql = "UPDATE tenant_capacity SET `usage` = `usage` + 1, gmt_modified = ? WHERE tenant_id = ?";
+        String sql = "UPDATE tenant_capacity SET usage = usage + 1, gmt_modified = ? WHERE tenant_id = ?";
         return new MapperResult(sql, CollectionUtils.list(context.getUpdateParameter(FieldConstant.GMT_MODIFIED),
                 context.getWhereParameter(FieldConstant.TENANT_ID)));
     }
     
     @Override
     public MapperResult decrementUsage(MapperContext context) {
-        String sql = "UPDATE tenant_capacity SET `usage` = `usage` - 1, gmt_modified = ? WHERE tenant_id = ? AND `usage` > 0";
+        String sql = "UPDATE tenant_capacity SET usage = usage - 1, gmt_modified = ? WHERE tenant_id = ? AND usage > 0";
         return new MapperResult(sql, CollectionUtils.list(context.getUpdateParameter(FieldConstant.GMT_MODIFIED),
                 context.getWhereParameter(FieldConstant.TENANT_ID)));
     }
     
     @Override
     public MapperResult correctUsage(MapperContext context) {
-        String sql = "UPDATE tenant_capacity SET `usage` = (SELECT count(*) FROM config_info WHERE tenant_id = ?), "
+        String sql = "UPDATE tenant_capacity SET usage = (SELECT count(*) FROM config_info WHERE tenant_id = ?), "
                         + "gmt_modified = ? WHERE tenant_id = ?";
         return new MapperResult(sql, CollectionUtils.list(context.getWhereParameter(FieldConstant.TENANT_ID),
                 context.getUpdateParameter(FieldConstant.GMT_MODIFIED), context.getWhereParameter(FieldConstant.TENANT_ID)));
@@ -100,7 +100,7 @@ public class TenantCapacityMapperByDaMeng extends AbstractMapperByDaMeng impleme
         paramList.add(context.getWhereParameter(FieldConstant.TENANT_ID));
         
         return new MapperResult(
-                "INSERT INTO tenant_capacity (tenant_id, quota, `usage`, max_size, max_aggr_count, max_aggr_size, "
+                "INSERT INTO tenant_capacity (tenant_id, quota, usage, max_size, max_aggr_count, max_aggr_size, "
                         + "gmt_create, gmt_modified) SELECT ?, ?, count(*), ?, ?, ?, ?, ? FROM config_info WHERE tenant_id=?",
                 paramList);
     }
