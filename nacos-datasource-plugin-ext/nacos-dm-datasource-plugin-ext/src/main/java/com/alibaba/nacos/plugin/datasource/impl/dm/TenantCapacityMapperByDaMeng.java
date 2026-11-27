@@ -19,6 +19,8 @@ package com.alibaba.nacos.plugin.datasource.impl.dm;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
 import com.alibaba.nacos.plugin.datasource.impl.base.BaseTenantCapacityMapper;
+import com.alibaba.nacos.plugin.datasource.model.MapperContext;
+import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
 /**
  * The dameng implementation of TenantCapacityMapper.
@@ -35,5 +37,40 @@ public class TenantCapacityMapperByDaMeng extends BaseTenantCapacityMapper {
     @Override
     public String[] getPrimaryKeyGeneratedKeys() {
         return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
+
+    @Override
+    public MapperResult select(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.select(context));
+    }
+
+    @Override
+    public MapperResult insertTenantCapacity(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.insertTenantCapacity(context));
+    }
+
+    @Override
+    public MapperResult incrementUsageWithDefaultQuotaLimit(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.incrementUsageWithDefaultQuotaLimit(context));
+    }
+
+    @Override
+    public MapperResult incrementUsageWithQuotaLimit(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.incrementUsageWithQuotaLimit(context));
+    }
+
+    @Override
+    public MapperResult incrementUsage(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.incrementUsage(context));
+    }
+
+    @Override
+    public MapperResult decrementUsage(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.decrementUsage(context));
+    }
+
+    @Override
+    public MapperResult correctUsage(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.correctUsage(context));
     }
 }
