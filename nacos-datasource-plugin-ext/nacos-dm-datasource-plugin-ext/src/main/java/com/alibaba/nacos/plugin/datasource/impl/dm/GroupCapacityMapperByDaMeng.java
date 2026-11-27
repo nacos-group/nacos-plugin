@@ -19,6 +19,8 @@ package com.alibaba.nacos.plugin.datasource.impl.dm;
 import com.alibaba.nacos.plugin.datasource.constants.DatabaseTypeConstant;
 import com.alibaba.nacos.plugin.datasource.constants.PrimaryKeyConstant;
 import com.alibaba.nacos.plugin.datasource.impl.base.BaseGroupCapacityMapper;
+import com.alibaba.nacos.plugin.datasource.model.MapperContext;
+import com.alibaba.nacos.plugin.datasource.model.MapperResult;
 
 /**
  * The base implementation of GroupCapacityMapper.
@@ -35,5 +37,50 @@ public class GroupCapacityMapperByDaMeng extends BaseGroupCapacityMapper {
     @Override
     public String[] getPrimaryKeyGeneratedKeys() {
         return PrimaryKeyConstant.UPPER_RETURN_PRIMARY_KEYS;
+    }
+
+    @Override
+    public MapperResult select(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.select(context));
+    }
+
+    @Override
+    public MapperResult insertIntoSelect(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.insertIntoSelect(context));
+    }
+
+    @Override
+    public MapperResult insertIntoSelectByWhere(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.insertIntoSelectByWhere(context));
+    }
+
+    @Override
+    public MapperResult incrementUsageByWhereQuotaEqualZero(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.incrementUsageByWhereQuotaEqualZero(context));
+    }
+
+    @Override
+    public MapperResult incrementUsageByWhereQuotaNotEqualZero(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.incrementUsageByWhereQuotaNotEqualZero(context));
+    }
+
+    @Override
+    public MapperResult incrementUsageByWhere(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.incrementUsageByWhere(context));
+    }
+
+    @Override
+    public MapperResult decrementUsageByWhere(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.decrementUsageByWhere(context));
+    }
+
+    @Override
+    public MapperResult updateUsage(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.updateUsage(context));
+    }
+
+    @Override
+    public MapperResult updateUsageByWhere(MapperContext context) {
+        return DaMengCapacitySql.unquoteUsage(super.updateUsageByWhere(context));
     }
 }
